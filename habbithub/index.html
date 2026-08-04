@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habits Hab</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://cloudflare.com" />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- NAV SIDE BAR -->
+    <nav>
+      <div class="nav-container">
+        <h3>Habits Hab</h3>
+        <ul class="nav-list">
+          <li>
+            <div>
+              <img class="nav-icon" src="icons/house-regular-full.svg" alt="" />
+              <a href="">Przegląd</a>
+            </div>
+          </li>
+          <li>
+            <div>
+              <img class="nav-icon" src="icons/spiral-solid-full.svg" alt="" />
+              <a href="">Nawyki</a>
+            </div>
+          </li>
+          <li>
+            <div>
+              <img
+                class="nav-icon"
+                src="icons/chart-bar-regular-full.svg"
+                alt=""
+              />
+              <a href="">Statystyki</a>
+            </div>
+          </li>
+          <li>
+            <div>
+              <img
+                class="nav-icon"
+                src="icons/calendar-days-regular-full.svg"
+                alt=""
+              />
+              <a href="">Kalendarz</a>
+            </div>
+          </li>
+          <li>
+            <div>
+              <img class="nav-icon" src="icons/user-regular-full.svg" alt="" />
+              <a href="">Znajomi</a>
+            </div>
+          </li>
+          <li>
+            <div>
+              <img class="nav-icon" src="icons/gear-solid-full.svg" alt="" />
+              <a href="">Ustawienia</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="main-container">
+      <!-- PAGE TITLE SECTION -->
+      <h2>Dodaj nawyki</h2>
+      <p>
+        Wybierz nawyki, które chcesz realizować w danym miesiącu i zaznaczaj
+        postępy każdego dnia
+      </p>
+
+      <!-- ADDING NEW HABBIT SECTION -->
+      <div class="container">
+        <h3 class="h3-habbit">Dodaj nowy nawyk</h3>
+        <div class="container-new-habbit">
+          <div class="container-input">
+            <label class="input-description" for="Nazwa nawyku"
+              >Nazwa nawyku</label
+            >
+            <input
+              class="habbit-name-input"
+              type="text"
+              placeholder="np: nauka"
+            />
+          </div>
+          <div class="container-input">
+            <label class="input-description" for="Nazwa nawyku"
+              >Częstotliwość</label
+            >
+            <select class="habbit-frequency-input" name="Częstotliwość" id="">
+              <option value="7">codziennie</option>
+              <option value="1">1 raz w tygodniu</option>
+              <option value="2">2 razy w tygodniu</option>
+              <option value="3">3 razy w tygodniu</option>
+              <option value="4">4 razy w tygodniu</option>
+              <option value="5">5 razy w tygodniu</option>
+              <option value="6">6 razy w tygodniu</option>
+            </select>
+          </div>
+          <div class="container-input">
+            <label class="input-description" for="color-picker">Kolor</label>
+            <input class="habbit-color-input" type="color" />
+          </div>
+          <div>
+            <button class="add-habbit-button">Dodaj nawyk</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALENDAR SECTION -->
+      <h3>Twoje nawyki w tym miesiącu</h3>
+    </div>
+  </body>
+</html>
