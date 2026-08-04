@@ -4,7 +4,7 @@ html {
 }
 
 .main-container {
-  margin-left: 200px;
+  margin-left: 230px;
 }
 
 /* NAV SIDE BAR */
@@ -17,19 +17,47 @@ nav {
   height: 100vh;
 }
 
+nav a {
+  text-decoration: none;
+  color: black;
+}
+
 .nav-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .nav-list {
   list-style: none;
 }
 
+
 .nav-icon {
   width: 30px;
   height: 30px;
+  
 }
+
+.nav-item {
+  background-color: rgb(235, 220, 200);
+  margin-bottom: 15px;
+  border-radius: 8px;
+  padding: 5px 10px;
+}
+
+
+/* PAGE TITLE SECTION */
+
+.container-title {
+  display: flex;
+}
+
+.container-title-desc {
+  display: flex;
+  flex-direction: row;
+}
+
 /* ADDING NEW HABBIT SECTION */
 
 .container {
