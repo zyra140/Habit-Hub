@@ -5,6 +5,7 @@ html {
 
 .main-container {
   margin-left: 230px;
+  margin-right: 30px;
 }
 
 /* NAV SIDE BAR */
@@ -32,11 +33,9 @@ nav a {
   list-style: none;
 }
 
-
 .nav-icon {
   width: 30px;
   height: 30px;
-  
 }
 
 .nav-item {
@@ -46,16 +45,25 @@ nav a {
   padding: 5px 10px;
 }
 
-
 /* PAGE TITLE SECTION */
 
 .container-title {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .container-title-desc {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  margin-right: 30px;
+  margin-bottom: 80px;
+}
+
+.date-input {
+  border: 1px solid gray;
+  border-radius: 7px;
+  padding: 10px;
 }
 
 /* ADDING NEW HABBIT SECTION */
@@ -67,6 +75,7 @@ nav a {
   border-radius: 15px;
   padding: 25px 0;
   box-shadow: 5px 5px 10px rgb(199, 199, 199);
+  margin-bottom: 60px;
 }
 
 .container-new-habbit {
@@ -115,4 +124,104 @@ nav a {
 
 .habbit-color-input {
   border: none;
+}
+
+/* CALENDAR SECTION */
+
+.container-habbit-in-month {
+  border-bottom: 1px solid rgb(133, 133, 133);
+  margin-bottom: 60px;
+}
+
+.item-calendar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border: 1px solid rgb(218, 218, 218);
+  border-radius: 15px;
+  padding: 20px 0;
+  box-shadow: 5px 5px 10px rgb(199, 199, 199);
+  margin-bottom: 60px;
+}
+
+.calendar-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 25px;
+  background-color: rgba(137, 43, 226, 0.164);
+  border-radius: 25%;
+  padding: 10px;
+}
+
+.item-description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-description h4,
+.item-description p {
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.item-description p {
+  color: rgb(112, 96, 117);
+}
+
+.calendar-day-list {
+  list-style: none;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.calendar-day-list li {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.calendar-day-list li p {
+  margin: 0;
+  margin-bottom: 7px;
+}
+
+.calendar-day-type {
+  color: rgb(112, 96, 117);
+}
+
+.input-checkbox {
+  appearance: none;
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-top: 7px;
+}
+
+.input-checkbox:checked {
+  background-color: blueviolet;
+}
+
+/* STATS SECTION */
+.container-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border: 1px solid rgb(218, 218, 218);
+  border-radius: 15px;
+  padding: 25px 0;
+  box-shadow: 5px 5px 10px rgb(199, 199, 199);
+}
+
+.stats-desc {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-left: 1px solid lightblue;
 }
