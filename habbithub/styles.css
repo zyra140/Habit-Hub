@@ -193,6 +193,10 @@ nav a {
   color: rgb(112, 96, 117);
 }
 
+.calendar-day-type-weekend {
+  color:red;
+}
+
 .input-checkbox {
   appearance: none;
   border: 1px solid black;
