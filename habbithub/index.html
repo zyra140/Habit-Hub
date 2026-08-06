@@ -23,48 +23,40 @@
         <h3>Habits Hab</h3>
         <ul class="nav-list">
           <li class="nav-item">
-            <div>
-              <img class="nav-icon" src="icons/house-regular-full.svg" alt="" />
-              <a href="">Przegląd</a>
-            </div>
+            <img class="nav-icon" src="icons/house-regular-full.svg" alt="" />
+            <a href="">Przegląd</a>
           </li>
           <li class="nav-item">
-            <div>
-              <img class="nav-icon" src="icons/spiral-solid-full.svg" alt="" />
-              <a href="">Nawyki</a>
-            </div>
+            <img
+              class="nav-icon active"
+              src="icons/spiral-solid-full.svg"
+              alt=""
+            />
+            <a class="active" href="">Nawyki</a>
           </li>
           <li class="nav-item">
-            <div>
-              <img
-                class="nav-icon"
-                src="icons/chart-bar-regular-full.svg"
-                alt=""
-              />
-              <a href="">Statystyki</a>
-            </div>
+            <img
+              class="nav-icon"
+              src="icons/chart-bar-regular-full.svg"
+              alt=""
+            />
+            <a href="">Statystyki</a>
           </li>
           <li class="nav-item">
-            <div>
-              <img
-                class="nav-icon"
-                src="icons/calendar-days-regular-full.svg"
-                alt=""
-              />
-              <a href="">Kalendarz</a>
-            </div>
+            <img
+              class="nav-icon"
+              src="icons/calendar-days-regular-full.svg"
+              alt=""
+            />
+            <a href="">Kalendarz</a>
           </li>
           <li class="nav-item">
-            <div>
-              <img class="nav-icon" src="icons/user-regular-full.svg" alt="" />
-              <a href="">Znajomi</a>
-            </div>
+            <img class="nav-icon" src="icons/user-regular-full.svg" alt="" />
+            <a href="">Znajomi</a>
           </li>
           <li class="nav-item">
-            <div>
-              <img class="nav-icon" src="icons/gear-solid-full.svg" alt="" />
-              <a href="">Ustawienia</a>
-            </div>
+            <img class="nav-icon" src="icons/gear-solid-full.svg" alt="" />
+            <a href="">Ustawienia</a>
           </li>
         </ul>
       </div>
@@ -79,7 +71,11 @@
             postępy każdego dnia
           </p>
         </div>
-        <input class="date-input" type="date" />
+        <div class="container-date-input">
+          <button class="date-input-button"><</button>
+          <input class="date-input" type="date" />
+          <button class="date-input-button">></button>
+        </div>
       </div>
 
       <!-- ADDING NEW HABBIT SECTION -->
@@ -339,5 +335,6 @@
         </div>
       </div>
     </div>
+    <script src="script.js"></script>
   </body>
 </html>

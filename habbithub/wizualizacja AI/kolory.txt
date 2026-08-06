@@ -1,0 +1,23 @@
+Sidebar:
+#0F172A
+
+Aktywna zakładka:
+#22C55E
+
+Ikony:
+#CBD5E1
+
+Tekst:
+#E2E8F0
+
+Separator:
+#1E293B
+
+Element	Kolor
+Tło aplikacji	#F8FAFC
+Karty	#FFFFFF
+Główny przycisk	#22C55E
+Wykonany nawyk	#16A34A
+Niewykonany nawyk	#CBD5E1
+Tekst główny	#0F172A
+Nagrody/serie	#F59E0B

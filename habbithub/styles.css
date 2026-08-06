@@ -1,6 +1,8 @@
 html {
   font-family: "Inter", sans-serif;
   height: 2000px;
+  background-color: #f8fafc;
+  color: #0f172a;
 }
 
 .main-container {
@@ -13,36 +15,70 @@ nav {
   position: fixed;
   top: 0;
   left: 0;
-  background-color: antiquewhite;
   width: 200px;
   height: 100vh;
+  background-color: #0f172a;
 }
 
 nav a {
   text-decoration: none;
-  color: black;
+  color: #e2e8f0;
+}
+
+nav a.active {
+  text-decoration: none;
+  color: #22c55e;
+}
+
+nav h3 {
+  color: #16a34a;
 }
 
 .nav-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
 }
 
 .nav-list {
   list-style: none;
+  padding: 0;
 }
 
 .nav-icon {
+  margin-right: 7px;
   width: 30px;
   height: 30px;
+  filter: invert(85%) sepia(10%) saturate(220%) hue-rotate(185deg)
+    brightness(104%) contrast(95%);
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
+}
+
+.nav-icon.active {
+  filter: invert(45%) sepia(87%) saturate(3750%) hue-rotate(90deg)
+    brightness(92%) contrast(92%);
 }
 
 .nav-item {
-  background-color: rgb(235, 220, 200);
-  margin-bottom: 15px;
+  margin: 10px 0;
   border-radius: 8px;
   padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.nav-item:hover {
+  background-color: #22c55e65;
+}
+
+.nav-item:hover .nav-icon {
+  transform: rotate(10deg);
 }
 
 /* PAGE TITLE SECTION */
@@ -58,12 +94,28 @@ nav a {
   flex-direction: column;
   margin-right: 30px;
   margin-bottom: 80px;
+  color: #0f172a;
+}
+
+.container-title-desc h2 {
+  font-size: 33px;
+}
+
+/* date input */
+
+.container-date-input {
+  border: 1px solid gray;
+  border-radius: 8px;
 }
 
 .date-input {
-  border: 1px solid gray;
-  border-radius: 7px;
+  border: none;
   padding: 10px;
+}
+
+.date-input-button {
+  border: none;
+  background-color: none;
 }
 
 /* ADDING NEW HABBIT SECTION */
@@ -81,6 +133,7 @@ nav a {
 .container-new-habbit {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-right: 40px;
 }
 
@@ -100,8 +153,7 @@ nav a {
   border: none;
   border-radius: 10px;
   padding: 13px;
-  color: white;
-  background-color: rgb(97, 32, 219);
+  background-color: #22c55e;
   cursor: pointer;
 }
 
@@ -194,7 +246,7 @@ nav a {
 }
 
 .calendar-day-type-weekend {
-  color:red;
+  color: red;
 }
 
 .input-checkbox {
@@ -206,10 +258,15 @@ nav a {
   cursor: pointer;
   transition: 0.2s;
   margin-top: 7px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%;
 }
 
 .input-checkbox:checked {
-  background-color: blueviolet;
+  background-color: #22c55e;
+  border-color: #16a34a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3 3 7-7' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 /* STATS SECTION */
