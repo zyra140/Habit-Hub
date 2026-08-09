@@ -93,7 +93,7 @@ nav h3 {
   display: flex;
   flex-direction: column;
   margin-right: 30px;
-  margin-bottom: 80px;
+  margin-bottom: 40px;
   color: #0f172a;
 }
 
@@ -104,18 +104,46 @@ nav h3 {
 /* date input */
 
 .container-date-input {
-  border: 1px solid gray;
-  border-radius: 8px;
+  border: 1px solid rgb(190, 190, 190);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 275px;
+  height: 45px;
+  margin-bottom: 50px;
 }
 
 .date-input {
   border: none;
   padding: 10px;
+  font-weight: 500;
 }
 
-.date-input-button {
+.date-input-button,
+.color-input-button {
   border: none;
-  background-color: none;
+  border-radius: 50%;
+  background-color: #f8fafc;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.date-input-button img {
+  height: 18px;
+  width: 18px;
+  transition: 0.2s;
+}
+
+.date-input-button:hover {
+  background-color: #22c55e;
+}
+
+.date-input-button:hover img {
+  filter: invert(1) brightness(2);
 }
 
 /* ADDING NEW HABBIT SECTION */
@@ -152,30 +180,65 @@ nav h3 {
 .add-habbit-button {
   border: none;
   border-radius: 10px;
-  padding: 13px;
+  padding: 16.5px 20px;
   background-color: #22c55e;
   cursor: pointer;
+  margin-top: 14px;
 }
 
 .input-description {
   font-size: 12px;
+  font-weight: 400;
   margin-bottom: 10px;
 }
 
 .habbit-name-input {
-  border: 1px solid gray;
+  border: 1px solid lightgray;
   border-radius: 7px;
-  padding: 10px;
+  padding: 15px;
 }
 
 .habbit-frequency-input {
-  border: 1px solid gray;
+  border: 1px solid lightgray;
   border-radius: 7px;
-  padding: 10px;
+  padding: 15px;
+}
+
+.container-color-peaker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid lightgray;
+  padding: 5px;
+  border-radius: 10px;
+  gap: 10px;
 }
 
 .habbit-color-input {
+  appearance: none;
   border: none;
+  width: 35px;
+  height: 36px;
+  cursor: pointer;
+  background-color: #f8fafc;
+}
+
+.habbit-color-input::-webkit-color-swatch {
+  border-radius: 50%;
+  border: none;
+}
+
+.habbit-color-input::-moz-color-swatch {
+  border-radius: 50%;
+  border: none;
+}
+
+.color-input-button {
+  padding: 3px;
+}
+
+.color-input-button:hover {
+  background-color: rgb(180, 202, 180);
 }
 
 /* CALENDAR SECTION */
@@ -274,15 +337,68 @@ nav h3 {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  border: 1px solid rgb(218, 218, 218);
+  border: 1px solid lightgray;
   border-radius: 15px;
-  padding: 25px 0;
-  box-shadow: 5px 5px 10px rgb(199, 199, 199);
+  padding: 30px 0;
+  box-shadow: 5px 5px 10px lightgray;
+}
+
+.container-stats p {
+  margin: 10px 0;
+}
+
+.container-stats-desc {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 200px;
+}
+
+.container-stats-info {
+  border-left: 1px solid lightgray;
+  padding-left: 40px;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; */
+}
+
+.container-piggy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .stats-desc {
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  border-left: 1px solid lightblue;
+  justify-content: flex-start;
+  gap: 15px;
+}
+
+.stats-desc p {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.done-icon,
+.missed-icon {
+  height: 27px;
+  width: 27px;
+}
+
+.missed-icon {
+  filter: invert(12%) sepia(96%) saturate(6591%) hue-rotate(358deg)
+    brightness(95%) contrast(99%);
+}
+
+.done-icon {
+  filter: invert(47%) sepia(96%) saturate(707%) hue-rotate(86deg)
+    brightness(98%) contrast(98%);
+}
+
+.piggy-icon {
+  width: 100px;
+  height: 100px;
 }

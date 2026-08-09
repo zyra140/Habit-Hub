@@ -72,9 +72,13 @@
           </p>
         </div>
         <div class="container-date-input">
-          <button class="date-input-button"><</button>
-          <input class="date-input" type="date" />
-          <button class="date-input-button">></button>
+          <button class="date-input-button">
+            <img src="icons/caret-left-fill.svg" alt="" />
+          </button>
+          <div class="date-input">Pazdziernik 2024</div>
+          <button class="date-input-button">
+            <img src="icons/caret-right-fill.svg" alt="" />
+          </button>
         </div>
       </div>
 
@@ -89,7 +93,7 @@
             <input
               class="habbit-name-input"
               type="text"
-              placeholder="np: nauka"
+              placeholder="np: Nauka"
             />
           </div>
           <div class="container-input">
@@ -97,7 +101,7 @@
               >Częstotliwość</label
             >
             <select class="habbit-frequency-input" name="Częstotliwość" id="">
-              <option value="7">codziennie</option>
+              <option value="7">Codziennie</option>
               <option value="1">1 raz w tygodniu</option>
               <option value="2">2 razy w tygodniu</option>
               <option value="3">3 razy w tygodniu</option>
@@ -108,7 +112,12 @@
           </div>
           <div class="container-input">
             <label class="input-description" for="color-picker">Kolor</label>
-            <input class="habbit-color-input" type="color" />
+            <div class="container-color-peaker">
+              <input class="habbit-color-input" type="color" />
+              <button class="color-input-button">
+                <img src="icons/caret-down-fill.svg" alt="" />
+              </button>
+            </div>
           </div>
           <div>
             <button class="add-habbit-button">Dodaj nawyk</button>
@@ -299,39 +308,31 @@
         <div>
           <p>wykres</p>
         </div>
-        <div>
+        <div class="container-stats-desc">
           <p>Średnia realizacja nawyków w tym miesiącu</p>
           <p>Świetna robota!</p>
         </div>
-        <div>
+        <div class="container-stats-info">
           <div class="stats-desc">
+            <img class="done-icon" src="icons/check-circle.svg" alt="" />
             <p>5</p>
-            <img
-              class="nav-icon"
-              src="icons/calendar-days-regular-full.svg"
-              alt=""
-            />
           </div>
           <p>Ukończone nawyki</p>
         </div>
-        <div>
+        <div class="container-stats-info">
           <div class="stats-desc">
-            <p>5</p>
-            <img
-              class="nav-icon"
-              src="icons/calendar-days-regular-full.svg"
-              alt=""
-            />
+            <img class="missed-icon" src="icons/x-circle.svg" alt="" />
+            <p>15</p>
           </div>
           <p>Pominięte nawyki</p>
         </div>
-        <div>
+        <div class="container-piggy">
           <img
-            class="nav-icon"
-            src="icons/calendar-days-regular-full.svg"
+            class="piggy-icon"
+            src="icons/piggy-bank-save-svgrepo-com.svg"
             alt=""
           />
-          <p>-250</p>
+          <p>250</p>
         </div>
       </div>
     </div>
