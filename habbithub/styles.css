@@ -6,8 +6,8 @@ html {
 }
 
 .main-container {
-  margin-left: 230px;
-  margin-right: 30px;
+  margin: auto;
+  max-width: 950px;
 }
 
 /* NAV SIDE BAR */
