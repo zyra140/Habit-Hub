@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="https://cloudflare.com" />
 
     <link rel="stylesheet" href="../styles.css" />
-
   </head>
   <body>
     <!-- NAV SIDE BAR -->
@@ -24,7 +23,11 @@
         <h3>Habits Hab</h3>
         <ul class="nav-list">
           <li class="nav-item">
-            <img class="nav-icon" src="../icons/house-regular-full.svg" alt="" />
+            <img
+              class="nav-icon"
+              src="../icons/house-regular-full.svg"
+              alt=""
+            />
             <a href="../html/index.html">Przegląd</a>
           </li>
           <li class="nav-item">
@@ -63,12 +66,13 @@
       </div>
     </nav>
     <div class="main-container">
-            <!-- PAGE TITLE SECTION -->
+      <!-- PAGE TITLE SECTION -->
       <div class="container-title">
         <div class="container-title-desc">
           <h2>Statystyki</h2>
           <p>
-            Śledź swoje postępy, analizuj nawyki i motywuj się do dalszego działania
+            Śledź swoje postępy, analizuj nawyki i motywuj się do dalszego
+            działania
           </p>
         </div>
         <div class="container-date-input">
@@ -82,7 +86,7 @@
         </div>
       </div>
 
-            <!-- STATS SECTION -->
+      <!-- STATS SECTION -->
       <div class="container-stats">
         <div>
           <p>wykres</p>
@@ -114,12 +118,22 @@
           <p>250</p>
         </div>
       </div>
-
-      <canvas id="myChart"></canvas>
+      <!-- CHARTS -->
+      <div>
+        <div id="chart"></div>
+      </div>
+      <div class="container-charts">
+        <div>
+          <div id="chart2"></div>
+        </div>
+        <div>
+          <div id="chart3"></div>
+        </div>
+      </div>
     </div>
+      
 
-    
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="../script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </body>
 </html>

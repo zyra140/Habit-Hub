@@ -6,8 +6,9 @@ html {
 }
 
 .main-container {
-  margin: auto;
-  max-width: 950px;
+  margin-left: 260px;
+  margin-right: 50px;
+  /* max-width: 950px; */
 }
 
 /* NAV SIDE BAR */
@@ -401,4 +402,17 @@ nav h3 {
 .piggy-icon {
   width: 100px;
   height: 100px;
+}
+
+/* CHARTS */
+.container-charts {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.container-charts  div {
+  flex: 1;
+  min-width: 0; /* allows children to shrink properly inside flex items */
 }
