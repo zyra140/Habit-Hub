@@ -1,14 +1,18 @@
 html {
   font-family: "Inter", sans-serif;
-  height: 2000px;
   background-color: #f8fafc;
   color: #0f172a;
 }
 
+body {
+  padding-left: 200px;
+}
+
 .main-container {
-  margin-left: 260px;
-  margin-right: 50px;
-  /* max-width: 950px; */
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 /* NAV SIDE BAR */
@@ -205,7 +209,8 @@ nav h3 {
   padding: 15px;
 }
 
-.container-color-peaker {
+.container-color-peaker,
+.container-icon-peaker {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -215,7 +220,8 @@ nav h3 {
   gap: 10px;
 }
 
-.habbit-color-input {
+.habbit-color-input,
+.habbit-icon-input {
   appearance: none;
   border: none;
   width: 35px;
@@ -242,6 +248,68 @@ nav h3 {
   background-color: rgb(180, 202, 180);
 }
 
+/* icon dropdown */
+
+.icon-dropdown {
+  position: relative;
+  transition: 0.2s;
+}
+
+.icon-dropdown .icon-button {
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.list-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: auto;
+  padding: 8px;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background-color: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.08);
+  border-radius: 10px;
+  min-width: 140px;
+  z-index: 1000;
+}
+
+.list-dropdown li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.12s;
+  border-radius: 8px;
+}
+
+.list-dropdown li:hover {
+  background-color: #f1f5f9;
+  transform: translateY(-2px);
+}
+
+.list-dropdown img {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+  display: block;
+  filter: none;
+}
+
+.hidden {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
 /* CALENDAR SECTION */
 
 .container-habbit-in-month {
@@ -412,7 +480,7 @@ nav h3 {
   gap: 20px;
 }
 
-.container-charts  div {
+.container-charts div {
   flex: 1;
   min-width: 0; /* allows children to shrink properly inside flex items */
 }

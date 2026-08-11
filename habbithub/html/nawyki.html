@@ -23,7 +23,11 @@
         <h3>Habits Hab</h3>
         <ul class="nav-list">
           <li class="nav-item">
-            <img class="nav-icon" src="../icons/house-regular-full.svg" alt="" />
+            <img
+              class="nav-icon"
+              src="../icons/house-regular-full.svg"
+              alt=""
+            />
             <a href="../html/index.html">Przegląd</a>
           </li>
           <li class="nav-item">
@@ -111,9 +115,50 @@
             </select>
           </div>
           <div class="container-input">
-            <label class="input-description" for="color-picker">Kolor</label>
+            <label class="input-description" for="color-picker">Ikona</label>
+            <div class="container-icon-peaker">
+              <img
+                class="habbit-icon-input"
+                id="iconInput"
+                src="../icons/calendar-days-regular-full.svg"
+              />
+              <button class="color-input-button">
+                <img src="../icons/caret-down-fill.svg" alt="" />
+              </button>
+            </div>
+            <div class="icon-dropdown hidden">
+              <ul class="list-dropdown container-icon-peaker">
+                <li>
+                  <img src="../icons/calendar-days-regular-full.svg" alt="" />
+                </li>
+                <li>
+                  <img src="../icons/caret-down-fill.svg" alt="" />
+                </li>
+                <li>
+                  <img src="../icons/chart-bar-regular-full.svg" alt="" />
+                </li>
+                <li>
+                  <img src="../icons/gear-solid-full.svg" alt="" />
+                </li>
+                <li>
+                  <img src="../icons/x-circle.svg" alt="" />
+                </li>
+                <li>
+                  <img src="../icons/spiral-solid-full.svg" alt="" />
+                </li>
+                <li>
+                  <img src="../icons/calendar-days-regular-full.svg" alt="" />
+                </li>
+                <li>
+                  <img src="../icons/calendar-days-regular-full.svg" alt="" />
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="container-input">
+            <label class="input-description" for="icon-picker">Kolor</label>
             <div class="container-color-peaker">
-              <input class="habbit-color-input" type="color" />
+              <input id="colorInput" class="habbit-color-input" type="color" />
               <button class="color-input-button">
                 <img src="../icons/caret-down-fill.svg" alt="" />
               </button>
