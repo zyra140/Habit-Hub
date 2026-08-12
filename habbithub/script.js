@@ -77,13 +77,13 @@ const iconDropdown = document.querySelector(".icon-dropdown");
 const listDropdown = document.querySelector(".list-dropdown");
 const habbitIcon = document.querySelector("#iconInput");
 
-iconButton.addEventListener("click", function () {
+iconButton?.addEventListener("click", function () {
   iconDropdown.classList.contains("hidden")
     ? iconDropdown.classList.remove("hidden")
     : iconDropdown.classList.add("hidden");
 });
 
-listDropdown.addEventListener("click", function (e) {
+listDropdown?.addEventListener("click", function (e) {
   const icon = e.target.closest("li").querySelector("img").src;
   if (!icon) return;
   habbitIcon.src = icon;
@@ -93,7 +93,38 @@ listDropdown.addEventListener("click", function (e) {
 //////////////////////////////// COLOR INPUT //////////////////////////////////
 const colorInput = document.querySelector("#colorInput");
 
-colorInput.addEventListener("input", function (e) {
+colorInput?.addEventListener("input", function (e) {
   const color = e.target.value;
   habbitIcon.style.color = color;
+});
+
+//////////////////////////////// NAVIGATION //////////////////////////////////
+const navList = document.querySelector('.nav-list');
+const navItemsAll = document.querySelectorAll('.nav-item')
+
+navList?.addEventListener('click', function(e) {
+  const navItem = e.target.closest('li');
+  if (!navItem) return
+  
+  //delete active class
+  navItemsAll.forEach(item => {
+    const navItemContentAll = [item.querySelector('img'), item.querySelector('a')]
+    navItemContentAll.forEach(item => item.classList.remove('active'));
+  })
+  //add active class
+  const navItemContent = [navItem.querySelector('img'), navItem.querySelector('a')]
+  navItemContent.forEach(item => item.classList.add('active'));
+  
+  // Nawiguj do strony
+  const link = navItem.querySelector('a');
+  if (link?.href) window.location.href = link.href;
+});
+
+// Ustaw active class po załadowaniu strony
+const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+navItemsAll.forEach(item => {
+  const link = item.querySelector('a');
+  const isActive = link?.href.endsWith(currentFile);
+  link?.classList.toggle('active', isActive);
+  item.querySelector('img')?.classList.toggle('active', isActive);
 });

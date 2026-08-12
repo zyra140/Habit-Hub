@@ -57,14 +57,13 @@ nav h3 {
   height: 30px;
   filter: invert(85%) sepia(10%) saturate(220%) hue-rotate(185deg)
     brightness(104%) contrast(95%);
-  transition:
-    transform 0.25s ease,
-    filter 0.25s ease;
+  transition: transform 0.25s ease;
 }
 
 .nav-icon.active {
   filter: invert(45%) sepia(87%) saturate(3750%) hue-rotate(90deg)
     brightness(92%) contrast(92%);
+  transition: transform 0.25s ease;
 }
 
 .nav-item {
