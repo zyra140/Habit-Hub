@@ -61,15 +61,15 @@ const options = {
   },
 };
 
-//Init Chart
-// const chart = new ApexCharts(document.querySelector("#chart"), options);
-// const chart2 = new ApexCharts(document.querySelector("#chart2"), options);
-// const chart3 = new ApexCharts(document.querySelector("#chart3"), options);
+// Init Chart
+const chart = new ApexCharts(document.querySelector("#chart"), options);
+const chart2 = new ApexCharts(document.querySelector("#chart2"), options);
+const chart3 = new ApexCharts(document.querySelector("#chart3"), options);
 
-//Render Chart
-// chart.render();
-// chart2.render();
-// chart3.render();
+// Render Chart
+chart.render();
+chart2.render();
+chart3.render();
 
 //////////////////////////////// ICON INPUT //////////////////////////////////
 const iconButton = document.querySelector(".color-input-button");
