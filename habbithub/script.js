@@ -234,3 +234,15 @@ addHabbitButton?.addEventListener("click", function () {
 
   habbitContainer.insertAdjacentHTML("beforeend", html);
 });
+
+//Dates
+const currenDate = new Date (); 
+const currentYear = currenDate.getFullYear();
+const currentMonth = currenDate.toLocaleString('pl-PL', { month: 'long'});
+const currentMonthUpperCase = currentMonth.slice(0,1).toUpperCase() + currentMonth.slice(1);
+const currentDay = currenDate.getDate();
+
+// Month Switcher
+const dateSwitcher = document.querySelector('.date-input');
+dateSwitcher.innerHTML = `${currentMonthUpperCase} ${currentYear}`;
+
