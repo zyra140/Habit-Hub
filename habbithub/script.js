@@ -188,10 +188,11 @@ addHabbitButton?.addEventListener("click", function () {
   const freq = frequency.value;
   const color = colorInput.value;
   const fadedColor = hexToRgba(color, 0.2);
+  console.log(date.getMonth(), date.getFullYear());
 
   const calendarDays = function () {
     let day = "";
-    let dayName = ['P','W','Ś','CZ','P','S','N'];
+    let dayName = ["P", "W", "Ś", "CZ", "P", "S", "N"];
     for (let i = 1; i <= 31; i++) {
       day += `
         <li>
@@ -201,7 +202,6 @@ addHabbitButton?.addEventListener("click", function () {
         </li>
         `;
     }
-    console.log(day);
     return day;
   };
 
@@ -235,14 +235,32 @@ addHabbitButton?.addEventListener("click", function () {
   habbitContainer.insertAdjacentHTML("beforeend", html);
 });
 
-//Dates
-const currenDate = new Date (); 
-const currentYear = currenDate.getFullYear();
-const currentMonth = currenDate.toLocaleString('pl-PL', { month: 'long'});
-const currentMonthUpperCase = currentMonth.slice(0,1).toUpperCase() + currentMonth.slice(1);
-const currentDay = currenDate.getDate();
+//////////////////////////////// DATES //////////////////////////////////
 
-// Month Switcher
-const dateSwitcher = document.querySelector('.date-input');
-dateSwitcher.innerHTML = `${currentMonthUpperCase} ${currentYear}`;
+// date changer
+const dateInput = document.querySelector(".date-input");
 
+const containerDate = document.querySelector(".container-date-input");
+
+const date = new Date();
+
+const renderDate = function (date) {
+  dateInput.innerHTML = date.toLocaleString("pl-PL", {
+    month: "long",
+    year: "numeric",
+  });
+};
+
+renderDate(date);
+
+containerDate.addEventListener("click", function (e) {
+  let input = e.target.closest("button");
+
+  if (!input) return;
+
+  date.setMonth(date.getMonth() + Number(input.id));
+
+  renderDate(date);
+});
+
+//
