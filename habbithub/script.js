@@ -188,21 +188,39 @@ addHabbitButton?.addEventListener("click", function () {
   const freq = frequency.value;
   const color = colorInput.value;
   const fadedColor = hexToRgba(color, 0.2);
-  console.log(date.getMonth(), date.getFullYear());
-
+  
+  // cannot add habbit to past month
+  if (
+    (date.getMonth() < new Date().getMonth()) && (date.getFullYear() === new Date().getFullYear()) || 
+    date.getFullYear() < new Date().getFullYear()
+    ) return alert('Nie można dodawać nawyków do poprzednich miesięcy!');
+  
+  
   const calendarDays = function () {
-    let day = "";
-    let dayName = ["P", "W", "Ś", "CZ", "P", "S", "N"];
-    for (let i = 1; i <= 31; i++) {
-      day += `
+    const dayName = new Date(date);
+
+    let dayStr = "";
+
+    const dayLength = daysInMonth(dayName.getMonth() + 1, dayName.getFullYear())
+
+    for (let i = date.getDate(); i <= dayLength; i++) {
+      
+      let dayFirstCapital = dayName.toLocaleString('pl-PL', {
+        weekday: 'long'
+      }).slice(0,1).toUpperCase();
+
+      dayStr += `
         <li>
           <p class="calendar-day-number">${i}</p>
-          <p class="calendar-day-type"></p>
+          <p class="${dayFirstCapital === 'S' || dayFirstCapital === "N" ? 'calendar-day-type-weekend' : 'calendar-day-type'}">${dayFirstCapital}</p>
           <input class="input-checkbox" type="checkbox" />
         </li>
         `;
+      
+      dayName.setDate(dayName.getDate() + 1);
+
     }
-    return day;
+    return dayStr;
   };
 
   if (!name) return alert("Podaj nazwę nawyku");
@@ -233,6 +251,7 @@ addHabbitButton?.addEventListener("click", function () {
   //Background color change
 
   habbitContainer.insertAdjacentHTML("beforeend", html);
+  
 });
 
 //////////////////////////////// DATES //////////////////////////////////
@@ -242,7 +261,13 @@ const dateInput = document.querySelector(".date-input");
 
 const containerDate = document.querySelector(".container-date-input");
 
-const date = new Date();
+const STORAGE_KEY = 'date-switcher'
+
+const date = new Date(localStorage.getItem(STORAGE_KEY) || Date.now());
+
+const daysInMonth = function (month, year) {
+    return new Date(year, month, 0).getDate();
+}
 
 const renderDate = function (date) {
   dateInput.innerHTML = date.toLocaleString("pl-PL", {
@@ -250,6 +275,10 @@ const renderDate = function (date) {
     year: "numeric",
   });
 };
+
+const saveCurrentDate = function() {
+  localStorage.setItem(STORAGE_KEY, date.toISOString());
+}
 
 renderDate(date);
 
@@ -260,7 +289,11 @@ containerDate.addEventListener("click", function (e) {
 
   date.setMonth(date.getMonth() + Number(input.id));
 
+  if (date.getMonth() !== new Date().getMonth()) date.setDate(1);
+  if (date.getMonth() === new Date().getMonth()) date.setDate(new Date().getDate());
+
   renderDate(date);
+
+  saveCurrentDate();
 });
 
-//
