@@ -270,6 +270,7 @@ const daysInMonth = function (month, year) {
 }
 
 const renderDate = function (date) {
+  if (!dateInput) return;
   dateInput.innerHTML = date.toLocaleString("pl-PL", {
     month: "long",
     year: "numeric",
@@ -282,7 +283,7 @@ const saveCurrentDate = function() {
 
 renderDate(date);
 
-containerDate.addEventListener("click", function (e) {
+containerDate?.addEventListener("click", function (e) {
   let input = e.target.closest("button");
 
   if (!input) return;
@@ -297,3 +298,13 @@ containerDate.addEventListener("click", function (e) {
   saveCurrentDate();
 });
 
+// full date in main page 
+const fullDate = document.querySelector('.full-date');
+const fullDateHtml = new Date().toLocaleString('pl-PL', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+});
+
+fullDate.insertAdjacentHTML('afterbegin', fullDateHtml.slice(0,1).toUpperCase() + fullDateHtml.slice(1))
