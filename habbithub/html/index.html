@@ -23,15 +23,15 @@
         <h3>Habits Hab</h3>
         <ul class="nav-list">
           <li class="nav-item">
-            <img class="nav-icon" src="../icons/house-regular-full.svg" alt="" />
+            <img
+              class="nav-icon"
+              src="../icons/house-regular-full.svg"
+              alt=""
+            />
             <a href="../html/index.html">Przegląd</a>
           </li>
           <li class="nav-item">
-            <img
-              class="nav-icon"
-              src="../icons/spiral-solid-full.svg"
-              alt=""
-            />
+            <img class="nav-icon" src="../icons/spiral-solid-full.svg" alt="" />
             <a href="../html/nawyki.html">Nawyki</a>
           </li>
           <li class="nav-item">
@@ -63,11 +63,64 @@
     </nav>
     <div class="main-container">
       <div class="container-title-desc">
-          <h2>Dzień dobry, Hubert! 👋 </h2>
-          <p class="full-date">
-            
-          </p>
+        <h2>Dzień dobry, Hubert! 👋</h2>
+        <p class="full-date"></p>
+      </div>
+
+      <div class="stats-container">
+        <div class="container stats-box">
+          <div class="stats-content">
+            <div class="main-page-stats-desc">
+              <h4>Dzisiejszy postęp</h4>
+              <p>3 / 5</p>
+            </div>
+            <div>
+              <img
+                class="stats-icon graph"
+                src="../icons/Graph-Stats-Ascend--Streamline-Ultimate.png"
+                alt=""
+              />
+            </div>
+          </div>
+          <p>wykonanych nawyków</p>
+          <p>60%</p>
         </div>
+        <div class="container stats-box">
+          <div class="stats-content">
+            <div>
+              <img
+                class="stats-icon fire"
+                src="../icons/Matches-Fire--Streamline-Ultimate.png"
+                alt=""
+              />
+            </div>
+            <div class="main-page-stats-desc">
+              <h4>Aktualna seria</h4>
+              <p class="fire-number">7 dni</p>
+            </div>
+          </div>
+          <p>Najdłuższa seria: 18 dni</p>
+        </div>
+      </div>
+      <div class="to-do-tittle">
+        <h3>Dzisiaj do wykonania</h3>
+        <p>5 nawyków</p>
+      </div>
+
+      <!-- TO DO SECTION -->
+      <div class="to-do-container">
+        <div class="to-do-content-container">
+          <img class="nav-icon" src="../icons/house-regular-full.svg" alt="">
+          <div>
+            <h5>Pompki</h5>
+            <p>Codziennie</p>
+          </div>
+        </div>
+        <div class="to-do-content-container">
+          <button>> Wykonano</button>
+          <button>X Pomiń</button>
+        </div>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="../script.js"></script>
