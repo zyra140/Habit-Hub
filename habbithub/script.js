@@ -182,49 +182,58 @@ const frequency = document.querySelector(".habbit-frequency-input");
 const addHabbitButton = document.querySelector(".add-habbit-button");
 const habbitContainer = document.querySelector(".container-habbit-in-month");
 
+const localStorageHabbits = localStorage.getItem("habbits");
+if (localStorageHabbits)
+  habbitContainer.insertAdjacentHTML("beforeend", localStorageHabbits);
+
 addHabbitButton?.addEventListener("click", function () {
   const icon = habbitIcon.src;
   const name = habitName.value;
   const freq = frequency.value;
   const color = colorInput.value;
   const fadedColor = hexToRgba(color, 0.2);
-  
+
+  if (!name) return alert("Podaj nazwę nawyku");
+  if (!freq) return alert("Wybierz częstotliwość!");
+
   // cannot add habbit to past month
   if (
-    (date.getMonth() < new Date().getMonth()) && (date.getFullYear() === new Date().getFullYear()) || 
+    (date.getMonth() < new Date().getMonth() &&
+      date.getFullYear() === new Date().getFullYear()) ||
     date.getFullYear() < new Date().getFullYear()
-    ) return alert('Nie można dodawać nawyków do poprzednich miesięcy!');
-  
-  
+  )
+    return alert("Nie można dodawać nawyków do poprzednich miesięcy!");
+
   const calendarDays = function () {
     const dayName = new Date(date);
 
     let dayStr = "";
 
-    const dayLength = daysInMonth(dayName.getMonth() + 1, dayName.getFullYear())
+    const dayLength = daysInMonth(
+      dayName.getMonth() + 1,
+      dayName.getFullYear(),
+    );
 
     for (let i = date.getDate(); i <= dayLength; i++) {
-      
-      let dayFirstCapital = dayName.toLocaleString('pl-PL', {
-        weekday: 'long'
-      }).slice(0,1).toUpperCase();
+      let dayFirstCapital = dayName
+        .toLocaleString("pl-PL", {
+          weekday: "long",
+        })
+        .slice(0, 1)
+        .toUpperCase();
 
       dayStr += `
         <li>
           <p class="calendar-day-number">${i}</p>
-          <p class="${dayFirstCapital === 'S' || dayFirstCapital === "N" ? 'calendar-day-type-weekend' : 'calendar-day-type'}">${dayFirstCapital}</p>
+          <p class="${dayFirstCapital === "S" || dayFirstCapital === "N" ? "calendar-day-type-weekend" : "calendar-day-type"}">${dayFirstCapital}</p>
           <input class="input-checkbox" type="checkbox" />
         </li>
         `;
-      
-      dayName.setDate(dayName.getDate() + 1);
 
+      dayName.setDate(dayName.getDate() + 1);
     }
     return dayStr;
   };
-
-  if (!name) return alert("Podaj nazwę nawyku");
-  if (!freq) return alert("Wybierz częstotliwość!");
 
   let html = `
       <div class="container-calendar">
@@ -251,7 +260,9 @@ addHabbitButton?.addEventListener("click", function () {
   //Background color change
 
   habbitContainer.insertAdjacentHTML("beforeend", html);
-  
+
+  // Set local storage
+  localStorage.setItem("habbits", habbitContainer.innerHTML);
 });
 
 //////////////////////////////// DATES //////////////////////////////////
@@ -261,13 +272,13 @@ const dateInput = document.querySelector(".date-input");
 
 const containerDate = document.querySelector(".container-date-input");
 
-const STORAGE_KEY = 'date-switcher'
+const STORAGE_KEY = "date-switcher";
 
 const date = new Date(localStorage.getItem(STORAGE_KEY) || Date.now());
 
 const daysInMonth = function (month, year) {
-    return new Date(year, month, 0).getDate();
-}
+  return new Date(year, month, 0).getDate();
+};
 
 const renderDate = function (date) {
   if (!dateInput) return;
@@ -277,9 +288,9 @@ const renderDate = function (date) {
   });
 };
 
-const saveCurrentDate = function() {
+const saveCurrentDate = function () {
   localStorage.setItem(STORAGE_KEY, date.toISOString());
-}
+};
 
 renderDate(date);
 
@@ -291,20 +302,26 @@ containerDate?.addEventListener("click", function (e) {
   date.setMonth(date.getMonth() + Number(input.id));
 
   if (date.getMonth() !== new Date().getMonth()) date.setDate(1);
-  if (date.getMonth() === new Date().getMonth()) date.setDate(new Date().getDate());
+  if (date.getMonth() === new Date().getMonth())
+    date.setDate(new Date().getDate());
 
   renderDate(date);
 
   saveCurrentDate();
 });
 
-// full date in main page 
-const fullDate = document.querySelector('.full-date');
-const fullDateHtml = new Date().toLocaleString('pl-PL', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric'
+// full date in main page
+const fullDate = document.querySelector(".full-date");
+const fullDateHtml = new Date().toLocaleString("pl-PL", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
 });
 
-fullDate.insertAdjacentHTML('afterbegin', fullDateHtml.slice(0,1).toUpperCase() + fullDateHtml.slice(1))
+fullDate?.insertAdjacentHTML(
+  "afterbegin",
+  fullDateHtml.slice(0, 1).toUpperCase() + fullDateHtml.slice(1),
+);
+
+//////////////////////////////// MAIN PAGE //////////////////////////////////

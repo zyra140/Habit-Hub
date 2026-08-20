@@ -497,6 +497,7 @@ nav h3 {
   width: 18rem;
   height: 10rem;
   margin-bottom: 0;
+  justify-content: space-around;
 }
 
 .stats-content {
