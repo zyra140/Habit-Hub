@@ -184,7 +184,7 @@ const habbitContainer = document.querySelector(".container-habbit-in-month");
 
 const localStorageHabbits = localStorage.getItem("habbits");
 if (localStorageHabbits)
-  habbitContainer.insertAdjacentHTML("beforeend", localStorageHabbits);
+  habbitContainer?.insertAdjacentHTML("beforeend", localStorageHabbits);
 
 addHabbitButton?.addEventListener("click", function () {
   const icon = habbitIcon.src;
