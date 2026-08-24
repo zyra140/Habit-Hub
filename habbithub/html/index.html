@@ -3,133 +3,61 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Habits Hab</title>
+    <title>HabHab</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-      rel="stylesheet"
-    />
-
-    <link rel="stylesheet" href="https://cloudflare.com" />
-
-    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../css/general.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
   </head>
   <body>
-    <!-- NAV SIDE BAR -->
-    <nav>
-      <div class="nav-container">
-        <h3>Habits Hab</h3>
-        <ul class="nav-list">
-          <li class="nav-item">
-            <img
-              class="nav-icon"
-              src="../icons/house-regular-full.svg"
-              alt=""
-            />
-            <a href="../html/index.html">Przegląd</a>
-          </li>
-          <li class="nav-item">
-            <img class="nav-icon" src="../icons/spiral-solid-full.svg" alt="" />
-            <a href="../html/nawyki.html">Nawyki</a>
-          </li>
-          <li class="nav-item">
-            <img
-              class="nav-icon"
-              src="../icons/chart-bar-regular-full.svg"
-              alt=""
-            />
-            <a href="../html/statystyki.html">Statystyki</a>
-          </li>
-          <li class="nav-item">
-            <img
-              class="nav-icon"
-              src="../icons/calendar-days-regular-full.svg"
-              alt=""
-            />
-            <a href="../html/kalendarz.html">Kalendarz</a>
-          </li>
-          <li class="nav-item">
-            <img class="nav-icon" src="../icons/user-regular-full.svg" alt="" />
-            <a href="../html/znajomi.html">Znajomi</a>
-          </li>
-          <li class="nav-item">
-            <img class="nav-icon" src="../icons/gear-solid-full.svg" alt="" />
-            <a href="../html/ustawienia.html">Ustawienia</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-    <div class="main-container">
-      <div class="container-title-desc">
-        <h2>Dzień dobry, Hubert! 👋</h2>
-        <p class="full-date"></p>
-      </div>
-
-      <div class="stats-container">
-        <div class="container stats-box">
-          <div class="stats-content">
-            <div class="main-page-stats-desc">
-              <h4>Dzisiejszy postęp</h4>
-              <p>3 / 5</p>
-            </div>
-            <div>
-              <img
-                class="stats-icon graph"
-                src="../icons/Graph-Stats-Ascend--Streamline-Ultimate.png"
-                alt=""
-              />
-            </div>
-          </div>
-          <p>wykonanych nawyków</p>
-          <p>60%</p>
+    <!-- DAY SUMMARY -->
+    <section class="section-day-summary">
+      <div class="day-summary-container">
+        <div class="day-summary-text-box">
+          <h1 class="heading-primary">Dzień dobry, Hubert! 👋</h1>
+          <p class="day-summary-date">Wtorek, 18 czerwca 2024</p>
         </div>
-        <div class="container stats-box">
-          <div class="stats-content">
-            <div>
-              <img
-                class="stats-icon fire"
-                src="../icons/Matches-Fire--Streamline-Ultimate.png"
-                alt=""
-              />
+        <div class="day-summary-panel-box">
+          <div class="panel-box">
+            <div class="panel-box-desc">
+              <div class="panel-text-box">
+                <h3 class="heading-tertiary">Dzisiejszy postęp</h3>
+                <p class="stats-text">3 / 5</p>
+              </div>
+              <div class="day-summary-img-box">
+                <img
+                  src="../icons/Graph-Stats-Ascend--Streamline-Ultimate.png"
+                  alt="ascend graph icon"
+                />
+              </div>
             </div>
-            <div class="main-page-stats-desc">
-              <h4>Aktualna seria</h4>
-              <p class="fire-number">7 dni</p>
+            <div class="panel-text">
+              <p>wykonanych nawyków</p>
+            </div>
+            <div class="panel-graph">
+              <p>----------------------------------------------</p>
+              <p>60%</p>
             </div>
           </div>
-          <p>Najdłuższa seria: 18 dni</p>
+          <div class="panel-box">
+            <div class="panel-box-desc">
+              <div class="day-summary-img-box">
+                <img
+                  src="../icons/Graph-Stats-Ascend--Streamline-Ultimate.png"
+                  alt="ascend graph icon"
+                />
+              </div>
+              <div class="panel-text-box">
+                <h3 class="heading-tertiary">Aktualna seria</h3>
+                <p class="stats-text">7 dni</p>
+              </div>
+            </div>
+            <div class="panel-graph">
+              <p>Najdłuższa seria:</p>
+              <p>18 dni</p>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="to-do-tittle">
-        <h3>Dzisiaj do wykonania</h3>
-        <p>5 nawyków</p>
-      </div>
-
-      <!-- TO DO SECTION -->
-
-      <section class="to-do-section">
-        <div class="to-do-container">
-          <div class="to-do-content-container">
-            <img
-              class="nav-icon"
-              src="../icons/house-regular-full.svg"
-              alt=""
-            />
-            <div>
-              <h5>Pompki</h5>
-              <p>Codziennie</p>
-            </div>
-          </div>
-          <div class="to-do-content-container">
-            <button class="add-habbit-button done">&#10003; Wykonano</button>
-            <button class="add-habbit-button skip">&#10005; Pomiń</button>
-          </div>
-        </div>
-      </section>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="../script.js"></script>
+    </section>
   </body>
 </html>
