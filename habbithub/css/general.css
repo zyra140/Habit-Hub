@@ -16,11 +16,12 @@ H1: 1.05
 
 --- 02 COLORS
 
-- Primary: #6366F1
-- Tints: #f7f8ff #eff0fe #e0e0fc
+- Primary: #4f46e5
+- Tints: #fafafe #fdfdff #dcdafa| #fee3d0
 - Shades: 
-- Accents:
+- Accents:#f97316
 - Grays: 
+#666
 #555
 #333;
 
@@ -49,12 +50,13 @@ html {
 body {
   font-family: "Inter", sans-serif;
   line-height: 1;
-  font-weight: 400;
+  font-weight: 500;
   color: #555;
+  background-color: #fafafe;
 }
 
 .heading-primary {
-  font-size: 3rem;
+  font-size: 3.6rem;
   font-weight: 700;
   line-height: 1.05;
   color: #333;
@@ -63,7 +65,7 @@ body {
 }
 
 .heading-tertiary {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   color: #333;
   margin-bottom: 2.4rem;
 }

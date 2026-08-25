@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HabHab</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://cloudflare.com" />
+
     <link rel="stylesheet" href="../css/general.css" />
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
@@ -23,32 +32,28 @@
                 <h3 class="heading-tertiary">Dzisiejszy postęp</h3>
                 <p class="stats-text">3 / 5</p>
               </div>
-              <div class="day-summary-img-box">
-                <img
-                  src="../icons/Graph-Stats-Ascend--Streamline-Ultimate.png"
-                  alt="ascend graph icon"
-                />
+              <div class="day-summary-img-box graph">
+                <img src="../icons/Graph.svg" alt="ascend graph icon" />
               </div>
             </div>
             <div class="panel-text">
               <p>wykonanych nawyków</p>
             </div>
             <div class="panel-graph">
-              <p>----------------------------------------------</p>
-              <p>60%</p>
+              <div class="daily-chart-wrapper">
+                <div id="dailyChart"></div>
+              </div>
+              <span>60%</span>
             </div>
           </div>
           <div class="panel-box">
             <div class="panel-box-desc">
-              <div class="day-summary-img-box">
-                <img
-                  src="../icons/Graph-Stats-Ascend--Streamline-Ultimate.png"
-                  alt="ascend graph icon"
-                />
+              <div class="day-summary-img-box fire">
+                <img src="../icons/Fire.svg" />
               </div>
               <div class="panel-text-box">
                 <h3 class="heading-tertiary">Aktualna seria</h3>
-                <p class="stats-text">7 dni</p>
+                <p class="stats-text fire">7 dni</p>
               </div>
             </div>
             <div class="panel-graph">
@@ -59,5 +64,7 @@
         </div>
       </div>
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="../script.js"></script>
   </body>
 </html>

@@ -513,7 +513,7 @@ nav h3 {
   border-radius: 25%;
 }
 
-.graph {
+/* .graph {
   background-color: #22c55e4b;
 }
 
@@ -523,7 +523,7 @@ nav h3 {
 
 .fire-number {
   color: rgb(255, 153, 0);
-}
+} */
 
 .to-do-tittle {
   display: flex;
@@ -558,34 +558,45 @@ nav h3 {
   background-color: green;
   box-shadow: 2px 2px 2px rgb(199, 199, 199);
 }
-
+/* //////////////////////////////////////////////////////////////////////////// */
 /* DAY SUMMARY */
 .section-day-summary {
-  background-color: #eff0fe;
   padding: 4.8rem 0;
 }
 
 .day-summary-container {
-  max-width: 130rem;
+  max-width: 80rem;
   margin: 0 auto;
 }
 
 .day-summary-text-box {
-  margin-bottom: 2.4rem;
+  margin-bottom: 4.8rem;
+}
+
+.day-summary-date {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #555;
 }
 
 .day-summary-panel-box {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 3fr 2fr;
   align-items: center;
-  gap: 4.8rem;
 }
 
 .panel-box {
-  border: 1px solid gray;
-  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.2rem;
+  height: 19rem;
+  max-width: 40rem;
+  border: 1px solid rgba(223, 223, 223, 0.575);
+  border-radius: 15px;
   padding: 2.4rem;
-  background-color: #f7f8ff;
+  background-color: #fdfdff;
+  box-shadow: 2px 2px 5px #e2e2e2;
 }
 
 .panel-box-desc {
@@ -596,35 +607,46 @@ nav h3 {
 }
 
 .stats-text {
-  font-size: 2.4rem;
+  font-size: 3rem;
   font-weight: 600;
   color: #333;
 }
 
-.day-summary-img-box {
-  background-color: #e0e0fc;
-  color: #6366f1;
-  border-radius: 25%;
-  padding: 0.8rem;
+.stats-text.fire {
+  color: #f97316;
 }
 
-.day-summary-date {
-  font-size: 1.4rem;
+.day-summary-img-box.fire,
+.day-summary-img-box.graph {
+  height: 7rem;
+  width: 7rem;
+  border-radius: 18px;
+  padding: 1.2rem;
 }
 
-/* .panel-box {
-  display: flex;
-  flex-direction: column;
-} */
+.day-summary-img-box.fire {
+  background-color: #fee3d0;
+}
+
+.day-summary-img-box.graph {
+  background-color: #dcdafa;
+}
 
 .panel-text {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   margin-bottom: 1.6rem;
 }
 
 .panel-graph {
   display: flex;
+  align-items: center;
   justify-content: flex-start;
-  gap: 1.6rem;
-  font-size: 1.4rem;
+  gap: 1rem;
+  font-size: 1.6rem;
+}
+
+.daily-chart-wrapper {
+  border-radius: 6px;
+  overflow: hidden;
+  height: 12px;
 }
