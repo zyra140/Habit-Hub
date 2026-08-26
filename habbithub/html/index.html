@@ -17,53 +17,126 @@
     <link rel="stylesheet" href="../css/general.css" />
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
+
   <body>
+    <header class="header">
+      <nav class="main-nav">
+        <img
+          class="logo"
+          src="../icons/logo_horizontal.png"
+          alt="HabHab logo"
+        />
+        <ul class="main-nav-list">
+          <li>
+            <a class="main-nav-link active" href="#"
+              ><img
+                class="nav-icon"
+                src="../icons/house-regular-full.svg"
+                alt=""
+              />Przegląd</a
+            >
+          </li>
+          <li>
+            <a class="main-nav-link" href="#"
+              ><img
+                class="nav-icon"
+                src="../icons/spiral-solid-full.svg"
+                alt=""
+              />Nawyki</a
+            >
+          </li>
+          <li>
+            <a class="main-nav-link" href="#"
+              ><img
+                class="nav-icon"
+                src="../icons/chart-bar-regular-full.svg"
+                alt=""
+              />Statystyki</a
+            >
+          </li>
+          <li>
+            <a class="main-nav-link" href="#"
+              ><img
+                class="nav-icon"
+                src="../icons/calendar-days-regular-full.svg"
+                alt=""
+              />Kalendarz</a
+            >
+          </li>
+          <li>
+            <a class="main-nav-link" href="#"
+              ><img
+                class="nav-icon"
+                src="../icons/user-regular-full.svg"
+                alt=""
+              />Znajomi</a
+            >
+          </li>
+          <li>
+            <a class="main-nav-link" href="#"
+              ><img
+                class="nav-icon"
+                src="../icons/gear-solid-full.svg"
+                alt=""
+              />Ustawienia</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </header>
+
     <!-- DAY SUMMARY -->
-    <section class="section-day-summary">
-      <div class="day-summary-container">
-        <div class="day-summary-text-box">
-          <h1 class="heading-primary">Dzień dobry, Hubert! 👋</h1>
-          <p class="day-summary-date">Wtorek, 18 czerwca 2024</p>
-        </div>
-        <div class="day-summary-panel-box">
-          <div class="panel-box">
-            <div class="panel-box-desc">
-              <div class="panel-text-box">
-                <h3 class="heading-tertiary">Dzisiejszy postęp</h3>
-                <p class="stats-text">3 / 5</p>
+    <main>
+      <section class="section-day-summary">
+        <div class="container">
+          <div class="day-summary-text-box">
+            <h1 class="heading-primary">Dzień dobry, Hubert! 👋</h1>
+            <p class="day-summary-date">Wtorek, 18 czerwca 2024</p>
+          </div>
+          <div class="day-summary-panel-box">
+            <div class="panel-box">
+              <div class="panel-box-desc">
+                <div class="panel-text-box">
+                  <h3 class="heading-tertiary">Dzisiejszy postęp</h3>
+                  <p class="stats-text">3 / 5</p>
+                </div>
+                <div class="img-box img-box--graph">
+                  <img src="../icons/Graph.svg" alt="ascend graph icon" />
+                </div>
               </div>
-              <div class="day-summary-img-box graph">
-                <img src="../icons/Graph.svg" alt="ascend graph icon" />
+              <div class="panel-text">
+                <p>wykonanych nawyków</p>
+              </div>
+              <div class="panel-graph">
+                <div class="daily-chart-wrapper">
+                  <div id="dailyChart"></div>
+                </div>
+                <span>60%</span>
               </div>
             </div>
-            <div class="panel-text">
-              <p>wykonanych nawyków</p>
-            </div>
-            <div class="panel-graph">
-              <div class="daily-chart-wrapper">
-                <div id="dailyChart"></div>
+            <div class="panel-box">
+              <div class="panel-box-desc">
+                <div class="img-box img-box--fire">
+                  <img src="../icons/Fire.svg" />
+                </div>
+                <div class="panel-text-box">
+                  <h3 class="heading-tertiary">Aktualna seria</h3>
+                  <p class="stats-text stats-text--fire">7 dni</p>
+                </div>
               </div>
-              <span>60%</span>
+              <div class="panel-graph">
+                <p>Najdłuższa seria:</p>
+                <p>18 dni</p>
+              </div>
             </div>
           </div>
-          <div class="panel-box">
-            <div class="panel-box-desc">
-              <div class="day-summary-img-box fire">
-                <img src="../icons/Fire.svg" />
-              </div>
-              <div class="panel-text-box">
-                <h3 class="heading-tertiary">Aktualna seria</h3>
-                <p class="stats-text fire">7 dni</p>
-              </div>
-            </div>
-            <div class="panel-graph">
-              <p>Najdłuższa seria:</p>
-              <p>18 dni</p>
-            </div>
-          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- DAY TO DO -->
+      <section class="section-day-todo"></section>
+    </main>
+
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="../script.js"></script>
   </body>
