@@ -80,7 +80,7 @@
 /* DAY SUMMARY */
 /*******************************************/
 .section-day-summary {
-  padding: 4.8rem 0 9.6rem 0;
+  padding: 4.8rem 0 3.2rem 0;
 }
 
 .day-summary-text-box {
@@ -157,6 +157,71 @@
   border-radius: 6px;
   overflow: hidden;
   height: 12px;
+}
+
+/*******************************************/
+/* DAY TO DO */
+/*******************************************/
+.to-do-text-box {
+  margin: 1.6rem 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.habit-count-text {
+  font-size: 1.4rem;
+  color: #726bea;
+}
+
+.container-daily-habits {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 3.2rem;
+  border: 1px solid lightgrey;
+  border-radius: 9px;
+  box-shadow: 2px 2px 5px #e2e2e2;
+  padding: 2.4rem;
+}
+
+.desc-daily-habits {
+  display: flex;
+  gap: 2.4rem;
+}
+
+.text-daily-habits {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.habit-title {
+  margin-bottom: 1.2rem;
+}
+
+.img-box--habit {
+  /* JS */
+  background-color: rgb(212, 233, 212);
+}
+
+.p-daily-habits {
+  font-size: 1.6rem;
+}
+
+.container-daily-habbits-btn {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.btn--skip {
+  background-color: #fff;
+}
+
+.btn--done {
+  background-color: rgb(42, 172, 42);
+  color: white;
 }
 
 /*******************************************/

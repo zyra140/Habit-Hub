@@ -22,7 +22,8 @@ Heading: 1.05
 - Primary: 
 #4f46e5
 
-- Tints: 
+- Tints:
+#726bea 
 #fdfdff 
 #fafafe 
 #dcdafa
@@ -41,7 +42,7 @@ Heading: 1.05
 #333
 
 --- 05 SHADOWS
-
+box-shadow: 2px 2px 5px #e2e2e2;
 --- 06 BORDER-RADIUS
 
 - Defualt: 9px
@@ -99,8 +100,17 @@ main {
   margin-bottom: 1.2rem;
 }
 
+.heading-secondary {
+  font-size: 2.4rem;
+  font-weight: 6000;
+  line-height: 1.05;
+  color: #333;
+  letter-spacing: -0.5px;
+  margin-bottom: 1.2rem;
+}
+
 .heading-tertiary {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   color: #333;
   margin-bottom: 2.4rem;
 }
@@ -110,4 +120,22 @@ main {
   width: 7rem;
   border-radius: 18px;
   padding: 1.2rem;
+}
+
+.habit-icon {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+.btn {
+  padding: 0.8rem 1.6rem 0.8rem 1.6rem;
+  border: none;
+  border-radius: 9px;
+  box-shadow: 0 0 5px #cacaca;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
 }
