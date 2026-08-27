@@ -96,9 +96,10 @@
 .day-summary-panel-box {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 4.8rem;
   flex-wrap: wrap;
+  margin-left: 3.2rem;
 }
 
 .panel-box {
@@ -175,13 +176,15 @@
 }
 
 .container-daily-habits {
+  height: 14rem;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin: 0 3.2rem;
-  border: 1px solid lightgrey;
+  border: 1px solid rgba(223, 223, 223, 0.575);
   border-radius: 9px;
   box-shadow: 2px 2px 5px #e2e2e2;
-  padding: 2.4rem;
+  padding: 2.4rem 4.8rem;
 }
 
 .desc-daily-habits {
@@ -203,6 +206,8 @@
 .img-box--habit {
   /* JS */
   background-color: rgb(212, 233, 212);
+  height: 8rem;
+  width: 8rem;
 }
 
 .p-daily-habits {
@@ -222,6 +227,17 @@
 .btn--done {
   background-color: rgb(42, 172, 42);
   color: white;
+}
+
+.btn-icon-done {
+  height: 2rem;
+  width: 2rem;
+}
+
+.btn-icon-skip {
+  height: 1.4rem;
+  width: 1.4rem;
+  
 }
 
 /*******************************************/
