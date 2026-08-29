@@ -15,6 +15,7 @@ Bold: 700
 - Line heights:
 Defoult: 1
 Heading: 1.05
+Multiple Paragraphs: 1.6
 
 
 --- 02 COLORS
@@ -84,11 +85,12 @@ main {
 
 .grid {
   display: grid;
-  gap: 9.6rem;
+  gap: 6.4rem;
+  margin: 0 3.2rem;
 }
 
-.grid--1-cols {
-  grid-template-columns: 1fr;
+.grid--2-cols {
+  grid-template-columns: 1fr 1fr;
 }
 
 .heading-primary {
@@ -129,7 +131,6 @@ main {
 }
 
 .btn {
-  height: 4.4rem;
   padding: 1.2rem 2.4rem;
   border: none;
   border-radius: 9px;
