@@ -32,6 +32,7 @@ Multiple Paragraphs: 1.6
 #fff
 
 - Shades: 
+#3731a0
 
 - Accents:
 #f97316
@@ -140,4 +141,11 @@ main {
   align-items: center;
   justify-content: center;
   gap: 1.6rem;
+}
+
+.paragraph-description {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #555;
+  line-height: 1.6;
 }

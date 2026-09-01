@@ -1,11 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Habits Hab</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HabHab</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
@@ -16,195 +16,106 @@
 
     <link rel="stylesheet" href="../css/general.css" />
     <link rel="stylesheet" href="../css/styles.css" />
-  </head>
-  <body>
-    <!-- NAV SIDE BAR -->
-    <nav>
-      <div class="nav-container">
-        <h3>Habits Hab</h3>
-        <ul class="nav-list">
-          <li class="nav-item">
-            <img
-              class="nav-icon"
-              src="../icons/house-regular-full.svg"
-              alt=""
-            />
-            <a href="../html/index.html">Przegląd</a>
+</head>
+
+<body>
+  <header class="header">
+      <nav class="main-nav">
+        <img
+          class="logo"
+          src="../icons/logo_horizontal.png"
+          alt="HabHab logo"
+        />
+        <ul class="main-nav-list">
+          <li>
+            <a class="main-nav-link active" href="../html/index.html"
+              ><img
+                class="nav-icon"
+                src="../icons/house-regular-full.svg"
+                alt=""
+              />Przegląd</a
+            >
           </li>
-          <li class="nav-item">
-            <img class="nav-icon" src="../icons/spiral-solid-full.svg" alt="" />
-            <a href="../html/nawyki.html">Nawyki</a>
+          <li>
+            <a class="main-nav-link" href="../html/nawyki.html"
+              ><img
+                class="nav-icon"
+                src="../icons/spiral-solid-full.svg"
+                alt=""
+              />Nawyki</a
+            >
           </li>
-          <li class="nav-item">
-            <img
-              class="nav-icon"
-              src="../icons/chart-bar-regular-full.svg"
-              alt=""
-            />
-            <a href="../html/statystyki.html">Statystyki</a>
+          <li>
+            <a class="main-nav-link" href="#"
+              ><img
+                class="nav-icon"
+                src="../icons/chart-bar-regular-full.svg"
+                alt=""
+              />Statystyki</a
+            >
           </li>
-          <li class="nav-item">
-            <img
-              class="nav-icon"
-              src="../icons/calendar-days-regular-full.svg"
-              alt=""
-            />
-            <a href="../html/kalendarz.html">Kalendarz</a>
+          <li>
+            <a class="main-nav-link" href="#"
+              ><img
+                class="nav-icon"
+                src="../icons/calendar-days-regular-full.svg"
+                alt=""
+              />Kalendarz</a
+            >
           </li>
-          <li class="nav-item">
-            <img class="nav-icon" src="../icons/user-regular-full.svg" alt="" />
-            <a href="../html/znajomi.html">Znajomi</a>
+          <li>
+            <a class="main-nav-link" href="#"
+              ><img
+                class="nav-icon"
+                src="../icons/user-regular-full.svg"
+                alt=""
+              />Znajomi</a
+            >
           </li>
-          <li class="nav-item">
-            <img class="nav-icon" src="../icons/gear-solid-full.svg" alt="" />
-            <a href="../html/ustawienia.html">Ustawienia</a>
+          <li>
+            <a class="main-nav-link" href="#"
+              ><img
+                class="nav-icon"
+                src="../icons/gear-solid-full.svg"
+                alt=""
+              />Ustawienia</a
+            >
           </li>
         </ul>
-      </div>
-    </nav>
-    <div class="main-container">
-      <!-- PAGE TITLE SECTION -->
-      <div class="container-title">
-        <div class="container-title-desc">
-          <h2>Dodaj nawyki</h2>
-          <p>
-            Wybierz nawyki, które chcesz realizować w danym miesiącu i zaznaczaj
-            postępy każdego dnia
-          </p>
+      </nav>
+    </header>
+
+  <main>
+    <!-- ADD HABBIT SECTION -->
+     <section class="section-add-habit">
+      <div class="container container-add-habit">
+        <div class="add-habbit-text-box">
+          <h1 class="heading-primary">Dodaj nawyki</h1>
+          <p class="paragraph-description">Wybierz nawyki, które chcesz realizować w danym miesiącu i zaznaczaj postępy każdego dnia.</p>
         </div>
-        <div class="container-date-input">
-          <button id="-1" class="date-input-button">
-            <img src="../icons/caret-left-fill.svg" alt="" />
+        <div class="wrapper-month-switcher">
+          <button class="btn btn--month-switcher">
+            <img src="../icons/caret-left-fill.svg" alt="">
           </button>
-          <div class="date-input"></div>
-          <button id="1" class="date-input-button">
-            <img src="../icons/caret-right-fill.svg" alt="" />
+          <div class="wrapper-month-picker">
+            <p class="date">Czerwiec 2024</p>
+            <button class="btn btn--month-switcher">
+              <img src="../icons/caret-down-fill.svg" alt="">
+            </button>
+          </div>
+          <button class="btn btn--month-switcher">
+            <img src="../icons/caret-right-fill.svg" alt="">
           </button>
         </div>
       </div>
+     </section>
 
-      <!-- ADDING NEW HABBIT SECTION -->
-      <div class="container">
-        <h3 class="h3-habbit">Dodaj nowy nawyk</h3>
-        <div class="container-new-habbit">
-          <div class="container-input">
-            <label class="input-description" for="Nazwa nawyku"
-              >Nazwa nawyku</label
-            >
-            <input
-              class="habbit-name-input"
-              type="text"
-              placeholder="np: Nauka"
-            />
-          </div>
-          <div class="container-input">
-            <label class="input-description" for="frequency"
-              >Częstotliwość</label
-            >
-            <select class="habbit-frequency-input" name="Częstotliwość" id="">
-              <option value="Codziennie">Codziennie</option>
-              <option value="1 raz w tygodniu">1 raz w tygodniu</option>
-              <option value="2 razy w tygodniu">2 razy w tygodniu</option>
-              <option value="3 razy w tygodniu">3 razy w tygodniu</option>
-              <option value="4 razy w tygodniu">4 razy w tygodniu</option>
-              <option value="5 razy w tygodniu">5 razy w tygodniu</option>
-              <option value="6 razy w tygodniu">6 razy w tygodniu</option>
-            </select>
-          </div>
-          <div class="container-input">
-            <label class="input-description" for="color-picker">Ikona</label>
-            <div class="container-icon-peaker">
-              <img
-                class="habbit-icon-input"
-                id="iconInput"
-                src="../icons/calendar-days-regular-full.svg"
-              />
-              <button class="color-input-button">
-                <img src="../icons/caret-down-fill.svg" alt="" />
-              </button>
-            </div>
-            <div class="icon-dropdown hidden">
-              <ul class="list-dropdown container-icon-peaker">
-                <li>
-                  <img src="../icons/calendar-days-regular-full.svg" alt="" />
-                </li>
-                <li>
-                  <img src="../icons/caret-down-fill.svg" alt="" />
-                </li>
-                <li>
-                  <img src="../icons/chart-bar-regular-full.svg" alt="" />
-                </li>
-                <li>
-                  <img src="../icons/gear-solid-full.svg" alt="" />
-                </li>
-                <li>
-                  <img src="../icons/x-circle.svg" alt="" />
-                </li>
-                <li>
-                  <img src="../icons/spiral-solid-full.svg" alt="" />
-                </li>
-                <li>
-                  <img src="../icons/calendar-days-regular-full.svg" alt="" />
-                </li>
-                <li>
-                  <img src="../icons/calendar-days-regular-full.svg" alt="" />
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="container-input">
-            <label class="input-description" for="icon-picker">Kolor</label>
-            <div class="container-color-peaker">
-              <input id="colorInput" class="habbit-color-input" type="color" />
-              <button class="color-input-button">
-                <img src="../icons/caret-down-fill.svg" alt="" />
-              </button>
-            </div>
-          </div>
-          <div>
-            <button class="add-habbit-button">Dodaj nawyk</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- CALENDAR SECTION -->
-      <h3>Twoje nawyki w tym miesiącu</h3>
-      <div class="container-habbit-in-month"></div>
-
-      <!-- STATS SECTION -->
-      <div class="container-stats">
-        <div>
-          <p>wykres</p>
-        </div>
-        <div class="container-stats-desc">
-          <p>Średnia realizacja nawyków w tym miesiącu</p>
-          <p>Świetna robota!</p>
-        </div>
-        <div class="container-stats-info">
-          <div class="stats-desc">
-            <img class="done-icon" src="../icons/check-circle.svg" alt="" />
-            <p>5</p>
-          </div>
-          <p>Ukończone nawyki</p>
-        </div>
-        <div class="container-stats-info">
-          <div class="stats-desc">
-            <img class="missed-icon" src="../icons/x-circle.svg" alt="" />
-            <p>15</p>
-          </div>
-          <p>Pominięte nawyki</p>
-        </div>
-        <div class="container-piggy">
-          <img
-            class="piggy-icon"
-            src="../icons/piggy-bank-save-svgrepo-com.svg"
-            alt=""
-          />
-          <p>250</p>
-        </div>
-      </div>
-    </div>
+     <!-- INPUT SECTION -->
+      <section class="section-input">
+        <div class="container"></div>
+      </section>
+  </main>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="../script.js"></script>
-  </body>
+</body>
 </html>
