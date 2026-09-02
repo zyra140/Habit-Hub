@@ -434,7 +434,7 @@
   border-radius: 9px;
   box-shadow: 2px 2px 5px #e2e2e2;
   padding: 2.4rem;
-  margin: 0 3.2rem;
+  margin: 0 3.2rem 4.8rem 3.2rem;
   display: grid;
   gap: 1.6rem;
 }
@@ -488,12 +488,38 @@
 .wrapper-input-icon {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  padding: 0 1.2rem;
   gap: 0.8rem;
   height: 4.3rem;
   border: 1px solid rgba(202, 202, 202, 0.575);
   border-radius: 9px;
   cursor: pointer;
+  background-color: #fdfdff;
 }
+
+.icon-selector-icon {
+  height: 3rem;
+  width: 3rem;
+  background-color: #fdfdff;
+}
+
+.icon-selector-icon-arrow{
+
+}
+
+/*******************************************/
+/* HABITS IN MONTH SECTION */
+/*******************************************/
+
+.wrapper-habits-in-month {
+  margin: 0 3.2rem;
+}
+
+.wrapper-habit-panel {
+  display: flex;
+}
+
 /*******************************************/
 /* BREAK POINTS */
 /*******************************************/
