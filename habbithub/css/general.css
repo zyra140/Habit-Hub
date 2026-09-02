@@ -72,11 +72,23 @@ body {
   line-height: 1;
   font-weight: 500;
   color: #555;
-  background-color: #fdfdff;
+  background-color:;
 }
 
 main {
   margin-left: 19.5rem; /* NAVIGATION WIDTH */
+}
+
+label {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #555;
+}
+
+input,
+select {
+  border: none;
+  cursor: pointer;
 }
 
 .container {
@@ -95,7 +107,7 @@ main {
 }
 
 .heading-primary {
-  font-size: 3.6rem;
+  font-size: clamp(1.8rem, 3vw + 1rem, 3.6rem);
   font-weight: 700;
   line-height: 1.05;
   color: #333;
@@ -113,7 +125,7 @@ main {
 }
 
 .heading-tertiary {
-  font-size: 1.8rem;
+  font-size: clamp(1.2rem, 1vw + 1rem, 1.8rem);
   color: #333;
   margin-bottom: 2.4rem;
 }
@@ -148,4 +160,9 @@ main {
   font-weight: 400;
   color: #555;
   line-height: 1.6;
+}
+
+.link {
+  text-decoration: none;
+  cursor: pointer;
 }

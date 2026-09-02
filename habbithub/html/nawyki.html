@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HabHab</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HabHab</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
@@ -16,10 +16,10 @@
 
     <link rel="stylesheet" href="../css/general.css" />
     <link rel="stylesheet" href="../css/styles.css" />
-</head>
+  </head>
 
-<body>
-  <header class="header">
+  <body>
+    <header class="header">
       <nav class="main-nav">
         <img
           class="logo"
@@ -85,37 +85,84 @@
       </nav>
     </header>
 
-  <main>
-    <!-- ADD HABBIT SECTION -->
-     <section class="section-add-habit">
-      <div class="container container-add-habit">
-        <div class="add-habbit-text-box">
-          <h1 class="heading-primary">Dodaj nawyki</h1>
-          <p class="paragraph-description">Wybierz nawyki, które chcesz realizować w danym miesiącu i zaznaczaj postępy każdego dnia.</p>
-        </div>
-        <div class="wrapper-month-switcher">
-          <button class="btn btn--month-switcher">
-            <img src="../icons/caret-left-fill.svg" alt="">
-          </button>
-          <div class="wrapper-month-picker">
-            <p class="date">Czerwiec 2024</p>
+    <main>
+      <!-- ADD HABBIT SECTION -->
+      <section class="section-add-habit">
+        <div class="container container-add-habit">
+          <div class="add-habbit-text-box">
+            <h1 class="heading-primary">Dodaj nawyki</h1>
+            <p class="paragraph-description">
+              Wybierz nawyki, które chcesz realizować w danym miesiącu i
+              zaznaczaj postępy każdego dnia.
+            </p>
+          </div>
+          <div class="wrapper-month-switcher">
             <button class="btn btn--month-switcher">
-              <img src="../icons/caret-down-fill.svg" alt="">
+              <img src="../icons/caret-left-fill.svg" alt="" />
+            </button>
+            <div class="wrapper-month-picker">
+              <p class="date">Czerwiec 2024</p>
+              <button class="btn btn--month-switcher">
+                <img src="../icons/caret-down-fill.svg" alt="" />
+              </button>
+            </div>
+            <button class="btn btn--month-switcher">
+              <img src="../icons/caret-right-fill.svg" alt="" />
             </button>
           </div>
-          <button class="btn btn--month-switcher">
-            <img src="../icons/caret-right-fill.svg" alt="">
-          </button>
         </div>
-      </div>
-     </section>
-
-     <!-- INPUT SECTION -->
-      <section class="section-input">
-        <div class="container"></div>
       </section>
-  </main>
+
+      <!-- INPUT SECTION -->
+      <section class="section-input">
+        <div class="container">
+          <div class="container-add-habit-input">
+            <h3 class="heading-tertiary">Dodaj nowy nawyk</h3>
+            <div class="wrapper-inputs">
+              <div class="wrapper-label">
+                <label for="">Nazwa nawyku</label>
+                <input
+                  class="input-name"
+                  type="text"
+                  placeholder="np: Czytać książkę"
+                />
+              </div>
+              <div class="wrapper-label">
+                <label for="frequency">Częstotliwość</label>
+                <select class="input-frequency" name="Częstotliwość" id="">
+                  <option value="">Codziennie</option>
+                  <option value="">1 raz w tygodniu</option>
+                  <option value="">2 razy w tygodniu</option>
+                  <option value="">3 razy w tygodniu</option>
+                  <option value="">4 razy w tygodniu</option>
+                  <option value="">5 razy w tygodniu</option>
+                  <option value="">6 razy w tygodniu</option>
+                </select>
+              </div>
+              <div class="wrapper-label">
+                <label for="">Kolor</label>
+                <div class="wrapper-input-color">
+                  <input class="input-color" type="color" />
+                </div>
+              </div>
+              <div class="wrapper-label">
+                <label for="">Ikonka</label>
+                <button class="wrapper-input-icon">
+                  <img class="nav-icon" src="../icons/Fire.svg" alt="" />
+                  <img
+                    class="nav-icon"
+                    src="../icons/caret-down-fill.svg"
+                    alt=""
+                  />
+                </button>
+              </div>
+              <button class="btn btn--add-habit">Dodaj nawyk</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="../script.js"></script>
-</body>
+  </body>
 </html>

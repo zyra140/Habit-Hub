@@ -331,7 +331,8 @@
 }
 
 .img-box--week-calendar img {
-  filter: brightness(0) saturate(100%) invert(18%) sepia(62%) saturate(4200%) hue-rotate(245deg) brightness(88%) contrast(110%);
+  filter: brightness(0) saturate(100%) invert(18%) sepia(62%) saturate(4200%)
+    hue-rotate(245deg) brightness(88%) contrast(110%);
 }
 
 /*******************************************/
@@ -422,13 +423,77 @@
 .date {
   font-size: 1.6rem;
   font-weight: 500;
-  color: 333;
+  color: #333;
 }
 
 /*******************************************/
 /* INPUT SECTION */
 /*******************************************/
+.container-add-habit-input {
+  border: 1px solid rgba(223, 223, 223, 0.575);
+  border-radius: 9px;
+  box-shadow: 2px 2px 5px #e2e2e2;
+  padding: 2.4rem;
+  margin: 0 3.2rem;
+  display: grid;
+  gap: 1.6rem;
+}
 
+.wrapper-inputs {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.wrapper-label {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.input-name,
+.input-frequency,
+.input-color {
+  border: 1px solid rgba(202, 202, 202, 0.575);
+  border-radius: 9px;
+  padding: 1.2rem;
+  height: 4.3rem;
+}
+
+.input-color {
+  width: 4.3rem;
+  background-color: #fdfdff;
+  padding: 0.8rem;
+}
+
+.input-color::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.input-color::-webkit-color-swatch {
+  border: none;
+  border-radius: 100%;
+}
+
+.btn--add-habit {
+  background-color: #4f46e5;
+  color: white;
+  transition: all 0.2s;
+  height: 4.3rem;
+}
+
+.btn--add-habit:hover {
+  background-color: #3731a0;
+}
+
+.wrapper-input-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 4.3rem;
+  border: 1px solid rgba(202, 202, 202, 0.575);
+  border-radius: 9px;
+  cursor: pointer;
+}
 /*******************************************/
 /* BREAK POINTS */
 /*******************************************/
