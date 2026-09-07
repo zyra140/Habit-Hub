@@ -98,16 +98,16 @@
           </div>
           <div class="wrapper-month-switcher">
             <button class="btn btn--month-switcher">
-              <img src="../icons/caret-left-fill.svg" alt="" />
+              <img class="habit-icon" src="../icons/arrow-left.svg" alt="" />
             </button>
             <div class="wrapper-month-picker">
               <p class="date">Czerwiec 2024</p>
-              <button class="btn btn--month-switcher">
-                <img src="../icons/caret-down-fill.svg" alt="" />
+              <button class="btn btn--month-switcher-down">
+                <img class="habit-icon" src="../icons/arrow-down.svg" alt="" />
               </button>
             </div>
             <button class="btn btn--month-switcher">
-              <img src="../icons/caret-right-fill.svg" alt="" />
+              <img class="habit-icon" src="../icons/arrow-right.svg" alt="" />
             </button>
           </div>
         </div>
@@ -141,8 +141,13 @@
               </div>
               <div class="wrapper-label">
                 <label for="">Kolor</label>
-                <div class="wrapper-input-color">
+                <div class="wrapper-input-icon">
                   <input class="input-color" type="color" />
+                  <img
+                    class="icon-selector-icon-arrow"
+                    src="../icons/arrow-down.svg"
+                    alt=""
+                  />
                 </div>
               </div>
               <div class="wrapper-label">
@@ -155,7 +160,7 @@
                   />
                   <img
                     class="icon-selector-icon-arrow"
-                    src="../icons/caret-down-fill.svg"
+                    src="../icons/arrow-down.svg"
                     alt=""
                   />
                 </button>
@@ -171,20 +176,40 @@
         <div class="container">
           <div class="wrapper-habits-in-month grid">
             <h3 class="heading-tertiary">Twoje nawyki w tym miesiącu</h3>
-            <div class="grid wrapper-habit-panel">
-              <div class="wrapper-habit-content">
-                <img
-                class="img-box img-box--habbit-panel"
-                src="../icons/calendar-days-regular-full.svg"
+
+            <!-- Blank Habit Wrapper -->
+            <div class="grid grid-blank-habit">
+              <img
+                class="image-blank-habit-wrapper"
+                src="../Images/ChatGPT Image Sep 7, 2026, 05_02_07 PM.png"
                 alt=""
               />
-              <div class="wrapper-habit-description-text">
-                <h3 class="heading-tertiary">Pompki</h3>
-                <p class="paragraph-description">Codziennie</p>
+              <h2 class="heading-secondary">
+                Nie masz jeszcze żadnych nawyków
+              </h2>
+              <p class="paragraph-description text-blank-habit-wraper">
+                Dodaj swój pierwszy nawyk i zacznij budować lepsze nawyki
+                każdego dnia
+              </p>
+            </div>
+
+            <!-- Habit Wrapper -->
+
+            <!-- <div class="grid wrapper-habit-panel">
+              <button class="btn--edit-habit">&vellip;</button>
+              <div class="wrapper-habit-content">
+                <img
+                  class="img-box img-box--habbit-panel"
+                  src="../icons/calendar-days-regular-full.svg"
+                  alt=""
+                />
+                <div class="wrapper-habit-description-text">
+                  <h3 class="heading-tertiary">Pompki</h3>
+                  <p class="paragraph-description">Codziennie</p>
+                </div>
               </div>
-              </div>
-              
-              <div>
+
+              <div class="wrapper-habit-calendar">
                 <ul class="habit-list grid grid--7-cols">
                   <li class="grid wrapper-list-item">
                     <p class="paragraph-description">PON</p>
@@ -260,7 +285,7 @@
                   </li>
                 </ul>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </section>
