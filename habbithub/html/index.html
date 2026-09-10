@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
 
-  <body>
+  <body class="modal-open">
     <header class="header">
       <img class="logo" src="../icons/logo_horizontal.png" alt="HabHab logo" />
       <nav class="main-nav">
@@ -79,8 +79,55 @@
       </nav>
     </header>
 
-    <!-- DAY SUMMARY -->
     <main>
+      <!-- LOGIN POP UP -->
+      <section class="section-login-popup">
+        <div class="grid grid-login-popup">
+          <div class="grid grid-login-left">
+            <img class="logo-login" src="../icons/logo_horizontal.png" alt="" />
+            <h2 class="heading-secondary">Witaj ponownie!</h2>
+            <p class="paragraph-description">
+              Zaloguj się, aby kontynuować budowanie lepszych nawyków.
+            </p>
+            <img
+              class="image-login"
+              src="../Images/habit-hero (2)-nobg.svg"
+              alt=""
+            />
+          </div>
+          <div class="grid grid-login-right">
+            <div>
+              <h2 class="heading-secondary">Zaloguj się</h2>
+              <p class="paragraph-description">
+                Wprowadź swoje dane, aby uzyskać dostęp do swojego konta.
+              </p>
+            </div>
+            <div class="grid wapper-login-email">
+              <label for="">Adres e-mail</label>
+              <input type="email" name="" id="" />
+            </div>
+            <div class="grid wrapper-login-password">
+              <label for="">Hasło</label>
+              <input type="password" />
+            </div>
+
+            <button class="btn btn--login">Zaloguj się</button>
+            <div>
+              <p>lub</p>
+            </div>
+
+            <button class="btn btn--login--google">
+              Zaloguj się przez Google
+            </button>
+            <p class="paragraph-description">
+              Nie masz konta?
+              <a class="register-link" href="">Zarejestruj się</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DAY SUMMARY -->
       <section class="section-day-summary">
         <div class="container">
           <div class="day-summary-text-box">

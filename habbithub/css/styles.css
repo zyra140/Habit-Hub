@@ -1,4 +1,39 @@
 /*******************************************/
+/* LOGIN POPUP */
+/*******************************************/
+.section-login-popup {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(17, 24, 39, 0.25);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.grid-login-popup {
+  width: min(90rem, 90vw);
+  background-color: #fff;
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.18);
+  grid-template-columns: 1fr 2fr;
+  position: relative;
+  z-index: 101;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+body.modal-open
+  *:not(.section-login-popup):not(.grid-login-popup):not(.grid-login-left):not(
+    .grid-login-right
+  ):not(.logo-login):not(.image-login):not(.btn):not(input):not(button):not(a) {
+  pointer-events: none;
+}
+
+/*******************************************/
 /* NAVGATION */
 /*******************************************/
 
