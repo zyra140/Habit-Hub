@@ -81,8 +81,8 @@
 
     <main>
       <!-- LOGIN POP UP -->
-      <section class="section-login-popup">
-        <div class="grid grid-login-popup">
+      <section class="section-login-popup" aria-modal="true" role="dialog" tabindex="-1">
+        <div class="grid grid-login-popup" tabindex="-1">
           <div class="grid grid-login-left">
             <img class="logo-login" src="../icons/logo_horizontal.png" alt="" />
             <h2 class="heading-secondary">Witaj ponownie!</h2>
@@ -96,24 +96,24 @@
             />
           </div>
           <div class="grid grid-login-right">
-            <div>
+            <div class="wrapper-popup-heading">
               <h2 class="heading-secondary">Zaloguj się</h2>
               <p class="paragraph-description">
                 Wprowadź swoje dane, aby uzyskać dostęp do swojego konta.
               </p>
             </div>
-            <div class="grid wapper-login-email">
-              <label for="">Adres e-mail</label>
-              <input type="email" name="" id="" />
+            <div class="grid wrapper-login-email">
+              <label class="login-popup-label" for="">Adres e-mail</label>
+              <input class="input-email" type="email" placeholder="twój@email.pl" name="" id="" />
             </div>
             <div class="grid wrapper-login-password">
-              <label for="">Hasło</label>
-              <input type="password" />
+              <label class="login-popup-label" for="">Hasło</label>
+              <input class="input-password" type="password" placeholder="Wpisz swoje hasło" />
             </div>
 
             <button class="btn btn--login">Zaloguj się</button>
-            <div>
-              <p>lub</p>
+            <div class="login-divider" aria-label="lub">
+              <span>lub</span>
             </div>
 
             <button class="btn btn--login--google">

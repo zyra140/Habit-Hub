@@ -96,6 +96,10 @@ img {
   height: auto;
 }
 
+button {
+  font: inherit;
+}
+
 .container {
   width: min(100% - 3.2rem, 120rem);
   margin: 0 auto;

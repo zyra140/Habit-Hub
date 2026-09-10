@@ -1,4 +1,73 @@
 "use strict";
+
+// MODAL TAB LOCK
+
+const trapModalFocus = function () {
+  const body = document.body;
+  if (!body.classList.contains("modal-open")) return;
+
+  const modal = document.querySelector(".section-login-popup");
+  if (!modal) return;
+
+  const focusableSelector = [
+    "a[href]",
+    "button:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    "[tabindex]:not([tabindex='-1'])",
+  ].join(", ");
+
+  const getFocusable = function () {
+    return Array.from(modal.querySelectorAll(focusableSelector)).filter(
+      (element) => !element.hasAttribute("disabled") && !element.closest("[hidden]"),
+    );
+  };
+
+  const focusFirst = function () {
+    const focusable = getFocusable();
+    if (focusable.length) focusable[0].focus();
+    else modal.focus();
+  };
+
+  focusFirst();
+
+  document.addEventListener("keydown", function (event) {
+    if (!body.classList.contains("modal-open")) return;
+    if (event.key !== "Tab") return;
+
+    const focusable = getFocusable();
+    if (!focusable.length) {
+      event.preventDefault();
+      modal.focus();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+      return;
+    }
+
+    if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+      return;
+    }
+
+    if (!modal.contains(active)) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+};
+
+trapModalFocus();
+
 // //////////////////////////////// ICON INPUT //////////////////////////////////
 // const iconButton = document.querySelector(".color-input-button");
 // const iconDropdown = document.querySelector(".icon-dropdown");
