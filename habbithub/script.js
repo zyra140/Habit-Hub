@@ -68,259 +68,6 @@ const trapModalFocus = function () {
 
 trapModalFocus();
 
-// //////////////////////////////// ICON INPUT //////////////////////////////////
-// const iconButton = document.querySelector(".color-input-button");
-// const iconDropdown = document.querySelector(".icon-dropdown");
-// const listDropdown = document.querySelector(".list-dropdown");
-// const habbitIcon = document.querySelector("#iconInput");
-// const body = document.querySelector("body");
-
-// iconButton?.addEventListener("click", function () {
-//   iconDropdown.classList.contains("hidden")
-//     ? iconDropdown.classList.remove("hidden")
-//     : iconDropdown.classList.add("hidden");
-// });
-
-// listDropdown?.addEventListener("click", function (e) {
-//   const li = e.target.closest("li");
-//   if (!li) return;
-//   const imgEl = li.querySelector("img");
-//   if (!imgEl) return;
-//   const icon = imgEl.src;
-//   if (!icon) return;
-//   habbitIcon.src = icon;
-//   iconDropdown.classList.add("hidden");
-// });
-
-// // Close icon dropdown when clicking outside of it
-// document.addEventListener("click", function (e) {
-//   if (!iconDropdown || !iconButton) return;
-//   // if dropdown already hidden, nothing to do
-//   if (iconDropdown.classList.contains("hidden")) return;
-//   const clickedInsideDropdown = e.target.closest(".icon-dropdown");
-//   const clickedButton = e.target.closest(".color-input-button");
-//   if (!clickedInsideDropdown && !clickedButton) {
-//     iconDropdown.classList.add("hidden");
-//   }
-// });
-
-// //////////////////////////////// COLOR INPUT //////////////////////////////////
-// const colorInput = document.querySelector("#colorInput");
-
-// // helper: convert hex to rgba with alpha
-// function hexToRgb(hex) {
-//   if (!hex) return { r: 0, g: 0, b: 0 };
-//   const h = hex.replace("#", "");
-//   const full =
-//     h.length === 3
-//       ? h
-//           .split("")
-//           .map((c) => c + c)
-//           .join("")
-//       : h;
-//   const num = parseInt(full, 16);
-//   return {
-//     r: (num >> 16) & 255,
-//     g: (num >> 8) & 255,
-//     b: num & 255,
-//   };
-// }
-
-// function hexToRgba(hex, alpha = 0.2) {
-//   const { r, g, b } = hexToRgb(hex);
-//   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-// }
-
-// colorInput?.addEventListener("input", function (e) {
-//   const color = e.target.value;
-// });
-
-// //////////////////////////////// NAVIGATION //////////////////////////////////
-// const navList = document.querySelector(".nav-list");
-// const navItemsAll = document.querySelectorAll(".nav-item");
-
-// navList?.addEventListener("click", function (e) {
-//   const navItem = e.target.closest("li");
-//   if (!navItem) return;
-
-//   //delete active class
-//   navItemsAll.forEach((item) => {
-//     const navItemContentAll = [
-//       item.querySelector("img"),
-//       item.querySelector("a"),
-//     ];
-//     navItemContentAll.forEach((item) => item.classList.remove("active"));
-//   });
-//   //add active class
-//   const navItemContent = [
-//     navItem.querySelector("img"),
-//     navItem.querySelector("a"),
-//   ];
-//   navItemContent.forEach((item) => item.classList.add("active"));
-
-//   // Nawiguj do strony
-//   const link = navItem.querySelector("a");
-//   if (link?.href) window.location.href = link.href;
-// });
-
-// // Ustaw active class po załadowaniu strony
-// const currentFile = window.location.pathname.split("/").pop() || "index.html";
-
-// navItemsAll.forEach((item) => {
-//   const link = item.querySelector("a");
-//   const isActive = link?.href.endsWith(currentFile);
-//   link?.classList.toggle("active", isActive);
-//   item.querySelector("img")?.classList.toggle("active", isActive);
-// });
-
-// //////////////////////////////// ADDING HABBIT //////////////////////////////////
-// const habitName = document.querySelector(".habbit-name-input");
-// const frequency = document.querySelector(".habbit-frequency-input");
-// const addHabbitButton = document.querySelector(".add-habbit-button");
-// const habbitContainer = document.querySelector(".container-habbit-in-month");
-
-// const localStorageHabbits = localStorage.getItem("habbits");
-// if (localStorageHabbits)
-//   habbitContainer?.insertAdjacentHTML("beforeend", localStorageHabbits);
-
-// addHabbitButton?.addEventListener("click", function () {
-//   const icon = habbitIcon.src;
-//   const name = habitName.value;
-//   const freq = frequency.value;
-//   const color = colorInput.value;
-//   const fadedColor = hexToRgba(color, 0.2);
-
-//   if (!name) return alert("Podaj nazwę nawyku");
-//   if (!freq) return alert("Wybierz częstotliwość!");
-
-//   // cannot add habbit to past month
-//   if (
-//     (date.getMonth() < new Date().getMonth() &&
-//       date.getFullYear() === new Date().getFullYear()) ||
-//     date.getFullYear() < new Date().getFullYear()
-//   )
-//     return alert("Nie można dodawać nawyków do poprzednich miesięcy!");
-
-//   const calendarDays = function () {
-//     const dayName = new Date(date);
-
-//     let dayStr = "";
-
-//     const dayLength = daysInMonth(
-//       dayName.getMonth() + 1,
-//       dayName.getFullYear(),
-//     );
-
-//     for (let i = date.getDate(); i <= dayLength; i++) {
-//       let dayFirstCapital = dayName
-//         .toLocaleString("pl-PL", {
-//           weekday: "long",
-//         })
-//         .slice(0, 1)
-//         .toUpperCase();
-
-//       dayStr += `
-//         <li>
-//           <p class="calendar-day-number">${i}</p>
-//           <p class="${dayFirstCapital === "S" || dayFirstCapital === "N" ? "calendar-day-type-weekend" : "calendar-day-type"}">${dayFirstCapital}</p>
-//           <input class="input-checkbox" type="checkbox" />
-//         </li>
-//         `;
-
-//       dayName.setDate(dayName.getDate() + 1);
-//     }
-//     return dayStr;
-//   };
-
-//   let html = `
-//       <div class="container-calendar">
-//         <div class="item-calendar">
-//           <img
-//             class="calendar-icon"
-//             src="${icon}"
-//             alt=""
-//             style="background-color: ${fadedColor};"
-//           />
-//           <div class="item-description">
-//             <h4>${name}</h4>
-//             <p>${freq}</p>
-//           </div>
-//           <div class="calendar">
-//             <ul class="calendar-day-list">
-//               ${calendarDays()}
-//             </ul>
-//           </div>
-//         </div>
-//       </div>
-//     `;
-
-//   //Background color change
-
-//   habbitContainer.insertAdjacentHTML("beforeend", html);
-
-//   // Set local storage
-//   localStorage.setItem("habbits", habbitContainer.innerHTML);
-// });
-
-// //////////////////////////////// DATES //////////////////////////////////
-
-// // date changer
-// const dateInput = document.querySelector(".date-input");
-
-// const containerDate = document.querySelector(".container-date-input");
-
-// const STORAGE_KEY = "date-switcher";
-
-// const date = new Date(localStorage.getItem(STORAGE_KEY) || Date.now());
-
-// const daysInMonth = function (month, year) {
-//   return new Date(year, month, 0).getDate();
-// };
-
-// const renderDate = function (date) {
-//   if (!dateInput) return;
-//   dateInput.innerHTML = date.toLocaleString("pl-PL", {
-//     month: "long",
-//     year: "numeric",
-//   });
-// };
-
-// const saveCurrentDate = function () {
-//   localStorage.setItem(STORAGE_KEY, date.toISOString());
-// };
-
-// renderDate(date);
-
-// containerDate?.addEventListener("click", function (e) {
-//   let input = e.target.closest("button");
-
-//   if (!input) return;
-
-//   date.setMonth(date.getMonth() + Number(input.id));
-
-//   if (date.getMonth() !== new Date().getMonth()) date.setDate(1);
-//   if (date.getMonth() === new Date().getMonth())
-//     date.setDate(new Date().getDate());
-
-//   renderDate(date);
-
-//   saveCurrentDate();
-// });
-
-// // full date in main page
-// const fullDate = document.querySelector(".full-date");
-// const fullDateHtml = new Date().toLocaleString("pl-PL", {
-//   weekday: "long",
-//   day: "numeric",
-//   month: "long",
-//   year: "numeric",
-// });
-
-// fullDate?.insertAdjacentHTML(
-//   "afterbegin",
-//   fullDateHtml.slice(0, 1).toUpperCase() + fullDateHtml.slice(1),
-// );
-
 //////////////////////////////// MAIN PAGE //////////////////////////////////
 // DAILY CHART
 const optionsDailyChart = {
@@ -381,4 +128,160 @@ const dailyChart = new ApexCharts(
 
 dailyChart.render();
 
-//////////////////////////////// DROPDOWNS //////////////////////////////////
+//////////////////////////////// ADDING HABITS //////////////////////////////////
+
+//// ICON DROPDOWN ///
+const iconPicker = document.querySelector('.icon-picker');
+const pickerTrigger = document.querySelector('.picker-trigger');
+const iconMenu = document.querySelector('.icon-picker-menu');
+const habitsContainer = document.querySelector('.habits-container');
+const addHabitBtn = document.querySelector('.btn--add-habit');
+const inputIcon = document.querySelector('.icon-selector-icon');
+const inputName = document.querySelector('.input-name');
+const inputFrequency = document.querySelector('.input-frequency');
+const inputColor = document.querySelector('.input-color');
+
+// toggle dropdown
+pickerTrigger?.addEventListener('click', function() {
+  iconPicker.classList.toggle('open');
+});
+
+// close dropdown when clicking on the page
+if (iconPicker) document.addEventListener('click', function(e) {
+  if (!iconPicker.contains(e.target)) iconPicker.classList.remove('open');
+});
+
+// changing icon to picked one
+iconMenu?.addEventListener('click', function(e) {
+  const iconInput = e.target.closest('.icon-option');
+  
+  if (!iconInput) return;
+
+  inputIcon.src = iconInput.querySelector('img').src;
+  iconPicker.classList.toggle('open');
+});
+
+// ADDING HABIT ///
+addHabitBtn?.addEventListener('click', function() {
+
+  // validation
+  if (!inputName.value) return alert('Nieprawidłowa nazwa nawyku!');
+
+  const HTML = 
+  `
+              <div class="grid wrapper-habit-panel">
+                <div class="habit-dropdown-wrapper">
+                  <button class="btn--edit-habit">&vellip;</button>
+                  <div class="habit-dropdown-menu">
+                    <button class="edit-button">
+                      <img
+                        class="icon-dropdown"
+                        src="../icons/edit-pencil-line-01-svgrepo-com.svg"
+                        alt=""
+                      />
+                      Edytuj
+                    </button>
+                    <button class="delete-button">
+                      <img
+                        class="icon-dropdown"
+                        src="../icons/delete-2-svgrepo-com.svg"
+                        alt=""
+                      />
+                      Usuń
+                    </button>
+                  </div>
+                </div>
+
+                <div class="wrapper-habit-content">
+                  <img
+                    class="img-box img-box--habbit-panel"
+                    src="${inputIcon.src}"
+                    alt=""
+                  />
+                  <div class="wrapper-habit-description-text">
+                    <h3 class="heading-tertiary">${inputName.value}</h3>
+                    <p class="paragraph-description">${inputFrequency.value}</p>
+                  </div>
+                </div>
+
+                <div class="wrapper-habit-calendar">
+                  <ul class="habit-list grid grid--7-cols">
+                    <li class="grid wrapper-list-item">
+                      <p class="paragraph-description">PON</p>
+                      <span class="day-panel-fake-checkbox">1</span>
+                      <span class="day-panel-fake-checkbox">8</span>
+                      <span class="day-panel-fake-checkbox">15</span>
+                      <span class="day-panel-fake-checkbox">22</span>
+                      <span class="day-panel-fake-checkbox">29</span>
+                    </li>
+                    <li class="grid wrapper-list-item">
+                      <p class="paragraph-description">WT</p>
+                      <span class="day-panel-fake-checkbox">2</span>
+                      <span class="day-panel-fake-checkbox">9</span>
+                      <span class="day-panel-fake-checkbox">16</span>
+                      <span class="day-panel-fake-checkbox">23</span>
+                      <span class="day-panel-fake-checkbox">30</span>
+                    </li>
+                    <li class="grid wrapper-list-item">
+                      <p class="paragraph-description">ŚR</p>
+                      <span class="day-panel-fake-checkbox">3</span>
+                      <span class="day-panel-fake-checkbox">10</span>
+                      <span class="day-panel-fake-checkbox">17</span>
+                      <span class="day-panel-fake-checkbox">24</span>
+                      <span class="day-panel-fake-checkbox">31</span>
+                    </li>
+                    <li class="grid wrapper-list-item">
+                      <p class="paragraph-description">CZW</p>
+                      <span class="day-panel-fake-checkbox">4</span>
+                      <span class="day-panel-fake-checkbox">11</span>
+                      <span class="day-panel-fake-checkbox">18</span>
+                      <span class="day-panel-fake-checkbox">25</span>
+                    </li>
+                    <li class="grid wrapper-list-item">
+                      <p class="paragraph-description">PT</p>
+                      <span class="day-panel-fake-checkbox">5</span>
+                      <span class="day-panel-fake-checkbox">12</span>
+                      <span class="day-panel-fake-checkbox">19</span>
+                      <span class="day-panel-fake-checkbox">26</span>
+                    </li>
+                    <li class="grid wrapper-list-item">
+                      <p class="paragraph-description">SOB</p>
+                      <span class="day-panel-fake-checkbox">6</span>
+                      <span class="day-panel-fake-checkbox">13</span>
+                      <span class="day-panel-fake-checkbox">20</span>
+                      <span class="day-panel-fake-checkbox">27</span>
+                    </li>
+                    <li class="grid wrapper-list-item">
+                      <p class="paragraph-description">ND</p>
+                      <span class="day-panel-fake-checkbox">7</span>
+                      <span class="day-panel-fake-checkbox">14</span>
+                      <span class="day-panel-fake-checkbox">21</span>
+                      <span class="day-panel-fake-checkbox">28</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="wrapper-weekly-progres">
+                  <ul class="habit-list-weekly-progres grid">
+                    <li class="habit-weekly-progres is-active">
+                      <p>Tydz. 1</p>
+                      <p>5/7</p>
+                    </li>
+                    <li class="habit-weekly-progres">
+                      <p>Tydz. 2</p>
+                      <p>5/7</p>
+                    </li>
+                    <li class="habit-weekly-progres">
+                      <p>Tydz. 3</p>
+                      <p>5/7</p>
+                    </li>
+                    <li class="habit-weekly-progres">
+                      <p>Tydz. 4</p>
+                      <p>5/7</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+  `
+
+  habitsContainer.insertAdjacentHTML('afterbegin', HTML);
+});

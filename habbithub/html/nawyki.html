@@ -22,7 +22,7 @@
       <nav class="main-nav">
         <ul class="main-nav-list">
           <li>
-            <a class="main-nav-link active" href="../html/index.html"
+            <a class="main-nav-link" href="../html/index.html"
               ><img
                 class="nav-icon"
                 src="../icons/house-regular-full.svg"
@@ -31,7 +31,7 @@
             >
           </li>
           <li>
-            <a class="main-nav-link" href="../html/nawyki.html"
+            <a class="main-nav-link active" href="../html/nawyki.html"
               ><img
                 class="nav-icon"
                 src="../icons/spiral-solid-full.svg"
@@ -40,7 +40,7 @@
             >
           </li>
           <li>
-            <a class="main-nav-link" href="#"
+            <a class="main-nav-link" href="../html/statystyki.html"
               ><img
                 class="nav-icon"
                 src="../icons/chart-bar-regular-full.svg"
@@ -49,7 +49,7 @@
             >
           </li>
           <li>
-            <a class="main-nav-link" href="#"
+            <a class="main-nav-link" href="../html/kalendarz.html"
               ><img
                 class="nav-icon"
                 src="../icons/calendar-days-regular-full.svg"
@@ -58,7 +58,7 @@
             >
           </li>
           <li>
-            <a class="main-nav-link" href="#"
+            <a class="main-nav-link" href="../html/znajomi.html"
               ><img
                 class="nav-icon"
                 src="../icons/user-regular-full.svg"
@@ -67,7 +67,7 @@
             >
           </li>
           <li>
-            <a class="main-nav-link" href="#"
+            <a class="main-nav-link" href="../html/ustawienia.html"
               ><img
                 class="nav-icon"
                 src="../icons/gear-solid-full.svg"
@@ -146,18 +146,48 @@
               </div>
               <div class="wrapper-label">
                 <label for="">Ikonka</label>
-                <button class="wrapper-input-icon">
-                  <img
-                    class="icon-selector-icon"
-                    src="../icons/calendar-days-regular-full.svg"
-                    alt=""
-                  />
-                  <img
-                    class="icon-selector-icon-arrow"
-                    src="../icons/arrow-down.svg"
-                    alt=""
-                  />
-                </button>
+                <div class="icon-picker">
+                  <button class="wrapper-input-icon picker-trigger" type="button">
+                    <img
+                      class="icon-selector-icon"
+                      src="../icons/calendar-days-regular-full.svg"
+                      alt=""
+                    />
+                    <img
+                      class="icon-selector-icon-arrow"
+                      src="../icons/arrow-down.svg"
+                      alt=""
+                    />
+                  </button>
+
+                  <div class="icon-picker-menu" aria-label="Lista ikon">
+                    <button type="button" class="icon-option"><img src="../icons/calendar-days-regular-full.svg" alt="Kalendarz" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/Fire.svg" alt="Ogień" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/Graph.svg" alt="Wykres" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/bulb-outline-svgrepo-com.svg" alt="Żarówka" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/check-circle.svg" alt="Zatwierdzenie" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/house-regular-full.svg" alt="Dom" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/spiral-solid-full.svg" alt="Spirala" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/user-regular-full.svg" alt="Użytkownik" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/chart-bar-regular-full.svg" alt="Statystyki" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/gear-solid-full.svg" alt="Ustawienia" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/done-v-svgrepo-com.svg" alt="Gotowe" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/piggy-bank-save-svgrepo-com.svg" alt="Oszczędności" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/plus-large-svgrepo-com.svg" alt="Plus" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/delete-2-svgrepo-com.svg" alt="Usuń" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/edit-pencil-line-01-svgrepo-com.svg" alt="Edytuj" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/close-svgrepo-com (3).svg" alt="Zamknij" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/arrow-left.svg" alt="Lewo" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/arrow-right.svg" alt="Prawo" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/caret-up-fill.svg" alt="Góra" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/caret-down-fill.svg" alt="Dół" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/caret-left-fill.svg" alt="Lewo 2" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/caret-right-fill.svg" alt="Prawo 2" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/Graph-Arrow-Increase--Streamline-Core-Remix.svg" alt="Wzrost" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/Matches-Fire--Streamline-Ultimate.png" alt="Zapałki" /></button>
+                    <button type="button" class="icon-option"><img src="../icons/Graph-Stats-Ascend--Streamline-Ultimate.png" alt="Statystyki 2" /></button>
+                  </div>
+                </div>
               </div>
               <button class="btn btn--add-habit">Dodaj nawyk</button>
             </div>
@@ -188,118 +218,7 @@
             </div>
 
             <!-- Habit Wrapper -->
-
-            <div class="grid wrapper-habit-panel">
-              <!-- <div class="habit-dropdown-wrapper">
-                <button class="btn--edit-habit">&vellip;</button>
-                <div class="habit-dropdown-menu">
-                  <button class="edit-button">
-                    <img
-                      class="icon-dropdown"
-                      src="../icons/edit-pencil-line-01-svgrepo-com.svg"
-                      alt=""
-                    />
-                    Edytuj
-                  </button>
-                  <button class="delete-button">
-                    <img
-                      class="icon-dropdown"
-                      src="../icons/delete-2-svgrepo-com.svg"
-                      alt=""
-                    />
-                    Usuń
-                  </button>
-                </div>
-              </div>
-
-              <div class="wrapper-habit-content">
-                <img
-                  class="img-box img-box--habbit-panel"
-                  src="../icons/calendar-days-regular-full.svg"
-                  alt=""
-                />
-                <div class="wrapper-habit-description-text">
-                  <h3 class="heading-tertiary">Pompki</h3>
-                  <p class="paragraph-description">Codziennie</p>
-                </div>
-              </div>
-
-              <div class="wrapper-habit-calendar">
-                <ul class="habit-list grid grid--7-cols">
-                  <li class="grid wrapper-list-item">
-                    <p class="paragraph-description">PON</p>
-                    <span class="day-panel-fake-checkbox">1</span>
-                    <span class="day-panel-fake-checkbox">8</span>
-                    <span class="day-panel-fake-checkbox">15</span>
-                    <span class="day-panel-fake-checkbox">22</span>
-                    <span class="day-panel-fake-checkbox">29</span>
-                  </li>
-                  <li class="grid wrapper-list-item">
-                    <p class="paragraph-description">WT</p>
-                    <span class="day-panel-fake-checkbox">2</span>
-                    <span class="day-panel-fake-checkbox">9</span>
-                    <span class="day-panel-fake-checkbox">16</span>
-                    <span class="day-panel-fake-checkbox">23</span>
-                    <span class="day-panel-fake-checkbox">30</span>
-                  </li>
-                  <li class="grid wrapper-list-item">
-                    <p class="paragraph-description">ŚR</p>
-                    <span class="day-panel-fake-checkbox">3</span>
-                    <span class="day-panel-fake-checkbox">10</span>
-                    <span class="day-panel-fake-checkbox">17</span>
-                    <span class="day-panel-fake-checkbox">24</span>
-                    <span class="day-panel-fake-checkbox">31</span>
-                  </li>
-                  <li class="grid wrapper-list-item">
-                    <p class="paragraph-description">CZW</p>
-                    <span class="day-panel-fake-checkbox">4</span>
-                    <span class="day-panel-fake-checkbox">11</span>
-                    <span class="day-panel-fake-checkbox">18</span>
-                    <span class="day-panel-fake-checkbox">25</span>
-                  </li>
-                  <li class="grid wrapper-list-item">
-                    <p class="paragraph-description">PT</p>
-                    <span class="day-panel-fake-checkbox">5</span>
-                    <span class="day-panel-fake-checkbox">12</span>
-                    <span class="day-panel-fake-checkbox">19</span>
-                    <span class="day-panel-fake-checkbox">26</span>
-                  </li>
-                  <li class="grid wrapper-list-item">
-                    <p class="paragraph-description">SOB</p>
-                    <span class="day-panel-fake-checkbox">6</span>
-                    <span class="day-panel-fake-checkbox">13</span>
-                    <span class="day-panel-fake-checkbox">20</span>
-                    <span class="day-panel-fake-checkbox">27</span>
-                  </li>
-                  <li class="grid wrapper-list-item">
-                    <p class="paragraph-description">ND</p>
-                    <span class="day-panel-fake-checkbox">7</span>
-                    <span class="day-panel-fake-checkbox">14</span>
-                    <span class="day-panel-fake-checkbox">21</span>
-                    <span class="day-panel-fake-checkbox">28</span>
-                  </li>
-                </ul>
-              </div>
-              <div class="wrapper-weekly-progres">
-                <ul class="habit-list-weekly-progres grid">
-                  <li class="habit-weekly-progres is-active">
-                    <p>Tydz. 1</p>
-                    <p>5/7</p>
-                  </li>
-                  <li class="habit-weekly-progres">
-                    <p>Tydz. 2</p>
-                    <p>5/7</p>
-                  </li>
-                  <li class="habit-weekly-progres">
-                    <p>Tydz. 3</p>
-                    <p>5/7</p>
-                  </li>
-                  <li class="habit-weekly-progres">
-                    <p>Tydz. 4</p>
-                    <p>5/7</p>
-                  </li>
-                </ul>
-              </div> -->
+            <div class="grid habits-container">
             </div>
           </div>
         </div>
