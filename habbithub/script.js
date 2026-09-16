@@ -60,9 +60,60 @@ const dailyChart = new ApexCharts(
 dailyChart?.render();
 
 //////////////////////////////// LOGIN / REGISER //////////////////////////////////
+const API_URL = "http://localhost:5000";
+const loginPopup = document.querySelector(".section-login-popup");
 const loginView = document.querySelector(".auth-view-login");
 const registerView = document.querySelector(".auth-view-register");
 const authSwitchers = document.querySelectorAll(".auth-switch");
+const loginEmailInput = document.querySelector("#login-email");
+const loginPasswordInput = document.querySelector("#login-password");
+const loginSubmitBtn = document.querySelector(".auth-view-login .btn--login");
+const registerNameInput = document.querySelector("#register-name");
+const registerEmailInput = document.querySelector("#register-email");
+const registerPasswordInput = document.querySelector("#register-password");
+const registerPasswordConfirmInput = document.querySelector(
+  "#register-password-confirm",
+);
+const registerSubmitBtn = document.querySelector(
+  ".auth-view-register .btn--login",
+);
+const logoutBtn = document.querySelector(".btn-logout");
+
+function hideAuthModal() {
+  if (loginPopup) {
+    loginPopup.setAttribute("hidden", "hidden");
+    loginPopup.style.display = "none";
+  }
+
+  document.body.classList.remove("modal-open");
+}
+
+function showAuthModal() {
+  if (loginPopup) {
+    loginPopup.removeAttribute("hidden");
+    loginPopup.style.display = "grid";
+  }
+  document.body.classList.add("modal-open");
+}
+
+function completeAuthSuccess() {
+  hideAuthModal();
+  loginView?.removeAttribute("hidden");
+  registerView?.setAttribute("hidden", "hidden");
+}
+
+const savedToken = localStorage.getItem("token");
+if (savedToken) {
+  hideAuthModal();
+}
+
+// LOG OUT BUTTON
+logoutBtn?.addEventListener("click", function () {
+  localStorage.removeItem("token");
+  showAuthModal();
+  loginView?.removeAttribute("hidden");
+  registerView?.setAttribute("hidden", "hidden");
+});
 
 //// SWITCHING MODLAS LOGIN / REGISTER ///
 authSwitchers.forEach((btn) => {
@@ -72,6 +123,85 @@ authSwitchers.forEach((btn) => {
     loginView.toggleAttribute("hidden", showRegister);
     registerView.toggleAttribute("hidden", !showRegister);
   });
+});
+
+//// BACKEND ///
+async function handleAuthRequest(url, payload, successMessage) {
+  try {
+    const response = await fetch(`${API_URL}${url}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message || "Wystąpił błąd");
+      return null;
+    }
+
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+    }
+
+    alert(successMessage || data.message);
+    return data;
+  } catch (error) {
+    console.error("Auth error:", error);
+    alert("Nie udało się połączyć z serwerem");
+    return null;
+  }
+}
+
+loginSubmitBtn?.addEventListener("click", async function () {
+  const email = loginEmailInput?.value.trim();
+  const password = loginPasswordInput?.value.trim();
+
+  if (!email || !password) {
+    alert("Uzupełnij email i hasło");
+    return;
+  }
+
+  const data = await handleAuthRequest(
+    "/api/auth/login",
+    { email, password },
+    "Zalogowano pomyślnie",
+  );
+
+  if (data?.user) {
+    completeAuthSuccess();
+    console.log("Zalogowany użytkownik:", data.user);
+  }
+});
+
+registerSubmitBtn?.addEventListener("click", async function () {
+  const name = registerNameInput?.value.trim();
+  const email = registerEmailInput?.value.trim();
+  const password = registerPasswordInput?.value.trim();
+  const confirmPassword = registerPasswordConfirmInput?.value.trim();
+
+  if (!name || !email || !password || !confirmPassword) {
+    alert("Uzupełnij wszystkie pola");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    alert("Hasła nie są takie same");
+    return;
+  }
+
+  const data = await handleAuthRequest(
+    "/api/auth/register",
+    { name, email, password },
+    "Konto zostało utworzone",
+  );
+
+  if (data?.token) {
+    completeAuthSuccess();
+  }
 });
 
 //////////////////////////////// ADDING HABITS //////////////////////////////////

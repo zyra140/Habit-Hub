@@ -1,0 +1,15 @@
+1) Jakie technologie użyjemy
+Node.js — serwer aplikacji
+Express — obsługa endpointów HTTP
+MongoDB + Mongoose — baza danych
+JWT (JSON Web Token) — logowanie i sesje
+bcryptjs — hashowanie haseł
+dotenv — zmienne środowiskowe
+nodemon — auto restart serwera w development
+CORS — jeśli frontend będzie na innym porcie
+Prosty zestaw:
+
+backend: Node.js + Express
+baza: MongoDB Atlas albo lokalnie
+frontend: istniejące pliki HTML/JS z tego projektu
+komunikacja: fetch() do API
