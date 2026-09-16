@@ -1,73 +1,4 @@
 "use strict";
-
-// MODAL TAB LOCK
-
-const trapModalFocus = function () {
-  const body = document.body;
-  if (!body.classList.contains("modal-open")) return;
-
-  const modal = document.querySelector(".section-login-popup");
-  if (!modal) return;
-
-  const focusableSelector = [
-    "a[href]",
-    "button:not([disabled])",
-    "input:not([disabled])",
-    "select:not([disabled])",
-    "textarea:not([disabled])",
-    "[tabindex]:not([tabindex='-1'])",
-  ].join(", ");
-
-  const getFocusable = function () {
-    return Array.from(modal.querySelectorAll(focusableSelector)).filter(
-      (element) => !element.hasAttribute("disabled") && !element.closest("[hidden]"),
-    );
-  };
-
-  const focusFirst = function () {
-    const focusable = getFocusable();
-    if (focusable.length) focusable[0].focus();
-    else modal.focus();
-  };
-
-  focusFirst();
-
-  document.addEventListener("keydown", function (event) {
-    if (!body.classList.contains("modal-open")) return;
-    if (event.key !== "Tab") return;
-
-    const focusable = getFocusable();
-    if (!focusable.length) {
-      event.preventDefault();
-      modal.focus();
-      return;
-    }
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    const active = document.activeElement;
-
-    if (event.shiftKey && active === first) {
-      event.preventDefault();
-      last.focus();
-      return;
-    }
-
-    if (!event.shiftKey && active === last) {
-      event.preventDefault();
-      first.focus();
-      return;
-    }
-
-    if (!modal.contains(active)) {
-      event.preventDefault();
-      first.focus();
-    }
-  });
-};
-
-trapModalFocus();
-
 //////////////////////////////// MAIN PAGE //////////////////////////////////
 // DAILY CHART
 const optionsDailyChart = {
@@ -126,49 +57,125 @@ const dailyChart = new ApexCharts(
   optionsDailyChart,
 );
 
-dailyChart.render();
+dailyChart?.render();
+
+//////////////////////////////// LOGIN / REGISER //////////////////////////////////
+const loginView = document.querySelector(".auth-view-login");
+const registerView = document.querySelector(".auth-view-register");
+const authSwitchers = document.querySelectorAll(".auth-switch");
+
+//// SWITCHING MODLAS LOGIN / REGISTER ///
+authSwitchers.forEach((btn) => {
+  btn.addEventListener("click", function () {
+    const showRegister = registerView.hasAttribute("hidden"); // true or flase
+
+    loginView.toggleAttribute("hidden", showRegister);
+    registerView.toggleAttribute("hidden", !showRegister);
+  });
+});
 
 //////////////////////////////// ADDING HABITS //////////////////////////////////
-
 //// ICON DROPDOWN ///
-const iconPicker = document.querySelector('.icon-picker');
-const pickerTrigger = document.querySelector('.picker-trigger');
-const iconMenu = document.querySelector('.icon-picker-menu');
-const habitsContainer = document.querySelector('.habits-container');
-const addHabitBtn = document.querySelector('.btn--add-habit');
-const inputIcon = document.querySelector('.icon-selector-icon');
-const inputName = document.querySelector('.input-name');
-const inputFrequency = document.querySelector('.input-frequency');
-const inputColor = document.querySelector('.input-color');
+const iconPicker = document.querySelector(".icon-picker");
+const pickerTrigger = document.querySelector(".picker-trigger");
+const iconMenu = document.querySelector(".icon-picker-menu");
+const habitsContainer = document.querySelector(".habits-container");
+const addHabitBtn = document.querySelector(".btn--add-habit");
+const inputIcon = document.querySelector(".icon-selector-icon");
+const inputName = document.querySelector(".input-name");
+const inputFrequency = document.querySelector(".input-frequency");
+const inputColor = document.querySelector(".input-color");
 
 // toggle dropdown
-pickerTrigger?.addEventListener('click', function() {
-  iconPicker.classList.toggle('open');
+pickerTrigger?.addEventListener("click", function () {
+  iconPicker.classList.toggle("open");
 });
 
 // close dropdown when clicking on the page
-if (iconPicker) document.addEventListener('click', function(e) {
-  if (!iconPicker.contains(e.target)) iconPicker.classList.remove('open');
-});
+if (iconPicker)
+  document.addEventListener("click", function (e) {
+    if (!iconPicker.contains(e.target)) iconPicker.classList.remove("open");
+  });
 
 // changing icon to picked one
-iconMenu?.addEventListener('click', function(e) {
-  const iconInput = e.target.closest('.icon-option');
-  
+iconMenu?.addEventListener("click", function (e) {
+  const iconInput = e.target.closest(".icon-option");
+
   if (!iconInput) return;
 
-  inputIcon.src = iconInput.querySelector('img').src;
-  iconPicker.classList.toggle('open');
+  inputIcon.src = iconInput.querySelector("img").src;
+  iconPicker.classList.toggle("open");
 });
 
-// ADDING HABIT ///
-addHabitBtn?.addEventListener('click', function() {
+//// ADDING HABIT ///
+addHabitBtn?.addEventListener("click", function () {
+  // VALIDATION
+  if (!inputName.value) return alert("Nieprawidłowa nazwa nawyku!");
 
-  // validation
-  if (!inputName.value) return alert('Nieprawidłowa nazwa nawyku!');
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const habitCreatedDay = today.getDate();
+  const weekdays = ["PON", "WT", "ŚR", "CZW", "PT", "SOB", "ND"];
 
-  const HTML = 
-  `
+  // RENDERING CALENDAR - start the grid on Monday and render five complete weeks
+  // These arrays will later come from the DATABASE
+  const completedDays = [10, 12, 15];
+  const missedDays = [11, 13];
+
+  // first day on a month
+  const firstDayOfMonth =
+    (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
+
+  // rendering weekdays names
+  const calendarHeadersHTML = weekdays
+    .map(function (weekday) {
+      return `<li class="calendar-cell calendar-header"><p class="paragraph-description">${weekday}</p></li>`;
+    })
+    .join("");
+
+  // Render previous, current and next month days in chronological order.
+  const calendarDaysHTML = Array.from({ length: 35 }, function (_, index) {
+    // checking wchich day is first monday // current month or previous
+    const date = new Date(
+      currentYear,
+      currentMonth,
+      index - firstDayOfMonth + 1,
+    );
+    const day = date.getDate();
+    const dayClasses = ["calendar-cell", "calendar-day"];
+    const isCurrentMonth = date.getMonth() === currentMonth;
+    const isToday = date.toDateString() === today.toDateString();
+
+    // adding adjacent month class
+    if (!isCurrentMonth) dayClasses.push("is-adjacent-month");
+
+    // adding today class
+    if (isToday) dayClasses.push("is-today");
+
+    // adding day before habit class
+    if (isCurrentMonth && date < today && date.getDate() < habitCreatedDay) {
+      dayClasses.push("is-before-habit");
+    }
+
+    // adding completed day class
+    if (isCurrentMonth && completedDays.includes(day)) {
+      dayClasses.push("is-completed");
+    }
+
+    // adding missed day class
+    if (isCurrentMonth && missedDays.includes(day)) {
+      dayClasses.push("is-missed");
+    }
+
+    return `<li class="${dayClasses.join(" ")}"><span class="day-panel-fake-checkbox">${day}</span></li>`;
+  }).join("");
+
+  // adding html elements to one
+  const calendarColumnsHTML = calendarHeadersHTML + calendarDaysHTML;
+
+  // final HTML to insert
+  const HTML = `
               <div class="grid wrapper-habit-panel">
                 <div class="habit-dropdown-wrapper">
                   <button class="btn--edit-habit">&vellip;</button>
@@ -206,58 +213,7 @@ addHabitBtn?.addEventListener('click', function() {
 
                 <div class="wrapper-habit-calendar">
                   <ul class="habit-list grid grid--7-cols">
-                    <li class="grid wrapper-list-item">
-                      <p class="paragraph-description">PON</p>
-                      <span class="day-panel-fake-checkbox">1</span>
-                      <span class="day-panel-fake-checkbox">8</span>
-                      <span class="day-panel-fake-checkbox">15</span>
-                      <span class="day-panel-fake-checkbox">22</span>
-                      <span class="day-panel-fake-checkbox">29</span>
-                    </li>
-                    <li class="grid wrapper-list-item">
-                      <p class="paragraph-description">WT</p>
-                      <span class="day-panel-fake-checkbox">2</span>
-                      <span class="day-panel-fake-checkbox">9</span>
-                      <span class="day-panel-fake-checkbox">16</span>
-                      <span class="day-panel-fake-checkbox">23</span>
-                      <span class="day-panel-fake-checkbox">30</span>
-                    </li>
-                    <li class="grid wrapper-list-item">
-                      <p class="paragraph-description">ŚR</p>
-                      <span class="day-panel-fake-checkbox">3</span>
-                      <span class="day-panel-fake-checkbox">10</span>
-                      <span class="day-panel-fake-checkbox">17</span>
-                      <span class="day-panel-fake-checkbox">24</span>
-                      <span class="day-panel-fake-checkbox">31</span>
-                    </li>
-                    <li class="grid wrapper-list-item">
-                      <p class="paragraph-description">CZW</p>
-                      <span class="day-panel-fake-checkbox">4</span>
-                      <span class="day-panel-fake-checkbox">11</span>
-                      <span class="day-panel-fake-checkbox">18</span>
-                      <span class="day-panel-fake-checkbox">25</span>
-                    </li>
-                    <li class="grid wrapper-list-item">
-                      <p class="paragraph-description">PT</p>
-                      <span class="day-panel-fake-checkbox">5</span>
-                      <span class="day-panel-fake-checkbox">12</span>
-                      <span class="day-panel-fake-checkbox">19</span>
-                      <span class="day-panel-fake-checkbox">26</span>
-                    </li>
-                    <li class="grid wrapper-list-item">
-                      <p class="paragraph-description">SOB</p>
-                      <span class="day-panel-fake-checkbox">6</span>
-                      <span class="day-panel-fake-checkbox">13</span>
-                      <span class="day-panel-fake-checkbox">20</span>
-                      <span class="day-panel-fake-checkbox">27</span>
-                    </li>
-                    <li class="grid wrapper-list-item">
-                      <p class="paragraph-description">ND</p>
-                      <span class="day-panel-fake-checkbox">7</span>
-                      <span class="day-panel-fake-checkbox">14</span>
-                      <span class="day-panel-fake-checkbox">21</span>
-                      <span class="day-panel-fake-checkbox">28</span>
-                    </li>
+                    ${calendarColumnsHTML}
                   </ul>
                 </div>
                 <div class="wrapper-weekly-progres">
@@ -275,13 +231,18 @@ addHabitBtn?.addEventListener('click', function() {
                       <p>5/7</p>
                     </li>
                     <li class="habit-weekly-progres">
+                      <p>Tydz. 5</p>
+                      <p>5/7</p>
+                    </li>
+                    <li class="habit-weekly-progres">
                       <p>Tydz. 4</p>
                       <p>5/7</p>
                     </li>
                   </ul>
                 </div>
               </div>
-  `
+  `;
 
-  habitsContainer.insertAdjacentHTML('afterbegin', HTML);
+  //inserting html to container
+  habitsContainer.insertAdjacentHTML("afterbegin", HTML);
 });

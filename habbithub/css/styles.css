@@ -193,6 +193,27 @@ body.modal-open .section-login-popup * {
   text-align: left;
 }
 
+.auth-view {
+  display: grid;
+  gap: 1.8rem;
+}
+
+.auth-view[hidden] {
+  display: none;
+}
+
+.auth-switch-text {
+  margin-bottom: 0 !important;
+}
+
+.auth-switch {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+
 /*******************************************/
 /* NAVGATION */
 /*******************************************/
@@ -872,6 +893,34 @@ body.modal-open .section-login-popup * {
   width: 100%;
 }
 
+.habit-list.grid--7-cols {
+  align-items: start;
+}
+
+.calendar-cell {
+  min-width: 0;
+  min-height: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-header {
+  padding: 0.5rem 0.2rem;
+}
+
+.calendar-header .paragraph-description {
+  margin: 0;
+}
+
+.calendar-empty {
+  visibility: hidden;
+}
+
+.calendar-day {
+  padding: 0;
+}
+
 .wrapper-list-item {
   gap: 0.5rem;
   align-content: baseline;
@@ -903,6 +952,42 @@ body.modal-open .section-login-popup * {
   transition: all 0.2s ease;
 }
 
+.calendar-day.is-today .day-panel-fake-checkbox {
+  border-color: #4f46e5;
+  background: #4f46e5;
+  color: #fff;
+  box-shadow: 0 0 0 0.4rem rgba(79, 70, 229, 0.15);
+}
+
+.calendar-day.is-before-habit .day-panel-fake-checkbox {
+  border-color: #e2e4ed;
+  background: #f0f1f6;
+  color: #a1a5b2;
+  opacity: 0.65;
+}
+
+.calendar-day.is-completed .day-panel-fake-checkbox {
+  border-color: #16a34a;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.calendar-day.is-missed .day-panel-fake-checkbox {
+  border-color: #dc2626;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Adjacent-month days keep their muted style above completion states. */
+.calendar-day.is-adjacent-month .day-panel-fake-checkbox {
+  border-color: transparent;
+  background: transparent;
+  color: #c4c7d2;
+  font-weight: 400;
+  opacity: 1;
+  box-shadow: none;
+}
+
 .wrapper-habit-content {
   display: flex;
   align-items: center;
@@ -918,6 +1003,8 @@ body.modal-open .section-login-popup * {
   gap: 0.8rem;
   width: min(100%, 20rem);
   justify-self: end;
+  margin-top: 4rem;
+  grid-template-rows: repeat(5, minmax(3.2rem, auto));
 }
 
 .habit-weekly-progres {
@@ -1129,6 +1216,7 @@ body.modal-open .section-login-popup * {
     grid-row: 1 / span 2;
     width: max(70%);
     align-self: start;
+    margin-top: 4rem;
   }
 
   .wrapper-habit-calendar {
@@ -1227,9 +1315,13 @@ body.modal-open .section-login-popup * {
     background: rgba(255, 255, 255, 0.98);
   }
 
-  .grid-login-right .heading-secondary,
-  .grid-login-right .paragraph-description {
+  .grid-login-right .wrapper-popup-heading .heading-secondary,
+  .grid-login-right .wrapper-popup-heading .paragraph-description {
     display: none;
+  }
+
+  .grid-login-right .auth-switch-text {
+    display: block;
   }
 
   .wrapper-login-email,
@@ -1336,6 +1428,7 @@ body.modal-open .section-login-popup * {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.8rem;
     justify-self: stretch;
+    margin-top: 0;
   }
 
   .habit-weekly-progres {

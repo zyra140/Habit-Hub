@@ -90,7 +90,7 @@
               zaznaczaj postępy każdego dnia.
             </p>
           </div>
-          <div class="wrapper-month-switcher">
+          <!-- <div class="wrapper-month-switcher">
             <button class="btn btn--month-switcher">
               <img class="habit-icon" src="../icons/arrow-left.svg" alt="" />
             </button>
@@ -103,7 +103,7 @@
             <button class="btn btn--month-switcher">
               <img class="habit-icon" src="../icons/arrow-right.svg" alt="" />
             </button>
-          </div>
+          </div> -->
         </div>
       </section>
 
@@ -124,13 +124,13 @@
               <div class="wrapper-label">
                 <label for="frequency">Częstotliwość</label>
                 <select class="input-frequency" name="Częstotliwość" id="">
-                  <option value="">Codziennie</option>
-                  <option value="">1 raz w tygodniu</option>
-                  <option value="">2 razy w tygodniu</option>
-                  <option value="">3 razy w tygodniu</option>
-                  <option value="">4 razy w tygodniu</option>
-                  <option value="">5 razy w tygodniu</option>
-                  <option value="">6 razy w tygodniu</option>
+                  <option value="Codziennie">Codziennie</option>
+                  <option value="1 raz w tygodniu">1 raz w tygodniu</option>
+                  <option value="2 razy w tygodniu">2 razy w tygodniu</option>
+                  <option value="3 razy w tygodniu">3 razy w tygodniu</option>
+                  <option value="4 razy w tygodniu">4 razy w tygodniu</option>
+                  <option value="5 razy w tygodniu">5 razy w tygodniu</option>
+                  <option value="6 razy w tygodniu">6 razy w tygodniu</option>
                 </select>
               </div>
               <div class="wrapper-label">
@@ -147,7 +147,10 @@
               <div class="wrapper-label">
                 <label for="">Ikonka</label>
                 <div class="icon-picker">
-                  <button class="wrapper-input-icon picker-trigger" type="button">
+                  <button
+                    class="wrapper-input-icon picker-trigger"
+                    type="button"
+                  >
                     <img
                       class="icon-selector-icon"
                       src="../icons/calendar-days-regular-full.svg"
@@ -161,31 +164,120 @@
                   </button>
 
                   <div class="icon-picker-menu" aria-label="Lista ikon">
-                    <button type="button" class="icon-option"><img src="../icons/calendar-days-regular-full.svg" alt="Kalendarz" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/Fire.svg" alt="Ogień" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/Graph.svg" alt="Wykres" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/bulb-outline-svgrepo-com.svg" alt="Żarówka" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/check-circle.svg" alt="Zatwierdzenie" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/house-regular-full.svg" alt="Dom" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/spiral-solid-full.svg" alt="Spirala" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/user-regular-full.svg" alt="Użytkownik" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/chart-bar-regular-full.svg" alt="Statystyki" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/gear-solid-full.svg" alt="Ustawienia" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/done-v-svgrepo-com.svg" alt="Gotowe" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/piggy-bank-save-svgrepo-com.svg" alt="Oszczędności" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/plus-large-svgrepo-com.svg" alt="Plus" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/delete-2-svgrepo-com.svg" alt="Usuń" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/edit-pencil-line-01-svgrepo-com.svg" alt="Edytuj" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/close-svgrepo-com (3).svg" alt="Zamknij" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/arrow-left.svg" alt="Lewo" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/arrow-right.svg" alt="Prawo" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/caret-up-fill.svg" alt="Góra" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/caret-down-fill.svg" alt="Dół" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/caret-left-fill.svg" alt="Lewo 2" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/caret-right-fill.svg" alt="Prawo 2" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/Graph-Arrow-Increase--Streamline-Core-Remix.svg" alt="Wzrost" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/Matches-Fire--Streamline-Ultimate.png" alt="Zapałki" /></button>
-                    <button type="button" class="icon-option"><img src="../icons/Graph-Stats-Ascend--Streamline-Ultimate.png" alt="Statystyki 2" /></button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/calendar-days-regular-full.svg"
+                        alt="Kalendarz"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/Fire.svg" alt="Ogień" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/Graph.svg" alt="Wykres" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/bulb-outline-svgrepo-com.svg"
+                        alt="Żarówka"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/check-circle.svg"
+                        alt="Zatwierdzenie"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/house-regular-full.svg" alt="Dom" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/spiral-solid-full.svg" alt="Spirala" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/user-regular-full.svg"
+                        alt="Użytkownik"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/chart-bar-regular-full.svg"
+                        alt="Statystyki"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/gear-solid-full.svg"
+                        alt="Ustawienia"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/done-v-svgrepo-com.svg" alt="Gotowe" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/piggy-bank-save-svgrepo-com.svg"
+                        alt="Oszczędności"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/plus-large-svgrepo-com.svg"
+                        alt="Plus"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/delete-2-svgrepo-com.svg" alt="Usuń" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/edit-pencil-line-01-svgrepo-com.svg"
+                        alt="Edytuj"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/close-svgrepo-com (3).svg"
+                        alt="Zamknij"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/arrow-left.svg" alt="Lewo" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/arrow-right.svg" alt="Prawo" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/caret-up-fill.svg" alt="Góra" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/caret-down-fill.svg" alt="Dół" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/caret-left-fill.svg" alt="Lewo 2" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img src="../icons/caret-right-fill.svg" alt="Prawo 2" />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/Graph-Arrow-Increase--Streamline-Core-Remix.svg"
+                        alt="Wzrost"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/Matches-Fire--Streamline-Ultimate.png"
+                        alt="Zapałki"
+                      />
+                    </button>
+                    <button type="button" class="icon-option">
+                      <img
+                        src="../icons/Graph-Stats-Ascend--Streamline-Ultimate.png"
+                        alt="Statystyki 2"
+                      />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -218,8 +310,7 @@
             </div>
 
             <!-- Habit Wrapper -->
-            <div class="grid habits-container">
-            </div>
+            <div class="grid habits-container"></div>
           </div>
         </div>
       </section>

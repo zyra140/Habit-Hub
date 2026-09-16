@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
 
-  <body class="modal-open//">
+  <body class="modal-open">
     <header class="header">
       <img class="logo" src="../icons/logo_horizontal.png" alt="HabHab logo" />
       <nav class="main-nav">
@@ -81,7 +81,13 @@
 
     <main>
       <!-- LOGIN POP UP -->
-      <!-- <section class="section-login-popup" aria-modal="true" role="dialog" tabindex="-1">
+      <section
+        class="section-login-popup"
+        aria-modal="true"
+        role="dialog"
+        aria-labelledby="auth-title"
+        tabindex="-1"
+      >
         <div class="grid grid-login-popup" tabindex="-1">
           <div class="grid grid-login-left">
             <img class="logo-login" src="../icons/logo_horizontal.png" alt="" />
@@ -96,36 +102,115 @@
             />
           </div>
           <div class="grid grid-login-right">
-            <div class="wrapper-popup-heading">
-              <h2 class="heading-secondary">Zaloguj się</h2>
-              <p class="paragraph-description">
-                Wprowadź swoje dane, aby uzyskać dostęp do swojego konta.
+            <div class="auth-view auth-view-login">
+              <div class="wrapper-popup-heading">
+                <h2 class="heading-secondary" id="auth-title">Zaloguj się</h2>
+                <p class="paragraph-description">
+                  Wprowadź swoje dane, aby uzyskać dostęp do swojego konta.
+                </p>
+              </div>
+              <div class="grid wrapper-login-email">
+                <label class="login-popup-label" for="login-email"
+                  >Adres e-mail</label
+                >
+                <input
+                  class="input-email"
+                  type="email"
+                  placeholder="twój@email.pl"
+                  id="login-email"
+                  autocomplete="email"
+                />
+              </div>
+              <div class="grid wrapper-login-password">
+                <label class="login-popup-label" for="login-password"
+                  >Hasło</label
+                >
+                <input
+                  class="input-password"
+                  type="password"
+                  placeholder="Wpisz swoje hasło"
+                  id="login-password"
+                  autocomplete="current-password"
+                />
+              </div>
+              <button class="btn btn--login" type="button">Zaloguj się</button>
+              <div class="login-divider" aria-label="lub"><span>lub</span></div>
+              <button class="btn btn--login--google" type="button">
+                Zaloguj się przez Google
+              </button>
+              <p class="paragraph-description auth-switch-text">
+                Nie masz konta?
+                <button class="register-link auth-switch" type="button">
+                  Zarejestruj się
+                </button>
               </p>
             </div>
-            <div class="grid wrapper-login-email">
-              <label class="login-popup-label" for="">Adres e-mail</label>
-              <input class="input-email" type="email" placeholder="twój@email.pl" name="" id="" />
+            <div class="auth-view auth-view-register" hidden>
+              <div class="wrapper-popup-heading">
+                <h2 class="heading-secondary">Utwórz konto</h2>
+                <p class="paragraph-description">
+                  Załóż konto i zacznij budować lepsze nawyki.
+                </p>
+              </div>
+              <div class="grid wrapper-login-email">
+                <label class="login-popup-label" for="register-name"
+                  >Imię</label
+                >
+                <input
+                  class="input-email"
+                  type="text"
+                  placeholder="Jak masz na imię?"
+                  id="register-name"
+                  autocomplete="name"
+                />
+              </div>
+              <div class="grid wrapper-login-email">
+                <label class="login-popup-label" for="register-email"
+                  >Adres e-mail</label
+                >
+                <input
+                  class="input-email"
+                  type="email"
+                  placeholder="twój@email.pl"
+                  id="register-email"
+                  autocomplete="email"
+                />
+              </div>
+              <div class="grid wrapper-login-password">
+                <label class="login-popup-label" for="register-password"
+                  >Hasło</label
+                >
+                <input
+                  class="input-password"
+                  type="password"
+                  placeholder="Utwórz hasło"
+                  id="register-password"
+                  autocomplete="new-password"
+                />
+              </div>
+              <div class="grid wrapper-login-password">
+                <label class="login-popup-label" for="register-password-confirm"
+                  >Powtórz hasło</label
+                >
+                <input
+                  class="input-password"
+                  type="password"
+                  placeholder="Powtórz hasło"
+                  id="register-password-confirm"
+                  autocomplete="new-password"
+                />
+              </div>
+              <button class="btn btn--login" type="button">Załóż konto</button>
+              <p class="paragraph-description auth-switch-text">
+                Masz już konto?
+                <button class="register-link auth-switch" type="button">
+                  Wróć do logowania
+                </button>
+              </p>
             </div>
-            <div class="grid wrapper-login-password">
-              <label class="login-popup-label" for="">Hasło</label>
-              <input class="input-password" type="password" placeholder="Wpisz swoje hasło" />
-            </div>
-
-            <button class="btn btn--login">Zaloguj się</button>
-            <div class="login-divider" aria-label="lub">
-              <span>lub</span>
-            </div>
-
-            <button class="btn btn--login--google">
-              Zaloguj się przez Google
-            </button>
-            <p class="paragraph-description">
-              Nie masz konta?
-              <a class="register-link" href="">Zarejestruj się</a>
-            </p>
           </div>
         </div>
-      </section> -->
+      </section>
 
       <!-- DAY SUMMARY -->
       <section class="section-day-summary">
