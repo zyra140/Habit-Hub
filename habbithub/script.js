@@ -71,14 +71,12 @@ const loginSubmitBtn = document.querySelector(".auth-view-login .btn--login");
 const registerNameInput = document.querySelector("#register-name");
 const registerEmailInput = document.querySelector("#register-email");
 const registerPasswordInput = document.querySelector("#register-password");
-const registerPasswordConfirmInput = document.querySelector(
-  "#register-password-confirm",
-);
-const registerSubmitBtn = document.querySelector(
-  ".auth-view-register .btn--login",
-);
+const registerPasswordConfirmInput = document.querySelector("#register-password-confirm",);
+const registerSubmitBtn = document.querySelector(".auth-view-register .btn--login",);
 const logoutBtn = document.querySelector(".btn-logout");
+const mainPageNameDisplay = document.querySelector('#nameDisplay');
 
+// ZMIANA UI PO ZALOGOWANIU
 function hideAuthModal() {
   if (loginPopup) {
     loginPopup.setAttribute("hidden", "hidden");
@@ -88,6 +86,7 @@ function hideAuthModal() {
   document.body.classList.remove("modal-open");
 }
 
+// ZMIANA UI PRZED ZALOGOWANIEM
 function showAuthModal() {
   if (loginPopup) {
     loginPopup.removeAttribute("hidden");
@@ -103,6 +102,7 @@ function completeAuthSuccess() {
 }
 
 const savedToken = localStorage.getItem("token");
+
 if (savedToken) {
   hideAuthModal();
 }
@@ -126,6 +126,7 @@ authSwitchers.forEach((btn) => {
 });
 
 //// BACKEND ///
+// autoryzacja
 async function handleAuthRequest(url, payload, successMessage) {
   try {
     const response = await fetch(`${API_URL}${url}`, {
@@ -137,6 +138,8 @@ async function handleAuthRequest(url, payload, successMessage) {
     });
 
     const data = await response.json();
+
+    console.log(data);
 
     if (!response.ok) {
       alert(data.message || "Wystąpił błąd");
@@ -156,6 +159,7 @@ async function handleAuthRequest(url, payload, successMessage) {
   }
 }
 
+// login
 loginSubmitBtn?.addEventListener("click", async function () {
   const email = loginEmailInput?.value.trim();
   const password = loginPasswordInput?.value.trim();
@@ -177,6 +181,7 @@ loginSubmitBtn?.addEventListener("click", async function () {
   }
 });
 
+//register
 registerSubmitBtn?.addEventListener("click", async function () {
   const name = registerNameInput?.value.trim();
   const email = registerEmailInput?.value.trim();
@@ -203,6 +208,11 @@ registerSubmitBtn?.addEventListener("click", async function () {
     completeAuthSuccess();
   }
 });
+
+// ZMIANA IMIENIA PO ZALOGOWANIU
+// mainPageNameDisplay.textContent = `Dzień dobry, ${}! 👋`;
+console.log(registerNameInput.value);
+// mainPageNameDisplay?.textContent = `Dzień dobry, Hubert! 👋`;
 
 //////////////////////////////// ADDING HABITS //////////////////////////////////
 //// ICON DROPDOWN ///
