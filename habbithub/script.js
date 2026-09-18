@@ -71,10 +71,14 @@ const loginSubmitBtn = document.querySelector(".auth-view-login .btn--login");
 const registerNameInput = document.querySelector("#register-name");
 const registerEmailInput = document.querySelector("#register-email");
 const registerPasswordInput = document.querySelector("#register-password");
-const registerPasswordConfirmInput = document.querySelector("#register-password-confirm",);
-const registerSubmitBtn = document.querySelector(".auth-view-register .btn--login",);
+const registerPasswordConfirmInput = document.querySelector(
+  "#register-password-confirm",
+);
+const registerSubmitBtn = document.querySelector(
+  ".auth-view-register .btn--login",
+);
 const logoutBtn = document.querySelector(".btn-logout");
-const mainPageNameDisplay = document.querySelector('#nameDisplay');
+const mainPageNameDisplay = document.querySelector("#nameDisplay");
 
 // ZMIANA UI PO ZALOGOWANIU
 function hideAuthModal() {
@@ -211,7 +215,6 @@ registerSubmitBtn?.addEventListener("click", async function () {
 
 // ZMIANA IMIENIA PO ZALOGOWANIU
 // mainPageNameDisplay.textContent = `Dzień dobry, ${}! 👋`;
-console.log(registerNameInput.value);
 // mainPageNameDisplay?.textContent = `Dzień dobry, Hubert! 👋`;
 
 //////////////////////////////// ADDING HABITS //////////////////////////////////
@@ -225,6 +228,66 @@ const inputIcon = document.querySelector(".icon-selector-icon");
 const inputName = document.querySelector(".input-name");
 const inputFrequency = document.querySelector(".input-frequency");
 const inputColor = document.querySelector(".input-color");
+
+// dropdown content render
+const iconArr = [
+  "../icons/habit-icons/alarm-clock.svg",
+  "../icons/habit-icons/ball.svg",
+  "../icons/habit-icons/battery.svg",
+  "../icons/habit-icons/bed.svg",
+  "../icons/habit-icons/bicycle.svg",
+  "../icons/habit-icons/book.svg",
+  "../icons/habit-icons/brain.svg",
+  "../icons/habit-icons/briefcase.svg",
+  "../icons/habit-icons/camera.svg",
+  "../icons/habit-icons/carrot.svg",
+  "../icons/habit-icons/coffee.svg",
+  "../icons/habit-icons/color-palette.svg",
+  "../icons/habit-icons/croissant.svg",
+  "../icons/habit-icons/drop.svg",
+  "../icons/habit-icons/fire.svg",
+  "../icons/habit-icons/fist.svg",
+  "../icons/habit-icons/flag-mountain.svg",
+  "../icons/habit-icons/gamepad.svg",
+  "../icons/habit-icons/glass.svg",
+  "../icons/habit-icons/gym.svg",
+  "../icons/habit-icons/headphones.svg",
+  "../icons/habit-icons/heart-book.svg",
+  "../icons/habit-icons/heart-music.svg",
+  "../icons/habit-icons/ladder.svg",
+  "../icons/habit-icons/lamp.svg",
+  "../icons/habit-icons/laundry.svg",
+  "../icons/habit-icons/lightning.svg",
+  "../icons/habit-icons/medicine.svg",
+  "../icons/habit-icons/money-bag.svg",
+  "../icons/habit-icons/monitor.svg",
+  "../icons/habit-icons/moon.svg",
+  "../icons/habit-icons/pen.svg",
+  "../icons/habit-icons/phone.svg",
+  "../icons/habit-icons/plant.svg",
+  "../icons/habit-icons/running.svg",
+  "../icons/habit-icons/shop-cart.svg",
+  "../icons/habit-icons/stairs-flag.svg",
+  "../icons/habit-icons/sun.svg",
+  "../icons/habit-icons/sunrise.svg",
+  "../icons/habit-icons/toast-bread.svg",
+  "../icons/habit-icons/tooth-brush.svg",
+  "../icons/habit-icons/weight-loss.svg",
+];
+
+const iconsHTML = iconArr
+  .map(
+    (icon) => `
+      <button type="button" class="icon-option">
+        <img
+          src="${icon}"
+        />
+      </button>
+    `,
+  )
+  .join("");
+
+iconMenu.insertAdjacentHTML("afterbegin", iconsHTML);
 
 // toggle dropdown
 pickerTrigger?.addEventListener("click", function () {

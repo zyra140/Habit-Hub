@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -0.5 16 16" id="Liquid-Drop--Streamline-Atlas" height="16" width="16">
+  <desc>
+    Liquid Drop Streamline Icon: https://streamlinehq.com
+  </desc>
+  <defs></defs>
+  <g id="blood">
+    <path d="M12.5 9.0625a5 5 0 0 1 -10 0 8.64375 8.64375 0 0 1 1.9375 -5c0.17500000000000002 -0.2375 0.35624999999999996 -0.4625 0.5375 -0.675A16.875 16.875 0 0 1 7.5 0.9375s5 3.75 5 8.125Z" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path>
+    <path d="M10 9.0625c0 1.7249999999999999 -0.775 3.125 -2.5 3.125" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path>
+    <path d="m10 7.1875 0 1.25" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path>
+  </g>
+</svg>

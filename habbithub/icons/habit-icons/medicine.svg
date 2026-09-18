@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -0.5 16 16" id="Drugs--Streamline-Atlas" height="16" width="16">
+  <desc>
+    Drugs Streamline Icon: https://streamlinehq.com
+  </desc>
+  <defs></defs>
+  <g id="drug">
+    <path d="M8.093538280375 1.5462033233125s1.489343657875 1.489343657875 0 2.97868731575l-3.5753086623750003 3.5753086623750003s-1.489343657875 1.489343657875 -2.97868731575 0 -1.489343657875 -1.489343657875 0 -2.97868731575l3.5753086623750003 -3.5753086623750003s1.489343657875 -1.489343657875 2.97868731575 0" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path>
+    <path d="M6.8999999999999995 10.475000000000001a3.5749999999999997 3.5749999999999997 0 1 0 7.1499999999999995 0 3.5749999999999997 3.5749999999999997 0 1 0 -7.1499999999999995 0" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path>
+    <path d="m12.98125 12.98125 -4.8875 -4.8875" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path>
+    <path d="M6.30625 6.30625 3.33125 3.33125" fill="none" stroke="#000000" stroke-miterlimit="10" stroke-width="1"></path>
+  </g>
+</svg>
