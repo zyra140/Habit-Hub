@@ -129,89 +129,89 @@ authSwitchers.forEach((btn) => {
   });
 });
 
-//// BACKEND ///
-// autoryzacja
-async function handleAuthRequest(url, payload, successMessage) {
-  try {
-    const response = await fetch(`${API_URL}${url}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+// //// BACKEND ///
+// // autoryzacja
+// async function handleAuthRequest(url, payload, successMessage) {
+//   try {
+//     const response = await fetch(`${API_URL}${url}`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(payload),
+//     });
 
-    const data = await response.json();
+//     const data = await response.json();
 
-    console.log(data);
+//     console.log(data);
 
-    if (!response.ok) {
-      alert(data.message || "Wystąpił błąd");
-      return null;
-    }
+//     if (!response.ok) {
+//       alert(data.message || "Wystąpił błąd");
+//       return null;
+//     }
 
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-    }
+//     if (data.token) {
+//       localStorage.setItem("token", data.token);
+//     }
 
-    alert(successMessage || data.message);
-    return data;
-  } catch (error) {
-    console.error("Auth error:", error);
-    alert("Nie udało się połączyć z serwerem");
-    return null;
-  }
-}
+//     alert(successMessage || data.message);
+//     return data;
+//   } catch (error) {
+//     console.error("Auth error:", error);
+//     alert("Nie udało się połączyć z serwerem");
+//     return null;
+//   }
+// }
 
-// login
-loginSubmitBtn?.addEventListener("click", async function () {
-  const email = loginEmailInput?.value.trim();
-  const password = loginPasswordInput?.value.trim();
+// // login
+// loginSubmitBtn?.addEventListener("click", async function () {
+//   const email = loginEmailInput?.value.trim();
+//   const password = loginPasswordInput?.value.trim();
 
-  if (!email || !password) {
-    alert("Uzupełnij email i hasło");
-    return;
-  }
+//   if (!email || !password) {
+//     alert("Uzupełnij email i hasło");
+//     return;
+//   }
 
-  const data = await handleAuthRequest(
-    "/api/auth/login",
-    { email, password },
-    "Zalogowano pomyślnie",
-  );
+//   const data = await handleAuthRequest(
+//     "/api/auth/login",
+//     { email, password },
+//     "Zalogowano pomyślnie",
+//   );
 
-  if (data?.user) {
-    completeAuthSuccess();
-    console.log("Zalogowany użytkownik:", data.user);
-  }
-});
+//   if (data?.user) {
+//     completeAuthSuccess();
+//     console.log("Zalogowany użytkownik:", data.user);
+//   }
+// });
 
-//register
-registerSubmitBtn?.addEventListener("click", async function () {
-  const name = registerNameInput?.value.trim();
-  const email = registerEmailInput?.value.trim();
-  const password = registerPasswordInput?.value.trim();
-  const confirmPassword = registerPasswordConfirmInput?.value.trim();
+// //register
+// registerSubmitBtn?.addEventListener("click", async function () {
+//   const name = registerNameInput?.value.trim();
+//   const email = registerEmailInput?.value.trim();
+//   const password = registerPasswordInput?.value.trim();
+//   const confirmPassword = registerPasswordConfirmInput?.value.trim();
 
-  if (!name || !email || !password || !confirmPassword) {
-    alert("Uzupełnij wszystkie pola");
-    return;
-  }
+//   if (!name || !email || !password || !confirmPassword) {
+//     alert("Uzupełnij wszystkie pola");
+//     return;
+//   }
 
-  if (password !== confirmPassword) {
-    alert("Hasła nie są takie same");
-    return;
-  }
+//   if (password !== confirmPassword) {
+//     alert("Hasła nie są takie same");
+//     return;
+//   }
 
-  const data = await handleAuthRequest(
-    "/api/auth/register",
-    { name, email, password },
-    "Konto zostało utworzone",
-  );
+//   const data = await handleAuthRequest(
+//     "/api/auth/register",
+//     { name, email, password },
+//     "Konto zostało utworzone",
+//   );
 
-  if (data?.token) {
-    completeAuthSuccess();
-  }
-});
+//   if (data?.token) {
+//     completeAuthSuccess();
+//   }
+// });
 
 // ZMIANA IMIENIA PO ZALOGOWANIU
 // mainPageNameDisplay.textContent = `Dzień dobry, ${}! 👋`;
@@ -410,7 +410,7 @@ addHabitBtn?.addEventListener("click", function () {
                   />
                   <div class="wrapper-habit-description-text">
                     <h3 class="heading-tertiary">${inputName.value}</h3>
-                    <p class="paragraph-description">${inputFrequency.value}</p>
+                    <p class="paragraph-description">${inputFrequency.value === "1" ? `raz w tygodniu` : `${inputFrequency.value} razy w tygodniu`}</p>
                   </div>
                 </div>
 
@@ -423,23 +423,23 @@ addHabitBtn?.addEventListener("click", function () {
                   <ul class="habit-list-weekly-progres grid">
                     <li class="habit-weekly-progres is-active">
                       <p>Tydz. 1</p>
-                      <p>5/7</p>
+                      <p>0/${inputFrequency.value}</p>
                     </li>
                     <li class="habit-weekly-progres">
                       <p>Tydz. 2</p>
-                      <p>5/7</p>
+                      <p>0/${inputFrequency.value}</p>
                     </li>
                     <li class="habit-weekly-progres">
                       <p>Tydz. 3</p>
-                      <p>5/7</p>
+                      <p>0/${inputFrequency.value}</p>
                     </li>
                     <li class="habit-weekly-progres">
                       <p>Tydz. 5</p>
-                      <p>5/7</p>
+                      <p>0/${inputFrequency.value}</p>
                     </li>
                     <li class="habit-weekly-progres">
                       <p>Tydz. 4</p>
-                      <p>5/7</p>
+                      <p>0/${inputFrequency.value}</p>
                     </li>
                   </ul>
                 </div>
@@ -448,4 +448,30 @@ addHabitBtn?.addEventListener("click", function () {
 
   //inserting html to container
   habitsContainer.insertAdjacentHTML("afterbegin", HTML);
+});
+
+//// EDIT HABIT BUTTON ///
+// event listener
+habitsContainer?.addEventListener("click", function (e) {
+  const button = e.target.closest(".btn--edit-habit");
+  if (!button) return;
+
+  const wrapper = button.closest(".habit-dropdown-wrapper");
+  const menu = wrapper?.querySelector(".habit-dropdown-menu");
+
+  menu?.classList.toggle("is-open");
+});
+
+// Closing dropdowns
+document.addEventListener("click", function (e) {
+  const editHabitDropdowns = document.querySelectorAll(".habit-dropdown-menu");
+  const clickedInsideDropdown = e.target.closest(".habit-dropdown-wrapper");
+
+  if (!editHabitDropdowns || clickedInsideDropdown) return;
+
+  editHabitDropdowns.forEach((dropdown) => {
+    if (dropdown.classList.contains("is-open")) {
+      dropdown.classList.remove("is-open");
+    }
+  });
 });
