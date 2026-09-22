@@ -872,7 +872,7 @@ body.modal-open .section-login-popup * {
 }
 
 .img-box--habbit-panel {
-  background-color: #d8d8fa;
+  /* background-color: #d8d8fa; */
 }
 
 .wrapper-habit-description-text {
@@ -1015,10 +1015,10 @@ body.modal-open .section-login-popup * {
   padding: 0.9rem 1rem;
   background: linear-gradient(
     180deg,
-    rgba(236, 234, 255, 0.7),
+    rgba(255, 234, 234, 0.7),
     rgba(245, 244, 255, 0.95)
   );
-  border: 1px solid rgba(109, 98, 236, 0.15);
+  /* border: 1px solid rgba(109, 98, 236, 0.15); */
   border-radius: 1.1rem;
   font-size: 1.2rem;
   color: #4a4a4a;

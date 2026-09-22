@@ -1,4 +1,40 @@
 "use strict";
+//////////////////////////////// SUPPORT FUNCTIONS //////////////////////////////////
+// HEX TO RGBA
+const hexToRgba = function (hex, alpha) {
+  const hexClean = hex.replace('#','');
+  const full = hexClean.length === 3 ? hexClean.split('').map((c) => c + c).join('') : hexClean;
+
+  const r = parseInt(full.slice(0, 2), 16);
+  const g = parseInt(full.slice(2, 4), 16);
+  const b = parseInt(full.slice(4, 6), 16);
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+// BLANK HABIT UI UPDATE
+const habitBlankHabits = document.querySelector('.grid-blank-habit');
+const habitBlankMain = document.querySelector('.grid-blank-habits')
+
+
+const DisactiveBlankHabitUI = function () {
+  if (habitBlankHabits?.classList.contains('display-none')) return;
+
+  habitBlankHabits?.classList.add('display-none');
+  habitBlankMain?.classList.add('display-none');
+}
+
+const ActiveBlankHabitUI = function () {
+  if (!habitBlankHabits?.classList.contains('display-none')) return;
+
+  habitBlankHabits?.classList.remove('display-none');
+  habitBlankMain?.classList.remove('display-none');
+}
+
+  
+// };
+
+// blankHabitUI();
 //////////////////////////////// MAIN PAGE //////////////////////////////////
 // DAILY CHART
 const optionsDailyChart = {
@@ -129,89 +165,89 @@ authSwitchers.forEach((btn) => {
   });
 });
 
-// //// BACKEND ///
-// // autoryzacja
-// async function handleAuthRequest(url, payload, successMessage) {
-//   try {
-//     const response = await fetch(`${API_URL}${url}`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(payload),
-//     });
+//// BACKEND ///
+// autoryzacja
+async function handleAuthRequest(url, payload, successMessage) {
+  try {
+    const response = await fetch(`${API_URL}${url}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-//     const data = await response.json();
+    const data = await response.json();
 
-//     console.log(data);
+    console.log(data);
 
-//     if (!response.ok) {
-//       alert(data.message || "Wystąpił błąd");
-//       return null;
-//     }
+    if (!response.ok) {
+      alert(data.message || "Wystąpił błąd");
+      return null;
+    }
 
-//     if (data.token) {
-//       localStorage.setItem("token", data.token);
-//     }
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+    }
 
-//     alert(successMessage || data.message);
-//     return data;
-//   } catch (error) {
-//     console.error("Auth error:", error);
-//     alert("Nie udało się połączyć z serwerem");
-//     return null;
-//   }
-// }
+    alert(successMessage || data.message);
+    return data;
+  } catch (error) {
+    console.error("Auth error:", error);
+    alert("Nie udało się połączyć z serwerem");
+    return null;
+  }
+}
 
-// // login
-// loginSubmitBtn?.addEventListener("click", async function () {
-//   const email = loginEmailInput?.value.trim();
-//   const password = loginPasswordInput?.value.trim();
+// login
+loginSubmitBtn?.addEventListener("click", async function () {
+  const email = loginEmailInput?.value.trim();
+  const password = loginPasswordInput?.value.trim();
 
-//   if (!email || !password) {
-//     alert("Uzupełnij email i hasło");
-//     return;
-//   }
+  if (!email || !password) {
+    alert("Uzupełnij email i hasło");
+    return;
+  }
 
-//   const data = await handleAuthRequest(
-//     "/api/auth/login",
-//     { email, password },
-//     "Zalogowano pomyślnie",
-//   );
+  const data = await handleAuthRequest(
+    "/api/auth/login",
+    { email, password },
+    "Zalogowano pomyślnie",
+  );
 
-//   if (data?.user) {
-//     completeAuthSuccess();
-//     console.log("Zalogowany użytkownik:", data.user);
-//   }
-// });
+  if (data?.user) {
+    completeAuthSuccess();
+    console.log("Zalogowany użytkownik:", data.user);
+  }
+});
 
-// //register
-// registerSubmitBtn?.addEventListener("click", async function () {
-//   const name = registerNameInput?.value.trim();
-//   const email = registerEmailInput?.value.trim();
-//   const password = registerPasswordInput?.value.trim();
-//   const confirmPassword = registerPasswordConfirmInput?.value.trim();
+//register
+registerSubmitBtn?.addEventListener("click", async function () {
+  const name = registerNameInput?.value.trim();
+  const email = registerEmailInput?.value.trim();
+  const password = registerPasswordInput?.value.trim();
+  const confirmPassword = registerPasswordConfirmInput?.value.trim();
 
-//   if (!name || !email || !password || !confirmPassword) {
-//     alert("Uzupełnij wszystkie pola");
-//     return;
-//   }
+  if (!name || !email || !password || !confirmPassword) {
+    alert("Uzupełnij wszystkie pola");
+    return;
+  }
 
-//   if (password !== confirmPassword) {
-//     alert("Hasła nie są takie same");
-//     return;
-//   }
+  if (password !== confirmPassword) {
+    alert("Hasła nie są takie same");
+    return;
+  }
 
-//   const data = await handleAuthRequest(
-//     "/api/auth/register",
-//     { name, email, password },
-//     "Konto zostało utworzone",
-//   );
+  const data = await handleAuthRequest(
+    "/api/auth/register",
+    { name, email, password },
+    "Konto zostało utworzone",
+  );
 
-//   if (data?.token) {
-//     completeAuthSuccess();
-//   }
-// });
+  if (data?.token) {
+    completeAuthSuccess();
+  }
+});
 
 // ZMIANA IMIENIA PO ZALOGOWANIU
 // mainPageNameDisplay.textContent = `Dzień dobry, ${}! 👋`;
@@ -287,7 +323,7 @@ const iconsHTML = iconArr
   )
   .join("");
 
-iconMenu.insertAdjacentHTML("afterbegin", iconsHTML);
+iconMenu?.insertAdjacentHTML("afterbegin", iconsHTML);
 
 // toggle dropdown
 pickerTrigger?.addEventListener("click", function () {
@@ -320,6 +356,10 @@ addHabitBtn?.addEventListener("click", function () {
   const currentMonth = today.getMonth();
   const habitCreatedDay = today.getDate();
   const weekdays = ["PON", "WT", "ŚR", "CZW", "PT", "SOB", "ND"];
+  const color = inputColor.value;
+  const color02 = hexToRgba(color, 0.2);
+  const gradient = `180deg, ${hexToRgba(color, 0.1)}, ${hexToRgba(color, 0.2)}`
+  console.log(color02, gradient);
 
   // RENDERING CALENDAR - start the grid on Monday and render five complete weeks
   // These arrays will later come from the DATABASE
@@ -405,6 +445,7 @@ addHabitBtn?.addEventListener("click", function () {
                 <div class="wrapper-habit-content">
                   <img
                     class="img-box img-box--habbit-panel"
+                    style="background: ${color02};"
                     src="${inputIcon.src}"
                     alt=""
                   />
@@ -421,23 +462,23 @@ addHabitBtn?.addEventListener("click", function () {
                 </div>
                 <div class="wrapper-weekly-progres">
                   <ul class="habit-list-weekly-progres grid">
-                    <li class="habit-weekly-progres is-active">
+                    <li class="habit-weekly-progres is-active" style="border: 1px solid ${color02}; background: linear-gradient(${gradient});">
                       <p>Tydz. 1</p>
                       <p>0/${inputFrequency.value}</p>
                     </li>
-                    <li class="habit-weekly-progres">
+                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
                       <p>Tydz. 2</p>
                       <p>0/${inputFrequency.value}</p>
                     </li>
-                    <li class="habit-weekly-progres">
+                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
                       <p>Tydz. 3</p>
                       <p>0/${inputFrequency.value}</p>
                     </li>
-                    <li class="habit-weekly-progres">
+                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
                       <p>Tydz. 5</p>
                       <p>0/${inputFrequency.value}</p>
                     </li>
-                    <li class="habit-weekly-progres">
+                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
                       <p>Tydz. 4</p>
                       <p>0/${inputFrequency.value}</p>
                     </li>
@@ -448,6 +489,9 @@ addHabitBtn?.addEventListener("click", function () {
 
   //inserting html to container
   habitsContainer.insertAdjacentHTML("afterbegin", HTML);
+
+  // UPDATE UI
+  DisactiveBlankHabitUI();
 });
 
 //// EDIT HABIT BUTTON ///
