@@ -116,7 +116,9 @@ body.modal-open .section-login-popup * {
   color: #222;
   background: #f9f9fd;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .input-email:focus,
@@ -215,7 +217,7 @@ body.modal-open .section-login-popup * {
 }
 
 /*******************************************/
-/* NAVGATION */
+/* NAVIGATION */
 /*******************************************/
 
 .logo {
@@ -295,6 +297,69 @@ body.modal-open .section-login-popup * {
   /* JS */
   color: #4f46e5;
   background-color: #ededfc;
+}
+
+.nav-profile-wrapper {
+  align-self: end;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ededfc;
+  border-radius: 25px;
+  cursor: pointer;
+  height: 5rem;
+  position: relative;
+}
+
+.profile-img {
+  height: 40px;
+  width: 40px;
+  margin-left: 0.8rem;
+  border-radius: 50%;
+}
+
+#profileName {
+  color: #333;
+}
+
+.profile-arrow-img {
+  height: 20px;
+  width: 20px;
+  margin-right: 0.8rem;
+  rotate: 180deg;
+}
+
+.profile-dropdown-menu {
+  background-color: #dcdafa;
+  position: absolute;
+  top: -14rem;
+  left: 0;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 1rem 2rem rgba(209, 205, 211, 0.233);
+  font-size: 1.2rem;
+  display: grid;
+  gap: 0.4rem;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-0.4rem);
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile-dropdown-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.log-out-button {
+  color: #b42318;
 }
 
 /*******************************************/
@@ -815,7 +880,8 @@ body.modal-open .section-login-popup * {
     max-height: 13.8rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.3rem;
-    padding: 0.35rem;    left: 0;
+    padding: 0.35rem;
+    left: 0;
   }
 
   .icon-option {
@@ -1133,7 +1199,10 @@ body.modal-open .section-login-popup * {
 }
 
 .edit-button,
-.delete-button {
+.delete-button,
+.profile-image-change-button,
+.profile-name-change-button,
+.log-out-button {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -1150,7 +1219,10 @@ body.modal-open .section-login-popup * {
 }
 
 .edit-button:hover,
-.delete-button:hover {
+.delete-button:hover,
+.profile-image-change-button:hover,
+.profile-name-change-button:hover,
+.log-out-button:hover {
   background-color: #ededfc;
 }
 

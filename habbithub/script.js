@@ -2,8 +2,14 @@
 //////////////////////////////// SUPPORT FUNCTIONS //////////////////////////////////
 // HEX TO RGBA
 const hexToRgba = function (hex, alpha) {
-  const hexClean = hex.replace('#','');
-  const full = hexClean.length === 3 ? hexClean.split('').map((c) => c + c).join('') : hexClean;
+  const hexClean = hex.replace("#", "");
+  const full =
+    hexClean.length === 3
+      ? hexClean
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : hexClean;
 
   const r = parseInt(full.slice(0, 2), 16);
   const g = parseInt(full.slice(2, 4), 16);
@@ -13,25 +19,23 @@ const hexToRgba = function (hex, alpha) {
 };
 
 // BLANK HABIT UI UPDATE
-const habitBlankHabits = document.querySelector('.grid-blank-habit');
-const habitBlankMain = document.querySelector('.grid-blank-habits')
-
+const habitBlankHabits = document.querySelector(".grid-blank-habit");
+const habitBlankMain = document.querySelector(".grid-blank-habits");
 
 const DisactiveBlankHabitUI = function () {
-  if (habitBlankHabits?.classList.contains('display-none')) return;
+  if (habitBlankHabits?.classList.contains("display-none")) return;
 
-  habitBlankHabits?.classList.add('display-none');
-  habitBlankMain?.classList.add('display-none');
-}
+  habitBlankHabits?.classList.add("display-none");
+  habitBlankMain?.classList.add("display-none");
+};
 
 const ActiveBlankHabitUI = function () {
-  if (!habitBlankHabits?.classList.contains('display-none')) return;
+  if (!habitBlankHabits?.classList.contains("display-none")) return;
 
-  habitBlankHabits?.classList.remove('display-none');
-  habitBlankMain?.classList.remove('display-none');
-}
+  habitBlankHabits?.classList.remove("display-none");
+  habitBlankMain?.classList.remove("display-none");
+};
 
-  
 // };
 
 // blankHabitUI();
@@ -113,9 +117,10 @@ const registerPasswordConfirmInput = document.querySelector(
 const registerSubmitBtn = document.querySelector(
   ".auth-view-register .btn--login",
 );
-const logoutBtn = document.querySelector(".btn-logout");
+const logoutBtn = document.querySelector(".log-out-button");
 const mainPageNameDisplay = document.querySelector("#nameDisplay");
-
+const profileWrapper = document.querySelector(".nav-profile-wrapper");
+const profileDropdown = document.querySelector(".profile-dropdown-menu");
 // ZMIANA UI PO ZALOGOWANIU
 function hideAuthModal() {
   if (loginPopup) {
@@ -146,8 +151,13 @@ const savedToken = localStorage.getItem("token");
 if (savedToken) {
   hideAuthModal();
 }
+// PROFILE DROPDOWN
+// opening dropdown
+profileWrapper?.addEventListener("click", function () {
+  profileDropdown.classList.toggle("is-open");
+});
 
-// LOG OUT BUTTON
+// log out button
 logoutBtn?.addEventListener("click", function () {
   localStorage.removeItem("token");
   showAuthModal();
@@ -358,7 +368,7 @@ addHabitBtn?.addEventListener("click", function () {
   const weekdays = ["PON", "WT", "ŚR", "CZW", "PT", "SOB", "ND"];
   const color = inputColor.value;
   const color02 = hexToRgba(color, 0.2);
-  const gradient = `180deg, ${hexToRgba(color, 0.1)}, ${hexToRgba(color, 0.2)}`
+  const gradient = `180deg, ${hexToRgba(color, 0.1)}, ${hexToRgba(color, 0.2)}`;
   console.log(color02, gradient);
 
   // RENDERING CALENDAR - start the grid on Monday and render five complete weeks
@@ -497,6 +507,14 @@ addHabitBtn?.addEventListener("click", function () {
 //// EDIT HABIT BUTTON ///
 // event listener
 habitsContainer?.addEventListener("click", function (e) {
+  const actionButton = e.target.closest(".edit-button, .delete-button");
+  if (actionButton) {
+    const wrapper = actionButton.closest(".habit-dropdown-wrapper");
+    const menu = wrapper?.querySelector(".habit-dropdown-menu");
+    menu?.classList.remove("is-open");
+    return;
+  }
+
   const button = e.target.closest(".btn--edit-habit");
   if (!button) return;
 
@@ -510,8 +528,13 @@ habitsContainer?.addEventListener("click", function (e) {
 document.addEventListener("click", function (e) {
   const editHabitDropdowns = document.querySelectorAll(".habit-dropdown-menu");
   const clickedInsideDropdown = e.target.closest(".habit-dropdown-wrapper");
+  const clickedInsideProfileDropdown = e.target.closest(".nav-profile-wrapper");
 
-  if (!editHabitDropdowns || clickedInsideDropdown) return;
+  if (clickedInsideDropdown || clickedInsideProfileDropdown) return;
+
+  if (profileDropdown.classList.contains("is-open")) {
+    profileDropdown.classList.remove("is-open");
+  }
 
   editHabitDropdowns.forEach((dropdown) => {
     if (dropdown.classList.contains("is-open")) {
