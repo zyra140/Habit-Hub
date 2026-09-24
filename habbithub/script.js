@@ -121,6 +121,7 @@ const logoutBtn = document.querySelector(".log-out-button");
 const mainPageNameDisplay = document.querySelector("#nameDisplay");
 const profileWrapper = document.querySelector(".nav-profile-wrapper");
 const profileDropdown = document.querySelector(".profile-dropdown-menu");
+
 // ZMIANA UI PO ZALOGOWANIU
 function hideAuthModal() {
   if (loginPopup) {
@@ -151,6 +152,7 @@ const savedToken = localStorage.getItem("token");
 if (savedToken) {
   hideAuthModal();
 }
+
 // PROFILE DROPDOWN
 // opening dropdown
 profileWrapper?.addEventListener("click", function () {
@@ -502,6 +504,8 @@ addHabitBtn?.addEventListener("click", function () {
 
   // UPDATE UI
   DisactiveBlankHabitUI();
+
+  // UPDATE BACKEND
 });
 
 //// EDIT HABIT BUTTON ///

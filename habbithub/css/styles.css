@@ -916,6 +916,10 @@ body.modal-open .section-login-popup * {
   gap: 2rem;
 }
 
+.habits-container {
+  gap: 2.4rem;
+}
+
 .wrapper-habit-panel {
   grid-template-columns: clamp(14rem, 18vw, 18rem) minmax(0, 1fr) minmax(
       18rem,
@@ -1318,7 +1322,7 @@ body.modal-open .section-login-popup * {
     width: 100%;
     max-width: 11.8rem;
     max-height: 13.8rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.3rem;
     padding: 0.35rem;
   }
@@ -1329,8 +1333,8 @@ body.modal-open .section-login-popup * {
   }
 
   .icon-option img {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2.7rem;
+    height: 2.7rem;
   }
 
   .section-login-popup {
@@ -1491,7 +1495,7 @@ body.modal-open .section-login-popup * {
   }
 
   .wrapper-weekly-progres {
-    width: 100%;
+    display: none;
   }
 
   .habit-list-weekly-progres {
@@ -1533,6 +1537,9 @@ body.modal-open .section-login-popup * {
 
   /* NAVIGATION */
   .main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     top: auto;
     bottom: 0;
     left: 0;
@@ -1585,6 +1592,31 @@ body.modal-open .section-login-popup * {
   .main-nav-link .nav-icon {
     width: clamp(2.2rem, 7vw, 3rem);
     height: clamp(2.2rem, 7vw, 3rem);
+  }
+
+  .nav-profile-wrapper {
+    justify-content: center;
+    background-color: inherit;
+  }
+
+  .profile-img {
+    height: 35px;
+    width: 35px;
+    margin-right: 0.8rem;
+  }
+
+  #profileName {
+    display: none;
+  }
+
+  .profile-arrow-img {
+    display: none;
+  }
+
+  .profile-dropdown-menu {
+    top: -15rem;
+    left: -10rem;
+    width: 300%;
   }
 
   /* DAY SUMMARY */
