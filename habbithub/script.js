@@ -552,7 +552,7 @@ document.addEventListener("click", function (e) {
 
   if (clickedInsideDropdown || clickedInsideProfileDropdown) return;
 
-  if (profileDropdown.classList.contains("is-open")) {
+  if (profileDropdown?.classList.contains("is-open")) {
     profileDropdown.classList.remove("is-open");
   }
 
