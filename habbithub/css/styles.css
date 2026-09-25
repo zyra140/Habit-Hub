@@ -318,6 +318,14 @@ body.modal-open .section-login-popup * {
   border-radius: 50%;
 }
 
+.default-profile-img {
+  background-color: #fafafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+}
+
 #profileName {
   color: #333;
 }
@@ -808,6 +816,18 @@ body.modal-open .section-login-popup * {
   font: inherit;
 }
 
+.wrapper-input-icon input[type="color"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.color-circle {
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: #ef233c;
+}
 .icon-picker {
   position: relative;
   width: max-content;

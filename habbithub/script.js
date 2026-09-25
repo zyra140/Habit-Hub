@@ -121,6 +121,8 @@ const logoutBtn = document.querySelector(".log-out-button");
 const mainPageNameDisplay = document.querySelector("#nameDisplay");
 const profileWrapper = document.querySelector(".nav-profile-wrapper");
 const profileDropdown = document.querySelector(".profile-dropdown-menu");
+const profileImage = document.querySelector(".profile-img");
+const nameLetter = document.querySelector(".name-letter");
 
 // ZMIANA UI PO ZALOGOWANIU
 function hideAuthModal() {
@@ -259,6 +261,9 @@ registerSubmitBtn?.addEventListener("click", async function () {
   if (data?.token) {
     completeAuthSuccess();
   }
+
+  // Generate Profile image
+  nameLetter.textContent = name[0].toUpperCase();
 });
 
 // ZMIANA IMIENIA PO ZALOGOWANIU
@@ -276,6 +281,8 @@ const inputIcon = document.querySelector(".icon-selector-icon");
 const inputName = document.querySelector(".input-name");
 const inputFrequency = document.querySelector(".input-frequency");
 const inputColor = document.querySelector(".input-color");
+const wrapperInputColor = document.querySelector(".wrapper-input-icon");
+const inputColorCircle = document.querySelector(".color-circle");
 
 // dropdown content render
 const iconArr = [
@@ -356,6 +363,15 @@ iconMenu?.addEventListener("click", function (e) {
 
   inputIcon.src = iconInput.querySelector("img").src;
   iconPicker.classList.toggle("open");
+});
+
+//color input
+wrapperInputColor?.addEventListener("click", () => {
+  inputColor.click();
+});
+
+wrapperInputColor?.addEventListener("input", () => {
+  inputColorCircle.style.backgroundColor = inputColor.value;
 });
 
 //// ADDING HABIT ///
