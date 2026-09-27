@@ -7,6 +7,8 @@ const jwt = require("jsonwebtoken");
 
 const User = require("./src/models/User");
 
+const Habit = require("./src/models/Habit");
+
 dotenv.config();
 
 const app = express();
@@ -20,6 +22,38 @@ app.get("/", (req, res) => {
     message: "API działa. Możesz teraz rejestrować użytkowników i logować się.",
   });
 });
+
+const authenticateToken = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      message: "Brak tokenu",
+    });
+  }
+
+  try {
+    const token = authHeader.split(" ")[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({
+        message: "Użytkownik nie istnieje",
+      });
+    }
+
+    req.user = user;
+
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      message: "Nieprawidłowy lub wygasły token",
+    });
+  }
+};
 
 app.post("/api/auth/register", async (req, res) => {
   const { name, email, password } = req.body;
@@ -136,6 +170,201 @@ app.get("/api/auth/me", async (req, res) => {
     return res.status(401).json({ message: "Nieprawidłowy token" });
   }
 });
+
+  // Adding habits
+  
+  app.post("/api/habits", authenticateToken, async (req, res) => {
+  const { name, frequency, icon, color } = req.body;
+
+  if (!name || !frequency) {
+    return res.status(400).json({
+      message: "Nazwa i częstotliwość są wymagane",
+    });
+  }
+
+  try {
+    const habit = await Habit.create({
+      user: req.user._id,
+      name,
+      frequency,
+      icon: icon || "",
+      color: color || "#4f46e5",
+      completedDates: [],
+    });
+
+    return res.status(201).json({
+      message: "Nawyk został utworzony",
+      habit,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Błąd podczas tworzenia nawyku",
+      error: error.message,
+    });
+  }
+});
+
+app.get("/api/habits", authenticateToken, async (req, res) => {
+  try {
+    const habits = await Habit.find({
+      user: req.user._id,
+    }).sort({ createdAt: -1 });
+
+    return res.json({
+      habits,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Błąd podczas pobierania nawyków",
+      error: error.message,
+    });
+  }
+});
+
+app.get("/api/habits/:id", authenticateToken, async (req, res) => {
+  try {
+    const habit = await Habit.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+
+    if (!habit) {
+      return res.status(404).json({
+        message: "Nawyk nie został znaleziony",
+      });
+    }
+
+    return res.json({
+      habit,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Błąd podczas pobierania nawyku",
+      error: error.message,
+    });
+  }
+});
+
+//edit
+app.put("/api/habits/:id", authenticateToken, async (req, res) => {
+  const { name, frequency, icon, color } = req.body;
+
+  try {
+    const habit = await Habit.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+
+    if (!habit) {
+      return res.status(404).json({
+        message: "Nawyk nie został znaleziony",
+      });
+    }
+
+    if (name !== undefined) {
+      habit.name = name;
+    }
+
+    if (frequency !== undefined) {
+      habit.frequency = frequency;
+    }
+
+    if (icon !== undefined) {
+      habit.icon = icon;
+    }
+
+    if (color !== undefined) {
+      habit.color = color;
+    }
+
+    await habit.save();
+
+    return res.json({
+      message: "Nawyk został zaktualizowany",
+      habit,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Błąd podczas aktualizacji nawyku",
+      error: error.message,
+    });
+  }
+});
+
+//delate
+app.delete("/api/habits/:id", authenticateToken, async (req, res) => {
+  try {
+    const habit = await Habit.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+
+    if (!habit) {
+      return res.status(404).json({
+        message: "Nawyk nie został znaleziony",
+      });
+    }
+
+    return res.json({
+      message: "Nawyk został usunięty",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Błąd podczas usuwania nawyku",
+      error: error.message,
+    });
+  }
+});
+
+//copletedDates
+app.post(
+  "/api/habits/:id/complete",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const habit = await Habit.findOne({
+        _id: req.params.id,
+        user: req.user._id,
+      });
+
+      if (!habit) {
+        return res.status(404).json({
+          message: "Nawyk nie został znaleziony",
+        });
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const alreadyCompleted = habit.completedDates.some((date) => {
+        const completedDate = new Date(date);
+        completedDate.setHours(0, 0, 0, 0);
+
+        return completedDate.getTime() === today.getTime();
+      });
+
+      if (alreadyCompleted) {
+        return res.status(400).json({
+          message: "Ten nawyk jest już wykonany dzisiaj",
+        });
+      }
+
+      habit.completedDates.push(today);
+
+      await habit.save();
+
+      return res.json({
+        message: "Nawyk oznaczony jako wykonany",
+        habit,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Błąd podczas oznaczania nawyku",
+        error: error.message,
+      });
+    }
+  }
+);
 
 mongoose
   .connect(process.env.MONGO_URI)

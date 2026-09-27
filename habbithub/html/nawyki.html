@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
 
-  <body>
+  <body class="modal-open">
     <header class="header">
       <img class="logo" src="../icons/logo_horizontal.png" alt="HabHab logo" />
       <nav class="main-nav grid">
@@ -116,6 +116,137 @@
     </header>
 
     <main>
+      <!-- LOGIN POP UP -->
+      <section
+        class="section-login-popup"
+        aria-modal="true"
+        role="dialog"
+        aria-labelledby="auth-title"
+        tabindex="-1"
+      >
+        <div class="grid grid-login-popup" tabindex="-1">
+          <div class="grid grid-login-left">
+            <img class="logo-login" src="../icons/logo_horizontal.png" alt="" />
+            <h2 class="heading-secondary">Witaj ponownie!</h2>
+            <p class="paragraph-description">
+              Zaloguj się, aby kontynuować budowanie lepszych nawyków.
+            </p>
+            <img
+              class="image-login"
+              src="../Images/habit-hero (2)-nobg.svg"
+              alt=""
+            />
+          </div>
+          <div class="grid grid-login-right">
+            <div class="auth-view auth-view-login">
+              <div class="wrapper-popup-heading">
+                <h2 class="heading-secondary" id="auth-title">Zaloguj się</h2>
+                <p class="paragraph-description">
+                  Wprowadź swoje dane, aby uzyskać dostęp do swojego konta.
+                </p>
+              </div>
+              <div class="grid wrapper-login-email">
+                <label class="login-popup-label" for="login-email"
+                  >Adres e-mail</label
+                >
+                <input
+                  class="input-email"
+                  type="email"
+                  placeholder="twój@email.pl"
+                  id="login-email"
+                  autocomplete="email"
+                />
+              </div>
+              <div class="grid wrapper-login-password">
+                <label class="login-popup-label" for="login-password"
+                  >Hasło</label
+                >
+                <input
+                  class="input-password"
+                  type="password"
+                  placeholder="Wpisz swoje hasło"
+                  id="login-password"
+                  autocomplete="current-password"
+                />
+              </div>
+              <button class="btn btn--login" type="button">Zaloguj się</button>
+              <div class="login-divider" aria-label="lub"><span>lub</span></div>
+              <button class="btn btn--login--google" type="button">
+                Zaloguj się przez Google
+              </button>
+              <p class="paragraph-description auth-switch-text">
+                Nie masz konta?
+                <button class="register-link auth-switch" type="button">
+                  Zarejestruj się
+                </button>
+              </p>
+            </div>
+            <div class="auth-view auth-view-register" hidden>
+              <div class="wrapper-popup-heading">
+                <h2 class="heading-secondary">Utwórz konto</h2>
+                <p class="paragraph-description">
+                  Załóż konto i zacznij budować lepsze nawyki.
+                </p>
+              </div>
+              <div class="grid wrapper-login-email">
+                <label class="login-popup-label" for="register-name"
+                  >Imię</label
+                >
+                <input
+                  class="input-email"
+                  type="text"
+                  placeholder="Jak masz na imię?"
+                  id="register-name"
+                  autocomplete="name"
+                />
+              </div>
+              <div class="grid wrapper-login-email">
+                <label class="login-popup-label" for="register-email"
+                  >Adres e-mail</label
+                >
+                <input
+                  class="input-email"
+                  type="email"
+                  placeholder="twój@email.pl"
+                  id="register-email"
+                  autocomplete="email"
+                />
+              </div>
+              <div class="grid wrapper-login-password">
+                <label class="login-popup-label" for="register-password"
+                  >Hasło</label
+                >
+                <input
+                  class="input-password"
+                  type="password"
+                  placeholder="Utwórz hasło"
+                  id="register-password"
+                  autocomplete="new-password"
+                />
+              </div>
+              <div class="grid wrapper-login-password">
+                <label class="login-popup-label" for="register-password-confirm"
+                  >Powtórz hasło</label
+                >
+                <input
+                  class="input-password"
+                  type="password"
+                  placeholder="Powtórz hasło"
+                  id="register-password-confirm"
+                  autocomplete="new-password"
+                />
+              </div>
+              <button class="btn btn--login" type="button">Załóż konto</button>
+              <p class="paragraph-description auth-switch-text">
+                Masz już konto?
+                <button class="register-link auth-switch" type="button">
+                  Wróć do logowania
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
       <!-- ADD HABBIT SECTION -->
       <section class="section-add-habit">
         <div class="container container-add-habit">

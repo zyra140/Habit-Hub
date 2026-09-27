@@ -39,6 +39,160 @@ const ActiveBlankHabitUI = function () {
 // };
 
 // blankHabitUI();
+
+// RENDER HABIT
+const renderHabit = function (habit) {
+  const today = new Date();
+
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+
+  const habitCreatedDate = new Date(habit.createdAt);
+  const habitCreatedDay = today.getDate();
+
+  const weekdays = ["PON", "WT", "ŚR", "CZW", "PT", "SOB", "ND"];
+
+  const color = habit.color;
+  const color02 = hexToRgba(color, 0.2);
+  const gradient = `180deg, ${hexToRgba(color, 0.1)}, ${hexToRgba(color, 0.2)}`;
+ 
+  //completed days
+  const completedDays = habit.completedDates.map((date) => {
+    const completedDate = new Date(date);
+
+    // days only from current month
+    if (completedDate.getFullYear() === currentYear && completedDate.getMonth() === currentMonth) {
+      return completedDate.getDate();
+    }
+    return null;
+  })
+
+  //calendar
+  const firstDayOfMonth = (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
+
+  // rendering weekdays names
+  const calendarHeadersHTML = weekdays
+    .map(function (weekday) {
+      return `<li class="calendar-cell calendar-header"><p class="paragraph-description">${weekday}</p></li>`;
+    })
+    .join("");
+
+    // Render previous, current and next month days in chronological order.
+  const calendarDaysHTML = Array.from({ length: 35 }, function (_, index) {
+    // checking wchich day is first monday // current month or previous
+    const date = new Date(
+      currentYear,
+      currentMonth,
+      index - firstDayOfMonth + 1,
+    );
+    const day = date.getDate();
+    const dayClasses = ["calendar-cell", "calendar-day"];
+    const isCurrentMonth = date.getMonth() === currentMonth;
+    const isToday = date.toDateString() === today.toDateString();
+
+    // adding adjacent month class
+    if (!isCurrentMonth) dayClasses.push("is-adjacent-month");
+
+    // adding today class
+    if (isToday) dayClasses.push("is-today");
+
+    // adding day before habit class
+    if (isCurrentMonth && date < today && date.getDate() < habitCreatedDay) {
+      dayClasses.push("is-before-habit");
+    }
+
+    // adding completed day class
+    if (isCurrentMonth && completedDays.includes(day)) {
+      dayClasses.push("is-completed");
+    }
+
+    // adding missed day class
+    // if (isCurrentMonth && missedDays.includes(day)) {
+    //   dayClasses.push("is-missed");
+    // }
+
+    return `<li class="${dayClasses.join(" ")}"><span class="day-panel-fake-checkbox">${day}</span></li>`;
+  }).join("");
+
+  // adding html elements to one
+  const calendarColumnsHTML = calendarHeadersHTML + calendarDaysHTML;
+
+  //frequency
+  const frequencyText = habit.frequency === '1' ? 'raz w tygodniu' : `${habit.frequency} razy w tygodniu`;
+
+  // final HTML to insert
+  const HTML = `
+              <div class="grid wrapper-habit-panel">
+                <div class="habit-dropdown-wrapper">
+                  <button class="btn--edit-habit">&vellip;</button>
+                  <div class="habit-dropdown-menu">
+                    <button class="edit-button">
+                      <img
+                        class="icon-dropdown"
+                        src="../icons/edit-pencil-line-01-svgrepo-com.svg"
+                        alt=""
+                      />
+                      Edytuj
+                    </button>
+                    <button class="delete-button">
+                      <img
+                        class="icon-dropdown"
+                        src="../icons/delete-2-svgrepo-com.svg"
+                        alt=""
+                      />
+                      Usuń
+                    </button>
+                  </div>
+                </div>
+
+                <div class="wrapper-habit-content">
+                  <img
+                    class="img-box img-box--habbit-panel"
+                    style="background: ${color02};"
+                    src="${habit.icon}"
+                    alt=""
+                  />
+                  <div class="wrapper-habit-description-text">
+                    <h3 class="heading-tertiary">${habit.name}</h3>
+                    <p class="paragraph-description">${habit.frequency === "1" ? `raz w tygodniu` : `${habit.frequency} razy w tygodniu`}</p>
+                  </div>
+                </div>
+
+                <div class="wrapper-habit-calendar">
+                  <ul class="habit-list grid grid--7-cols">
+                    ${calendarColumnsHTML}
+                  </ul>
+                </div>
+                <div class="wrapper-weekly-progres">
+                  <ul class="habit-list-weekly-progres grid">
+                    <li class="habit-weekly-progres is-active" style="border: 1px solid ${color02}; background: linear-gradient(${gradient});">
+                      <p>Tydz. 1</p>
+                      <p>0/${habit.frequency}</p>
+                    </li>
+                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
+                      <p>Tydz. 2</p>
+                      <p>0/${habit.frequency}</p>
+                    </li>
+                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
+                      <p>Tydz. 3</p>
+                      <p>0/${habit.frequency}</p>
+                    </li>
+                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
+                      <p>Tydz. 5</p>
+                      <p>0/${habit.frequency}</p>
+                    </li>
+                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
+                      <p>Tydz. 4</p>
+                      <p>0/${habit.frequency}</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+  `;
+
+  //inserting html to container
+  habitsContainer.insertAdjacentHTML("afterbegin", HTML); 
+}
 //////////////////////////////// MAIN PAGE //////////////////////////////////
 // DAILY CHART
 const optionsDailyChart = {
@@ -155,6 +309,55 @@ if (savedToken) {
   hideAuthModal();
 }
 
+//LOAD HABITS FROM BACKEND
+async function loadHabits() {
+  const token = localStorage.getItem("token");
+
+  // Nie ma zalogowanego użytkownika
+  if (!token) {
+    habitsContainer.innerHTML = "";
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/habits", {
+      method: "GET",
+
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Nie udało się pobrać nawyków");
+    }
+
+    console.log("Pobrane nawyki:", data.habits);
+
+    // Czyścimy aktualne karty
+    if (!habitsContainer) return;
+    habitsContainer.innerHTML = "";
+
+    // UPDATE UI
+    DisactiveBlankHabitUI();
+
+    // Renderujemy każdy habit
+    data.habits.forEach((habit) => {
+      renderHabit(habit);
+    });
+  } catch (error) {
+    console.error("Błąd podczas pobierania nawyków:", error);
+
+    // Jeżeli token wygasł / jest nieprawidłowy
+    if (error.message === "Nieprawidłowy lub wygasły token") {
+      localStorage.removeItem("token");
+      habitsContainer.innerHTML = "";
+    }
+  }
+}
+
 // PROFILE DROPDOWN
 // opening dropdown
 profileWrapper?.addEventListener("click", function () {
@@ -164,6 +367,10 @@ profileWrapper?.addEventListener("click", function () {
 // log out button
 logoutBtn?.addEventListener("click", function () {
   localStorage.removeItem("token");
+
+  if (habitsContainer) {
+    habitsContainer.innerHTML = "";
+  }
   showAuthModal();
   loginView?.removeAttribute("hidden");
   registerView?.setAttribute("hidden", "hidden");
@@ -374,154 +581,62 @@ wrapperInputColor?.addEventListener("input", () => {
   inputColorCircle.style.backgroundColor = inputColor.value;
 });
 
+/////////////////////////////////////
 //// ADDING HABIT ///
-addHabitBtn?.addEventListener("click", function () {
+////////////////////////////////////
+addHabitBtn?.addEventListener("click", async function () {
   // VALIDATION
   if (!inputName.value) return alert("Nieprawidłowa nazwa nawyku!");
 
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth();
-  const habitCreatedDay = today.getDate();
-  const weekdays = ["PON", "WT", "ŚR", "CZW", "PT", "SOB", "ND"];
-  const color = inputColor.value;
-  const color02 = hexToRgba(color, 0.2);
-  const gradient = `180deg, ${hexToRgba(color, 0.1)}, ${hexToRgba(color, 0.2)}`;
-  console.log(color02, gradient);
+  // BACK AND SAVE / BACKEND VALIDATION => UPDATE UI
+  try {
+    const token = localStorage.getItem("token");
 
-  // RENDERING CALENDAR - start the grid on Monday and render five complete weeks
-  // These arrays will later come from the DATABASE
-  const completedDays = [10, 12, 15];
-  const missedDays = [11, 13];
-
-  // first day on a month
-  const firstDayOfMonth =
-    (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
-
-  // rendering weekdays names
-  const calendarHeadersHTML = weekdays
-    .map(function (weekday) {
-      return `<li class="calendar-cell calendar-header"><p class="paragraph-description">${weekday}</p></li>`;
-    })
-    .join("");
-
-  // Render previous, current and next month days in chronological order.
-  const calendarDaysHTML = Array.from({ length: 35 }, function (_, index) {
-    // checking wchich day is first monday // current month or previous
-    const date = new Date(
-      currentYear,
-      currentMonth,
-      index - firstDayOfMonth + 1,
-    );
-    const day = date.getDate();
-    const dayClasses = ["calendar-cell", "calendar-day"];
-    const isCurrentMonth = date.getMonth() === currentMonth;
-    const isToday = date.toDateString() === today.toDateString();
-
-    // adding adjacent month class
-    if (!isCurrentMonth) dayClasses.push("is-adjacent-month");
-
-    // adding today class
-    if (isToday) dayClasses.push("is-today");
-
-    // adding day before habit class
-    if (isCurrentMonth && date < today && date.getDate() < habitCreatedDay) {
-      dayClasses.push("is-before-habit");
+    if (!token) {
+      alert("Musisz być zalogowany!");
+      return;
     }
 
-    // adding completed day class
-    if (isCurrentMonth && completedDays.includes(day)) {
-      dayClasses.push("is-completed");
+    const response = await fetch("http://localhost:5000/api/habits", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+
+      body: JSON.stringify({
+        name: inputName.value,
+        frequency: inputFrequency.value,
+        icon: inputIcon.src,
+        color: inputColor.value,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Nie udało się zapisać nawyku");
     }
 
-    // adding missed day class
-    if (isCurrentMonth && missedDays.includes(day)) {
-      dayClasses.push("is-missed");
-    }
+    console.log("Nawyk zapisany w MongoDB:", data.habit);
 
-    return `<li class="${dayClasses.join(" ")}"><span class="day-panel-fake-checkbox">${day}</span></li>`;
-  }).join("");
+    // Możesz zachować ID na potrzeby późniejszych operacji
+    const habitId = data.habit._id;
 
-  // adding html elements to one
-  const calendarColumnsHTML = calendarHeadersHTML + calendarDaysHTML;
+    console.log("ID nawyku:", habitId);
 
-  // final HTML to insert
-  const HTML = `
-              <div class="grid wrapper-habit-panel">
-                <div class="habit-dropdown-wrapper">
-                  <button class="btn--edit-habit">&vellip;</button>
-                  <div class="habit-dropdown-menu">
-                    <button class="edit-button">
-                      <img
-                        class="icon-dropdown"
-                        src="../icons/edit-pencil-line-01-svgrepo-com.svg"
-                        alt=""
-                      />
-                      Edytuj
-                    </button>
-                    <button class="delete-button">
-                      <img
-                        class="icon-dropdown"
-                        src="../icons/delete-2-svgrepo-com.svg"
-                        alt=""
-                      />
-                      Usuń
-                    </button>
-                  </div>
-                </div>
+    //REDNER
+    renderHabit(data.habit);
 
-                <div class="wrapper-habit-content">
-                  <img
-                    class="img-box img-box--habbit-panel"
-                    style="background: ${color02};"
-                    src="${inputIcon.src}"
-                    alt=""
-                  />
-                  <div class="wrapper-habit-description-text">
-                    <h3 class="heading-tertiary">${inputName.value}</h3>
-                    <p class="paragraph-description">${inputFrequency.value === "1" ? `raz w tygodniu` : `${inputFrequency.value} razy w tygodniu`}</p>
-                  </div>
-                </div>
+    // UPDATE UI
+    DisactiveBlankHabitUI();
 
-                <div class="wrapper-habit-calendar">
-                  <ul class="habit-list grid grid--7-cols">
-                    ${calendarColumnsHTML}
-                  </ul>
-                </div>
-                <div class="wrapper-weekly-progres">
-                  <ul class="habit-list-weekly-progres grid">
-                    <li class="habit-weekly-progres is-active" style="border: 1px solid ${color02}; background: linear-gradient(${gradient});">
-                      <p>Tydz. 1</p>
-                      <p>0/${inputFrequency.value}</p>
-                    </li>
-                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
-                      <p>Tydz. 2</p>
-                      <p>0/${inputFrequency.value}</p>
-                    </li>
-                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
-                      <p>Tydz. 3</p>
-                      <p>0/${inputFrequency.value}</p>
-                    </li>
-                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
-                      <p>Tydz. 5</p>
-                      <p>0/${inputFrequency.value}</p>
-                    </li>
-                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
-                      <p>Tydz. 4</p>
-                      <p>0/${inputFrequency.value}</p>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-  `;
+  } catch (error) {
+    console.error("Błąd podczas zapisywania nawyku:", error);
+    alert(error.message);
+  }
 
-  //inserting html to container
-  habitsContainer.insertAdjacentHTML("afterbegin", HTML);
-
-  // UPDATE UI
-  DisactiveBlankHabitUI();
-
-  // UPDATE BACKEND
 });
 
 //// EDIT HABIT BUTTON ///
@@ -562,3 +677,6 @@ document.addEventListener("click", function (e) {
     }
   });
 });
+
+// load habits
+loadHabits();
