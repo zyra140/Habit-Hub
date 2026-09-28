@@ -122,7 +122,7 @@ const renderHabit = function (habit) {
 
   // final HTML to insert
   const HTML = `
-              <div class="grid wrapper-habit-panel">
+              <div class="grid wrapper-habit-panel" data-habit-id=${habit._id}>
                 <div class="habit-dropdown-wrapper">
                   <button class="btn--edit-habit">&vellip;</button>
                   <div class="habit-dropdown-menu">
@@ -193,6 +193,10 @@ const renderHabit = function (habit) {
   //inserting html to container
   habitsContainer.insertAdjacentHTML("afterbegin", HTML); 
 }
+
+// DELATE HABIT
+
+
 //////////////////////////////// MAIN PAGE //////////////////////////////////
 // DAILY CHART
 const optionsDailyChart = {
@@ -490,6 +494,7 @@ const inputFrequency = document.querySelector(".input-frequency");
 const inputColor = document.querySelector(".input-color");
 const wrapperInputColor = document.querySelector(".wrapper-input-icon");
 const inputColorCircle = document.querySelector(".color-circle");
+const deleteButton = document.querySelector('.delete-button');
 
 // dropdown content render
 const iconArr = [
@@ -641,9 +646,74 @@ addHabitBtn?.addEventListener("click", async function () {
 
 //// EDIT HABIT BUTTON ///
 // event listener
-habitsContainer?.addEventListener("click", function (e) {
+habitsContainer?.addEventListener ("click", async function (e) {
   const actionButton = e.target.closest(".edit-button, .delete-button");
+  const deleteButton = e.target.closest('.delete-button');
+  const editButton = e.target.closest('.edit-button');
+
+
+  // DELETING
+  if (deleteButton) {
+    const habitPanel = e.target.closest('.wrapper-habit-panel');
+    const habitId = habitPanel.dataset.habitId
+
+    // pobieramy token zalogowanego użytkownika
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      alert("Musisz być zalogowany!");
+      return;
+    }
+
+    // delete confirm
+    const confirmed = confirm("Czy na pewno chcesz usunąć ten nawyk?");
+
+    if (!confirmed) return;
+    
+    try {
+
+      const response = await fetch(
+        `http://localhost:5000/api/habits/${habitId}`,
+        {
+          method: "DELETE",
+
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Nie udało się usunąć nawyku"
+        );
+      }
+
+      console.log("Backend usunął habit:", data);
+
+      // usuwamy habit również z UI
+      habitPanel.remove();
+
+    } catch (error) {
+
+      console.error("Błąd podczas usuwania habit:", error);
+
+      alert(error.message);
+    }
+
+    return;
+  }
+
+  //EDITING
+  if (editButton) {
+    const habitPanel = e.target.closest('.wrapper-habit-panel');
+    const habitId = habitPanel.dataset.habitId
+  }
+
   if (actionButton) {
+    // closing dropdown on action button click
     const wrapper = actionButton.closest(".habit-dropdown-wrapper");
     const menu = wrapper?.querySelector(".habit-dropdown-menu");
     menu?.classList.remove("is-open");
@@ -657,7 +727,11 @@ habitsContainer?.addEventListener("click", function (e) {
   const menu = wrapper?.querySelector(".habit-dropdown-menu");
 
   menu?.classList.toggle("is-open");
+
+  
 });
+
+
 
 // Closing dropdowns
 document.addEventListener("click", function (e) {
