@@ -258,7 +258,7 @@ const dailyChart = new ApexCharts(
 dailyChart?.render();
 
 //////////////////////////////// LOGIN / REGISER //////////////////////////////////
-const API_URL = "http://localhost:5000";
+const API_URL = "https://habit-hub.onrender.com";
 const loginPopup = document.querySelector(".section-login-popup");
 const loginView = document.querySelector(".auth-view-login");
 const registerView = document.querySelector(".auth-view-register");
@@ -305,6 +305,7 @@ function completeAuthSuccess() {
   hideAuthModal();
   loginView?.removeAttribute("hidden");
   registerView?.setAttribute("hidden", "hidden");
+  loadHabits()
 }
 
 const savedToken = localStorage.getItem("token");
@@ -324,7 +325,7 @@ async function loadHabits() {
   }
 
   try {
-    const response = await fetch("http://localhost:5000/api/habits", {
+    const response = await fetch("https://habit-hub.onrender.com/api/habits", {
       method: "GET",
 
       headers: {
@@ -602,7 +603,7 @@ addHabitBtn?.addEventListener("click", async function () {
       return;
     }
 
-    const response = await fetch("http://localhost:5000/api/habits", {
+    const response = await fetch("https://habit-hub.onrender.com/api/habits", {
       method: "POST",
 
       headers: {
@@ -673,7 +674,7 @@ habitsContainer?.addEventListener ("click", async function (e) {
     try {
 
       const response = await fetch(
-        `http://localhost:5000/api/habits/${habitId}`,
+        `https://habit-hub.onrender.com/api/habits/${habitId}`,
         {
           method: "DELETE",
 
