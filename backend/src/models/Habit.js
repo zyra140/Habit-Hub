@@ -15,6 +15,10 @@ const habitSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  weekdaysOnly: {
+    type: Boolean,
+    default: false,
+  },
   icon: {
     type: String,
     default: "",
@@ -24,6 +28,11 @@ const habitSchema = new mongoose.Schema({
     default: "#4f46e5",
   },
   completedDates: [
+    {
+      type: String,
+    },
+  ],
+  missedDays: [
     {
       type: String,
     },

@@ -174,11 +174,17 @@ app.get("/api/auth/me", async (req, res) => {
 // Adding habits
 
 app.post("/api/habits", authenticateToken, async (req, res) => {
-  const { name, frequency, icon, color } = req.body;
+  const { name, frequency, icon, color, weekdaysOnly } = req.body;
 
   if (!name || !frequency) {
     return res.status(400).json({
       message: "Nazwa i częstotliwość są wymagane",
+    });
+  }
+
+  if (weekdaysOnly === true && Number(frequency) > 5) {
+    return res.status(400).json({
+      message: "Przy nawyku bez weekendów wybierz od 1 do 5 razy w tygodniu",
     });
   }
 
@@ -187,6 +193,7 @@ app.post("/api/habits", authenticateToken, async (req, res) => {
       user: req.user._id,
       name,
       frequency,
+      weekdaysOnly: weekdaysOnly === true,
       icon: icon || "",
       color: color || "#4f46e5",
       completedDates: [],
@@ -204,11 +211,62 @@ app.post("/api/habits", authenticateToken, async (req, res) => {
   }
 });
 
+const recordMissedDays = async (habits) => {
+  const today = new Date().toISOString().slice(0, 10);
+  const todayUtc = new Date(`${today}T00:00:00.000Z`);
+
+  await Promise.all(
+    habits.map(async (habit) => {
+      const createdDate = habit.createdAt.toISOString().slice(0, 10);
+      const completedDates = new Set(
+        habit.completedDates.map((date) => String(date).slice(0, 10)),
+      );
+      const missedDates = new Set(
+        (habit.missedDays || [])
+          .map((date) => String(date).slice(0, 10))
+          .filter(
+            (date) =>
+              date >= createdDate &&
+              date < today &&
+              !completedDates.has(date) &&
+              !(habit.weekdaysOnly && [0, 6].includes(new Date(`${date}T00:00:00.000Z`).getUTCDay())),
+          ),
+      );
+
+      for (
+        let date = new Date(`${createdDate}T00:00:00.000Z`);
+        date < todayUtc;
+        date.setUTCDate(date.getUTCDate() + 1)
+      ) {
+        const dateString = date.toISOString().slice(0, 10);
+        const isWeekend = [0, 6].includes(date.getUTCDay());
+        if (
+          !completedDates.has(dateString) &&
+          !(habit.weekdaysOnly && isWeekend)
+        ) {
+          missedDates.add(dateString);
+        }
+      }
+
+      const updatedMissedDays = [...missedDates].sort();
+      if (
+        updatedMissedDays.length !== habit.missedDays.length ||
+        updatedMissedDays.some((date, index) => date !== habit.missedDays[index])
+      ) {
+        habit.missedDays = updatedMissedDays;
+        await habit.save();
+      }
+    }),
+  );
+};
+
 app.get("/api/habits", authenticateToken, async (req, res) => {
   try {
     const habits = await Habit.find({
       user: req.user._id,
     }).sort({ createdAt: -1 });
+
+    await recordMissedDays(habits);
 
     return res.json({
       habits,
@@ -233,6 +291,8 @@ app.get("/api/habits/:id", authenticateToken, async (req, res) => {
         message: "Nawyk nie został znaleziony",
       });
     }
+
+    await recordMissedDays([habit]);
 
     return res.json({
       habit,

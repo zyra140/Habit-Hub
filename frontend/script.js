@@ -70,6 +70,15 @@ const renderHabit = function (habit) {
     return null;
   });
 
+  const missedDays = (habit.missedDays || []).map((date) => {
+    const [year, month, day] = String(date)
+      .slice(0, 10)
+      .split("-")
+      .map(Number);
+
+    return year === currentYear && month - 1 === currentMonth ? day : null;
+  });
+
   //calendar
   const firstDayOfMonth =
     (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
@@ -111,9 +120,9 @@ const renderHabit = function (habit) {
     }
 
     // adding missed day class
-    // if (isCurrentMonth && missedDays.includes(day)) {
-    //   dayClasses.push("is-missed");
-    // }
+    if (isCurrentMonth && missedDays.includes(day)) {
+      dayClasses.push("is-missed");
+    }
 
     return `<li class="${dayClasses.join(" ")}"><span class="day-panel-fake-checkbox">${day}</span></li>`;
   }).join("");
@@ -123,9 +132,12 @@ const renderHabit = function (habit) {
 
   //frequency
   const frequencyText =
-    habit.frequency === "1"
-      ? "raz w tygodniu"
-      : `${habit.frequency} razy w tygodniu`;
+    habit.frequency === "7"
+      ? "Codziennie"
+      : habit.frequency === "1"
+        ? "1 raz w tygodniu"
+        : `${habit.frequency} razy w tygodniu`;
+  const scheduleText = `${frequencyText}${habit.weekdaysOnly ? " (pon.-pt.)" : ""}`;
 
   // final HTML to insert
   const HTML = `
@@ -161,7 +173,7 @@ const renderHabit = function (habit) {
                   />
                   <div class="wrapper-habit-description-text">
                     <h3 class="heading-tertiary">${habit.name}</h3>
-                    <p class="paragraph-description">${habit.frequency === "1" ? `raz w tygodniu` : `${habit.frequency} razy w tygodniu`}</p>
+                    <p class="paragraph-description">${scheduleText}</p>
                   </div>
                 </div>
 
@@ -203,65 +215,7 @@ const renderHabit = function (habit) {
 
 // DELATE HABIT
 
-//////////////////////////////// MAIN PAGE //////////////////////////////////
-// DAILY CHART
-const optionsDailyChart = {
-  chart: {
-    type: "bar",
-    height: 24,
-    sparkline: {
-      enabled: true,
-    },
-  },
 
-  series: [
-    {
-      data: [60],
-    },
-  ],
-
-  plotOptions: {
-    bar: {
-      horizontal: true,
-      barHeight: "100%",
-      borderRadiusApplication: "around",
-      colors: {
-        backgroundBarColors: ["#dcdafa"],
-      },
-    },
-  },
-
-  colors: ["#4f46e5"],
-
-  xaxis: {
-    min: 0,
-    max: 100,
-  },
-
-  tooltip: {
-    enabled: false,
-  },
-
-  states: {
-    hover: {
-      filter: {
-        type: "none",
-      },
-    },
-    active: {
-      filter: {
-        type: "none",
-      },
-    },
-  },
-};
-
-const dailyChart = new ApexCharts(
-  document.querySelector("#dailyChart"),
-  optionsDailyChart,
-);
-
-dailyChart?.render();
 
 //////////////////////////////// LOGIN / REGISER //////////////////////////////////
 const API_URL = "https://habit-hub.onrender.com";
@@ -499,10 +453,25 @@ const addHabitBtn = document.querySelector(".btn--add-habit");
 const inputIcon = document.querySelector(".icon-selector-icon");
 const inputName = document.querySelector(".input-name");
 const inputFrequency = document.querySelector(".input-frequency");
+const inputWeekdaysOnly = document.querySelector(".input-weekdays-only");
 const inputColor = document.querySelector(".input-color");
 const wrapperInputColor = document.querySelector(".wrapper-input-icon");
 const inputColorCircle = document.querySelector(".color-circle");
 const deleteButton = document.querySelector(".delete-button");
+
+const highFrequencyOptions = Array.from(inputFrequency?.options || []).filter(
+  (option) => Number(option.value) > 5,
+);
+inputWeekdaysOnly?.addEventListener("change", () => {
+  highFrequencyOptions.forEach((option) => {
+    option.disabled = inputWeekdaysOnly.checked;
+    option.hidden = inputWeekdaysOnly.checked;
+  });
+
+  if (inputWeekdaysOnly.checked && Number(inputFrequency.value) > 5) {
+    inputFrequency.value = "5";
+  }
+});
 
 // dropdown content render
 const iconArr = [
@@ -621,6 +590,7 @@ addHabitBtn?.addEventListener("click", async function () {
       body: JSON.stringify({
         name: inputName.value,
         frequency: inputFrequency.value,
+        weekdaysOnly: inputWeekdaysOnly.checked,
         icon: inputIcon.src,
         color: inputColor.value,
       }),
@@ -753,6 +723,10 @@ const todayProgresText = document.querySelector(".stats-text");
 const habitCounter = document.querySelector(".habit-count-text");
 const sectionDayToDo = document.querySelector(".section-day-todo");
 const mainPageNameDisplay = document.querySelector("#nameDisplay");
+const dailyChartPercentText = document.querySelector('#dailyChartPercentText')
+let totalHabits = 0;
+let completedHabitsToday = 0;
+
 
 // CHANGING UI AFTER ADDING HABITS
 async function changeMainPageUI() {
@@ -788,9 +762,30 @@ async function changeMainPageUI() {
     // if there is no habits return
     if (data.habits.length < 0) return;
 
-    // changing stats text
+    // changing stats text and chart %
+    const isCompletedToday = (habit) =>
+      habit.completedDates.some((date) => date.startsWith(today));
+    const isWeekend = [0, 6].includes(new Date().getDay());
+    const habitsDueToday = data.habits.filter(
+      (habit) => !(habit.weekdaysOnly && isWeekend),
+    );
+
+    totalHabits = habitsDueToday.length;
+
+    completedHabitsToday = habitsDueToday.filter(isCompletedToday).length;
+
+    const completionPercentage = totalHabits
+      ? Math.round((completedHabitsToday / totalHabits) * 100)
+      : 0;
+
     if (todayProgresText)
-      todayProgresText.innerHTML = `0 / ${data.habits.length}`;
+      todayProgresText.innerHTML = `${completedHabitsToday} / ${totalHabits}`;
+
+    // daily chart %
+      dailyChart.updateSeries([{ data: [completionPercentage] }]);
+
+      if (dailyChartPercentText) dailyChartPercentText.innerHTML = `${completionPercentage}%`;
+    
 
     //chaning habit counter text
     if (habitCounter) habitCounter.innerHTML = `${data.habits.length} nawyków`;
@@ -839,10 +834,10 @@ async function changeMainPageUI() {
       sectionDayToDo?.insertAdjacentHTML("beforeend", HTML);
     };
 
-    data.habits.forEach(habit => {
-      console.log(habit.completedDates, today)
-      if (!habit.completedDates.includes(today)) renderDailyHabit(habit);
-    })
+    // render only not copleted habits
+    habitsDueToday.forEach((habit) => {
+      if (!isCompletedToday(habit)) renderDailyHabit(habit);
+    });
     
 
   } catch (error) {
@@ -895,8 +890,78 @@ sectionDayToDo?.addEventListener("click", async function (e) {
     throw new Error(data.message);
   }
 
+  completedHabitsToday++;
+  const completionPercentage = totalHabits
+    ? Math.round((completedHabitsToday / totalHabits) * 100)
+    : 0;
+  if (todayProgresText)
+    todayProgresText.innerHTML = `${completedHabitsToday} / ${totalHabits}`;
+  dailyChart.updateSeries([{ data: [completionPercentage] }]);
+  dailyChartPercentText.innerHTML = `${completionPercentage}%`;
+  habitContainer.remove();
+
   console.log(data.habit);
 });
+
+// DAILY CHART
+
+const optionsDailyChart = {
+  chart: {
+    type: "bar",
+    height: 24,
+    sparkline: {
+      enabled: true,
+    },
+  },
+
+  series: [
+    {
+      data: [0],
+    },
+  ],
+
+  plotOptions: {
+    bar: {
+      horizontal: true,
+      barHeight: "100%",
+      borderRadiusApplication: "around",
+      colors: {
+        backgroundBarColors: ["#dcdafa"],
+      },
+    },
+  },
+
+  colors: ["#4f46e5"],
+
+  xaxis: {
+    min: 0,
+    max: 100,
+  },
+
+  tooltip: {
+    enabled: false,
+  },
+
+  states: {
+    hover: {
+      filter: {
+        type: "none",
+      },
+    },
+    active: {
+      filter: {
+        type: "none",
+      },
+    },
+  },
+};
+
+const dailyChart = new ApexCharts(
+  document.querySelector("#dailyChart"),
+  optionsDailyChart,
+);
+
+dailyChart?.render();
 
 ///////////////////////////// LOAD HABITS BACKEND //////////////////////////////
 loadHabits();

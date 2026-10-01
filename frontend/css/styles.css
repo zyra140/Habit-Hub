@@ -765,6 +765,18 @@ body.modal-open .section-login-popup * {
   gap: 1.2rem;
 }
 
+.weekdays-only-option {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 2rem;
+  font-size: 1.4rem;
+}
+
+.input-weekdays-only {
+  accent-color: #4f46e5;
+}
+
 .input-name,
 .input-frequency {
   border: 1px solid rgba(202, 202, 202, 0.575);
