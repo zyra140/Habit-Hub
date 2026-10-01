@@ -175,8 +175,9 @@ app.get("/api/auth/me", async (req, res) => {
 
 app.post("/api/habits", authenticateToken, async (req, res) => {
   const { name, frequency, icon, color, weekdaysOnly } = req.body;
+  const normalizedName = typeof name === "string" ? name.trim() : "";
 
-  if (!name || !frequency) {
+  if (!normalizedName || !frequency) {
     return res.status(400).json({
       message: "Nazwa i częstotliwość są wymagane",
     });
@@ -189,14 +190,26 @@ app.post("/api/habits", authenticateToken, async (req, res) => {
   }
 
   try {
+    const existingHabits = await Habit.find({ user: req.user._id }).select("name");
+    const duplicateName = existingHabits.some(
+      (habit) => habit.name.trim().toLowerCase() === normalizedName.toLowerCase(),
+    );
+
+    if (duplicateName) {
+      return res.status(409).json({
+        message: "Nawyk o takiej nazwie już istnieje",
+      });
+    }
+
     const habit = await Habit.create({
       user: req.user._id,
-      name,
+      name: normalizedName,
       frequency,
       weekdaysOnly: weekdaysOnly === true,
       icon: icon || "",
       color: color || "#4f46e5",
       completedDates: [],
+      skippedDays: [],
     });
 
     return res.status(201).json({
@@ -211,6 +224,49 @@ app.post("/api/habits", authenticateToken, async (req, res) => {
   }
 });
 
+const isEligibleHabitDate = (habit, date) =>
+  !(habit.weekdaysOnly && [0, 6].includes(new Date(`${date}T00:00:00.000Z`).getUTCDay()));
+
+const getAvailableSkips = (habit, date) => {
+  const requestedDate = new Date(`${date}T00:00:00.000Z`);
+  const weekStart = new Date(requestedDate);
+  weekStart.setUTCDate(weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7));
+  const weekEnd = new Date(weekStart);
+  weekEnd.setUTCDate(weekEnd.getUTCDate() + 6);
+  const weekStartString = weekStart.toISOString().slice(0, 10);
+  const weekEndString = weekEnd.toISOString().slice(0, 10);
+  const createdDate = habit.createdAt.toISOString().slice(0, 10);
+  const firstEligibleDate = createdDate > weekStartString ? createdDate : weekStartString;
+  const completedDates = new Set(
+    habit.completedDates.map((completedDate) => String(completedDate).slice(0, 10)),
+  );
+  const skippedDates = new Set(
+    (habit.skippedDays || []).map((skippedDate) => String(skippedDate).slice(0, 10)),
+  );
+  let eligibleDaysThisWeek = 0;
+  let completedDaysThisWeek = 0;
+  let eligibleDaysRemaining = 0;
+
+  for (
+    let currentDate = new Date(`${firstEligibleDate}T00:00:00.000Z`);
+    currentDate <= weekEnd;
+    currentDate.setUTCDate(currentDate.getUTCDate() + 1)
+  ) {
+    const currentDateString = currentDate.toISOString().slice(0, 10);
+    if (!isEligibleHabitDate(habit, currentDateString)) continue;
+
+    eligibleDaysThisWeek++;
+    if (completedDates.has(currentDateString)) completedDaysThisWeek++;
+    if (currentDateString >= date && !skippedDates.has(currentDateString)) {
+      eligibleDaysRemaining++;
+    }
+  }
+
+  const weeklyTarget = Math.min(Number(habit.frequency), eligibleDaysThisWeek);
+  const requiredCompletions = Math.max(0, weeklyTarget - completedDaysThisWeek);
+  return Math.max(0, eligibleDaysRemaining - requiredCompletions);
+};
+
 const recordMissedDays = async (habits) => {
   const today = new Date().toISOString().slice(0, 10);
   const todayUtc = new Date(`${today}T00:00:00.000Z`);
@@ -221,6 +277,9 @@ const recordMissedDays = async (habits) => {
       const completedDates = new Set(
         habit.completedDates.map((date) => String(date).slice(0, 10)),
       );
+      const skippedDates = new Set(
+        (habit.skippedDays || []).map((date) => String(date).slice(0, 10)),
+      );
       const missedDates = new Set(
         (habit.missedDays || [])
           .map((date) => String(date).slice(0, 10))
@@ -229,7 +288,8 @@ const recordMissedDays = async (habits) => {
               date >= createdDate &&
               date < today &&
               !completedDates.has(date) &&
-              !(habit.weekdaysOnly && [0, 6].includes(new Date(`${date}T00:00:00.000Z`).getUTCDay())),
+              !skippedDates.has(date) &&
+              isEligibleHabitDate(habit, date),
           ),
       );
 
@@ -242,6 +302,7 @@ const recordMissedDays = async (habits) => {
         const isWeekend = [0, 6].includes(date.getUTCDay());
         if (
           !completedDates.has(dateString) &&
+          !skippedDates.has(dateString) &&
           !(habit.weekdaysOnly && isWeekend)
         ) {
           missedDates.add(dateString);
@@ -432,20 +493,10 @@ app.patch("/api/habits/:id/complete", authenticateToken, async (req, res) => {
   }
 
   try {
-    const habit = await Habit.findOneAndUpdate(
-      {
-        _id: req.params.id,
-        user: req.user._id,
-      },
-      {
-        $addToSet: {
-          completedDates: date,
-        },
-      },
-      {
-        new: true,
-      },
-    );
+    const habit = await Habit.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
 
     if (!habit) {
       return res.status(404).json({
@@ -453,13 +504,124 @@ app.patch("/api/habits/:id/complete", authenticateToken, async (req, res) => {
       });
     }
 
-    res.json({
+    if ((habit.skippedDays || []).includes(date)) {
+      return res.status(400).json({ message: "Ten nawyk jest już pominięty tego dnia" });
+    }
+
+    if (!habit.completedDates.includes(date)) {
+      habit.completedDates.push(date);
+      await habit.save();
+    }
+
+    return res.json({
       message: "Nawyk oznaczony jako wykonany",
       habit,
     });
   } catch (error) {
     res.status(500).json({
       message: "Błąd podczas oznaczania nawyku",
+      error: error.message,
+    });
+  }
+});
+
+app.patch("/api/habits/:id/skip", authenticateToken, async (req, res) => {
+  const { date } = req.body;
+
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return res.status(400).json({ message: "Prawidłowa data jest wymagana" });
+  }
+
+  try {
+    const habit = await Habit.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+
+    if (!habit) {
+      return res.status(404).json({ message: "Nie znaleziono nawyku" });
+    }
+
+    if (habit.completedDates.includes(date)) {
+      return res.status(400).json({ message: "Ten nawyk jest już wykonany tego dnia" });
+    }
+
+    if (!(habit.skippedDays || []).includes(date)) {
+      habit.skippedDays.push(date);
+      await habit.save();
+    }
+
+    return res.json({
+      message: "Nawyk oznaczony jako pominięty",
+      habit,
+      availableSkips: getAvailableSkips(habit, date),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Błąd podczas pomijania nawyku",
+      error: error.message,
+    });
+  }
+});
+
+app.patch("/api/habits/:id/day-status", authenticateToken, async (req, res) => {
+  const { date, status } = req.body;
+  const validStatuses = ["completed", "skipped", "pending"];
+  const parsedDate =
+    typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date)
+      ? new Date(`${date}T00:00:00.000Z`)
+      : null;
+
+  if (
+    !parsedDate ||
+    Number.isNaN(parsedDate.getTime()) ||
+    parsedDate.toISOString().slice(0, 10) !== date ||
+    !validStatuses.includes(status)
+  ) {
+    return res.status(400).json({ message: "Nieprawidłowa data lub status" });
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const weekStart = new Date(`${today}T00:00:00.000Z`);
+  weekStart.setUTCDate(weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7));
+  const weekStartString = weekStart.toISOString().slice(0, 10);
+
+  if (date < weekStartString || date > today) {
+    return res.status(400).json({ message: "Można edytować tylko dni bieżącego tygodnia do dzisiaj" });
+  }
+
+  try {
+    const habit = await Habit.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+
+    if (!habit) {
+      return res.status(404).json({ message: "Nie znaleziono nawyku" });
+    }
+
+    const createdDate = habit.createdAt.toISOString().slice(0, 10);
+    if (date < createdDate || !isEligibleHabitDate(habit, date)) {
+      return res.status(400).json({ message: "Ten dzień nie należy do harmonogramu nawyku" });
+    }
+
+    habit.completedDates = habit.completedDates.filter((entry) => entry !== date);
+    habit.skippedDays = (habit.skippedDays || []).filter((entry) => entry !== date);
+    habit.missedDays = (habit.missedDays || []).filter((entry) => entry !== date);
+
+    if (status === "completed") habit.completedDates.push(date);
+    if (status === "skipped") habit.skippedDays.push(date);
+
+    await habit.save();
+    await recordMissedDays([habit]);
+
+    return res.json({
+      message: "Status dnia został zaktualizowany",
+      habit,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Błąd podczas aktualizacji statusu dnia",
       error: error.message,
     });
   }

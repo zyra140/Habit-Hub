@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HabHab</title>
 
+    <script>
+      try {
+        if (localStorage.getItem("token")) {
+          document.documentElement.classList.add("has-saved-session");
+        }
+      } catch (error) {}
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -352,7 +360,10 @@
       <section class="section-habits-in-month">
         <div class="container">
           <div class="wrapper-habits-in-month grid">
-            <h3 class="heading-tertiary">Twoje nawyki w tym miesiącu</h3>
+            <div class="habits-month-heading">
+              <h3 class="heading-tertiary">Twoje nawyki w tym miesiącu</h3>
+              <p class="habit-list-count">0 nawyków</p>
+            </div>
 
             <!-- Blank Habit Wrapper -->
             <div class="grid grid-blank-habit">

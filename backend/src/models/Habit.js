@@ -37,6 +37,11 @@ const habitSchema = new mongoose.Schema({
       type: String,
     },
   ],
+  skippedDays: [
+    {
+      type: String,
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

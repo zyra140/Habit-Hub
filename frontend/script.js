@@ -18,20 +18,342 @@ const hexToRgba = function (hex, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
+const getLocalDateString = (date = new Date()) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const getAvailableSkips = (habit, dateString = getLocalDateString()) => {
+  const [year, month, day] = dateString.split("-").map(Number);
+  const requestedDate = new Date(Date.UTC(year, month - 1, day));
+  const weekStart = new Date(requestedDate);
+  weekStart.setUTCDate(
+    weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7),
+  );
+  const weekEnd = new Date(weekStart);
+  weekEnd.setUTCDate(weekEnd.getUTCDate() + 6);
+  const weekStartString = weekStart.toISOString().slice(0, 10);
+  const weekEndString = weekEnd.toISOString().slice(0, 10);
+  const createdDate = String(habit.createdAt).slice(0, 10);
+  const firstEligibleDate =
+    createdDate > weekStartString ? createdDate : weekStartString;
+  const completedDates = new Set(
+    (habit.completedDates || []).map((completedDate) =>
+      String(completedDate).slice(0, 10),
+    ),
+  );
+  const skippedDates = new Set(
+    (habit.skippedDays || []).map((skippedDate) =>
+      String(skippedDate).slice(0, 10),
+    ),
+  );
+  let eligibleDaysThisWeek = 0;
+  let completedDaysThisWeek = 0;
+  let eligibleDaysRemaining = 0;
+
+  for (
+    let currentDate = new Date(`${firstEligibleDate}T00:00:00.000Z`);
+    currentDate.toISOString().slice(0, 10) <= weekEndString;
+    currentDate.setUTCDate(currentDate.getUTCDate() + 1)
+  ) {
+    const currentDateString = currentDate.toISOString().slice(0, 10);
+    const isWeekend = [0, 6].includes(currentDate.getUTCDay());
+    if (habit.weekdaysOnly && isWeekend) continue;
+
+    eligibleDaysThisWeek++;
+    if (completedDates.has(currentDateString)) completedDaysThisWeek++;
+    if (
+      currentDateString >= dateString &&
+      !skippedDates.has(currentDateString)
+    ) {
+      eligibleDaysRemaining++;
+    }
+  }
+
+  const weeklyTarget = Math.min(Number(habit.frequency), eligibleDaysThisWeek);
+  const requiredCompletions = Math.max(0, weeklyTarget - completedDaysThisWeek);
+  return Math.max(0, eligibleDaysRemaining - requiredCompletions);
+};
+
+const calculateStreaks = (habits, today = getLocalDateString()) => {
+  if (!habits.length) return { current: 0, longest: 0 };
+
+  const createdDates = habits
+    .map((habit) => String(habit.createdAt).slice(0, 10))
+    .filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date))
+    .sort();
+  if (!createdDates.length || createdDates[0] > today) {
+    return { current: 0, longest: 0 };
+  }
+
+  const firstDate = createdDates[0];
+  const missedDates = new Set(
+    habits.flatMap((habit) =>
+      (habit.missedDays || []).map((date) => String(date).slice(0, 10)),
+    ),
+  );
+  const isWeekend = [0, 6].includes(
+    new Date(`${today}T00:00:00.000Z`).getUTCDay(),
+  );
+  const hasPendingHabitToday = habits.some((habit) => {
+    const createdDate = String(habit.createdAt).slice(0, 10);
+    if (createdDate > today || (habit.weekdaysOnly && isWeekend)) return false;
+
+    const isCompletedToday = (habit.completedDates || []).some(
+      (date) => String(date).slice(0, 10) === today,
+    );
+    const isSkippedToday = (habit.skippedDays || []).some(
+      (date) => String(date).slice(0, 10) === today,
+    );
+    return !isCompletedToday && !isSkippedToday;
+  });
+  const streakEndDate = new Date(`${today}T00:00:00.000Z`);
+  if (hasPendingHabitToday)
+    streakEndDate.setUTCDate(streakEndDate.getUTCDate() - 1);
+  const streakEnd = streakEndDate.toISOString().slice(0, 10);
+
+  if (streakEnd < firstDate) return { current: 0, longest: 0 };
+
+  let current = 0;
+  let currentDate = new Date(`${streakEnd}T00:00:00.000Z`);
+
+  while (currentDate.toISOString().slice(0, 10) >= firstDate) {
+    const date = currentDate.toISOString().slice(0, 10);
+    if (missedDates.has(date)) break;
+    current++;
+    currentDate.setUTCDate(currentDate.getUTCDate() - 1);
+  }
+
+  let longest = 0;
+  let running = 0;
+  for (
+    let date = new Date(`${firstDate}T00:00:00.000Z`);
+    date.toISOString().slice(0, 10) <= streakEnd;
+    date.setUTCDate(date.getUTCDate() + 1)
+  ) {
+    if (missedDates.has(date.toISOString().slice(0, 10))) {
+      running = 0;
+    } else {
+      running++;
+      longest = Math.max(longest, running);
+    }
+  }
+
+  return { current, longest };
+};
+
+const formatStreakDays = (count) => `${count} ${count === 1 ? "dzień" : "dni"}`;
+const formatHabitCount = (count) =>
+  count === 1
+    ? "1 nawyk"
+    : count >= 2 && count <= 4
+      ? `${count} nawyki`
+      : `${count} nawyków`;
+
+const getHabitScheduleText = (habit) => {
+  const frequencyText =
+    habit.frequency === "7"
+      ? "Codziennie"
+      : habit.frequency === "1"
+        ? "1 raz w tygodniu"
+        : `${habit.frequency} razy w tygodniu`;
+  const scheduleDaysText = habit.weekdaysOnly ? "dni robocze" : "dowolne dni";
+  return `${frequencyText} (${scheduleDaysText})`;
+};
+
+const escapeHTML = (value) =>
+  String(value).replace(/[&<>"']/g, (character) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return entities[character];
+  });
+
+const renderWeekCalendar = (habits) => {
+  const calendar = document.querySelector("#weekCalendar");
+  if (!calendar) return;
+
+  if (!habits.length) {
+    calendar.innerHTML = `
+      <div class="container-week-calendar-info">
+        <div class="img-box img-box--week-calendar">
+          <img src="../icons/calendar-days-regular-full.svg" alt="" />
+        </div>
+        <div class="week-calendar-text-wrapper">
+          <p>Twój kalendarz pojawi się tutaj, gdy dodasz pierwszy nawyk</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const todayString = getLocalDateString();
+  const [year, month, day] = todayString.split("-").map(Number);
+  const monday = new Date(year, month - 1, day);
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  const weekDates = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + index);
+    return date;
+  });
+  const weekdayNames = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Nd"];
+  const headers = weekDates
+    .map((date, index) => {
+      const dateString = getLocalDateString(date);
+      return `<div class="week-calendar-cell week-calendar-header ${dateString === todayString ? "is-today" : ""}">
+        <span>${weekdayNames[index]}</span><span>${date.getDate()}</span>
+      </div>`;
+    })
+    .join("");
+
+  const rows = habits
+    .map((habit) => {
+      const createdDate = String(habit.createdAt).slice(0, 10);
+      const completedDates = new Set(
+        (habit.completedDates || []).map((date) => String(date).slice(0, 10)),
+      );
+      const missedDates = new Set(
+        (habit.missedDays || []).map((date) => String(date).slice(0, 10)),
+      );
+      const skippedDates = new Set(
+        (habit.skippedDays || []).map((date) => String(date).slice(0, 10)),
+      );
+      const cells = weekDates
+        .map((date) => {
+          const dateString = getLocalDateString(date);
+          const isWeekend = [0, 6].includes(date.getDay());
+          let status = "pending";
+          let label = "Do wykonania";
+          let marker = "·";
+
+          if (dateString < createdDate) {
+            status = "inactive";
+            label = "Przed dodaniem nawyku";
+            marker = "—";
+          } else if (habit.weekdaysOnly && isWeekend) {
+            status = "not-scheduled";
+            label = "Poza harmonogramem";
+            marker = "—";
+          } else if (completedDates.has(dateString)) {
+            status = "completed";
+            label = "Wykonano";
+            marker = "✓";
+          } else if (skippedDates.has(dateString)) {
+            status = "skipped";
+            label = "Pominięto";
+            marker = "–";
+          } else if (missedDates.has(dateString)) {
+            status = "missed";
+            label = "Nie wykonano";
+            marker = "×";
+          } else if (dateString > todayString) {
+            status = "upcoming";
+            label = "Nadchodzący dzień";
+            marker = "○";
+          }
+
+          return `<div class="week-calendar-cell week-calendar-status is-${status}" title="${label}: ${dateString}" aria-label="${label}: ${dateString}">${marker}</div>`;
+        })
+        .join("");
+
+      return `<div class="week-calendar-row">
+        <div class="week-calendar-habit" title="${escapeHTML(habit.name)}">${escapeHTML(habit.name)}</div>
+        ${cells}
+      </div>`;
+    })
+    .join("");
+
+  calendar.innerHTML = `
+    <div class="week-calendar-grid">
+      <div class="week-calendar-habit week-calendar-header">Nawyk</div>
+      ${headers}
+      ${rows}
+    </div>
+  `;
+};
+
+const renderWeekStatusEditor = (habit) => {
+  const today = getLocalDateString();
+  const [year, month, day] = today.split("-").map(Number);
+  const weekStart = new Date(Date.UTC(year, month - 1, day));
+  weekStart.setUTCDate(
+    weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7),
+  );
+  const weekStartString = weekStart.toISOString().slice(0, 10);
+  const createdDate = String(habit.createdAt).slice(0, 10);
+  const firstDate =
+    createdDate > weekStartString ? createdDate : weekStartString;
+  const completedDates = new Set(
+    (habit.completedDates || []).map((date) => String(date).slice(0, 10)),
+  );
+  const skippedDates = new Set(
+    (habit.skippedDays || []).map((date) => String(date).slice(0, 10)),
+  );
+  const options = [];
+
+  for (
+    let date = new Date(`${firstDate}T00:00:00.000Z`);
+    date.toISOString().slice(0, 10) <= today;
+    date.setUTCDate(date.getUTCDate() + 1)
+  ) {
+    const dateString = date.toISOString().slice(0, 10);
+    if (habit.weekdaysOnly && [0, 6].includes(date.getUTCDay())) continue;
+
+    const status = completedDates.has(dateString)
+      ? "completed"
+      : skippedDates.has(dateString)
+        ? "skipped"
+        : "pending";
+    const label = new Intl.DateTimeFormat("pl-PL", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      timeZone: "UTC",
+    }).format(date);
+    options.push(
+      `<option value="${dateString}" data-status="${status}">${label}</option>`,
+    );
+  }
+
+  return `
+    <div class="week-status-editor" hidden>
+      <label>
+        Dzień
+        <select class="week-edit-date" ${options.length ? "" : "disabled"}>
+          ${options.join("")}
+        </select>
+      </label>
+      <label>
+        Status
+        <select class="week-edit-status" ${options.length ? "" : "disabled"}>
+          <option value="completed">Wykonano</option>
+          <option value="skipped">Pominięto</option>
+          <option value="pending">Nie wykonano</option>
+        </select>
+      </label>
+      <button class="save-week-status" type="button" ${options.length ? "" : "disabled"}>
+        Zapisz dzień
+      </button>
+    </div>
+  `;
+};
+
 // BLANK HABIT UI UPDATE
 const habitBlankHabits = document.querySelector(".grid-blank-habit");
 const habitBlankMain = document.querySelector(".grid-blank-habits");
 
 const DisactiveBlankHabitUI = function () {
-  if (habitBlankHabits?.classList.contains("display-none")) return;
-
   habitBlankHabits?.classList.add("display-none");
   habitBlankMain?.classList.add("display-none");
 };
 
 const ActiveBlankHabitUI = function () {
-  if (!habitBlankHabits?.classList.contains("display-none")) return;
-
   habitBlankHabits?.classList.remove("display-none");
   habitBlankMain?.classList.remove("display-none");
 };
@@ -71,17 +393,21 @@ const renderHabit = function (habit) {
   });
 
   const missedDays = (habit.missedDays || []).map((date) => {
-    const [year, month, day] = String(date)
-      .slice(0, 10)
-      .split("-")
-      .map(Number);
+    const [year, month, day] = String(date).slice(0, 10).split("-").map(Number);
 
+    return year === currentYear && month - 1 === currentMonth ? day : null;
+  });
+
+  const skippedDays = (habit.skippedDays || []).map((date) => {
+    const [year, month, day] = String(date).slice(0, 10).split("-").map(Number);
     return year === currentYear && month - 1 === currentMonth ? day : null;
   });
 
   //calendar
   const firstDayOfMonth =
     (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const calendarCellCount = Math.ceil((firstDayOfMonth + daysInMonth) / 7) * 7;
 
   // rendering weekdays names
   const calendarHeadersHTML = weekdays
@@ -91,53 +417,54 @@ const renderHabit = function (habit) {
     .join("");
 
   // Render previous, current and next month days in chronological order.
-  const calendarDaysHTML = Array.from({ length: 35 }, function (_, index) {
-    // checking wchich day is first monday // current month or previous
-    const date = new Date(
-      currentYear,
-      currentMonth,
-      index - firstDayOfMonth + 1,
-    );
-    const day = date.getDate();
-    const dayClasses = ["calendar-cell", "calendar-day"];
-    const isCurrentMonth = date.getMonth() === currentMonth;
-    const isToday = date.toDateString() === today.toDateString();
+  const calendarDaysHTML = Array.from(
+    { length: calendarCellCount },
+    function (_, index) {
+      // checking wchich day is first monday // current month or previous
+      const date = new Date(
+        currentYear,
+        currentMonth,
+        index - firstDayOfMonth + 1,
+      );
+      const day = date.getDate();
+      const dayClasses = ["calendar-cell", "calendar-day"];
+      const isCurrentMonth = date.getMonth() === currentMonth;
+      const isToday = date.toDateString() === today.toDateString();
 
-    // adding adjacent month class
-    if (!isCurrentMonth) dayClasses.push("is-adjacent-month");
+      // adding adjacent month class
+      if (!isCurrentMonth) dayClasses.push("is-adjacent-month");
 
-    // adding today class
-    if (isToday) dayClasses.push("is-today");
+      // adding today class
+      if (isToday) dayClasses.push("is-today");
 
-    // adding day before habit class
-    if (isCurrentMonth && date < today && date.getDate() < habitCreatedDay) {
-      dayClasses.push("is-before-habit");
-    }
+      // adding day before habit class
+      if (isCurrentMonth && date < today && date.getDate() < habitCreatedDay) {
+        dayClasses.push("is-before-habit");
+      }
 
-    // adding completed day class
-    if (isCurrentMonth && completedDays.includes(day)) {
-      dayClasses.push("is-completed");
-    }
+      // adding completed day class
+      if (isCurrentMonth && completedDays.includes(day)) {
+        dayClasses.push("is-completed");
+      }
 
-    // adding missed day class
-    if (isCurrentMonth && missedDays.includes(day)) {
-      dayClasses.push("is-missed");
-    }
+      // adding missed day class
+      if (isCurrentMonth && missedDays.includes(day)) {
+        dayClasses.push("is-missed");
+      }
 
-    return `<li class="${dayClasses.join(" ")}"><span class="day-panel-fake-checkbox">${day}</span></li>`;
-  }).join("");
+      if (isCurrentMonth && skippedDays.includes(day)) {
+        dayClasses.push("is-skipped");
+      }
+
+      return `<li class="${dayClasses.join(" ")}"><span class="day-panel-fake-checkbox">${day}</span></li>`;
+    },
+  ).join("");
 
   // adding html elements to one
   const calendarColumnsHTML = calendarHeadersHTML + calendarDaysHTML;
 
   //frequency
-  const frequencyText =
-    habit.frequency === "7"
-      ? "Codziennie"
-      : habit.frequency === "1"
-        ? "1 raz w tygodniu"
-        : `${habit.frequency} razy w tygodniu`;
-  const scheduleText = `${frequencyText}${habit.weekdaysOnly ? " (pon.-pt.)" : ""}`;
+  const scheduleText = getHabitScheduleText(habit);
 
   // final HTML to insert
   const HTML = `
@@ -151,7 +478,7 @@ const renderHabit = function (habit) {
                         src="../icons/edit-pencil-line-01-svgrepo-com.svg"
                         alt=""
                       />
-                      Edytuj
+                      <span class="edit-button-label">Edytuj</span>
                     </button>
                     <button class="delete-button">
                       <img
@@ -165,12 +492,9 @@ const renderHabit = function (habit) {
                 </div>
 
                 <div class="wrapper-habit-content">
-                  <img
-                    class="img-box img-box--habbit-panel"
-                    style="background: ${color02};"
-                    src="${habit.icon}"
-                    alt=""
-                  />
+                  <div class="img-box img-box--habit" style="background-color: ${color02};">
+                    <img class="habit-card-icon" src="${habit.icon}" alt="" />
+                  </div>
                   <div class="wrapper-habit-description-text">
                     <h3 class="heading-tertiary">${habit.name}</h3>
                     <p class="paragraph-description">${scheduleText}</p>
@@ -182,6 +506,7 @@ const renderHabit = function (habit) {
                     ${calendarColumnsHTML}
                   </ul>
                 </div>
+                ${renderWeekStatusEditor(habit)}
                 <div class="wrapper-weekly-progres">
                   <ul class="habit-list-weekly-progres grid">
                     <li class="habit-weekly-progres is-active" style="border: 1px solid ${color02}; background: linear-gradient(${gradient});">
@@ -215,8 +540,6 @@ const renderHabit = function (habit) {
 
 // DELATE HABIT
 
-
-
 //////////////////////////////// LOGIN / REGISER //////////////////////////////////
 const API_URL = "https://habit-hub.onrender.com";
 const loginPopup = document.querySelector(".section-login-popup");
@@ -243,6 +566,8 @@ const nameLetter = document.querySelector(".name-letter");
 
 // ZMIANA UI PO ZALOGOWANIU
 function hideAuthModal() {
+  document.documentElement.classList.add("has-saved-session");
+
   if (loginPopup) {
     loginPopup.setAttribute("hidden", "hidden");
     loginPopup.style.display = "none";
@@ -253,11 +578,12 @@ function hideAuthModal() {
   // Generate Profile image
   const name = localStorage.getItem("name");
   if (nameLetter) nameLetter.textContent = name[0].toUpperCase();
-  
 }
 
 // ZMIANA UI PRZED ZALOGOWANIEM
 function showAuthModal() {
+  document.documentElement.classList.remove("has-saved-session");
+
   if (loginPopup) {
     loginPopup.removeAttribute("hidden");
     loginPopup.style.display = "grid";
@@ -284,7 +610,9 @@ async function loadHabits() {
 
   // Nie ma zalogowanego użytkownika
   if (!token) {
-    habitsContainer.innerHTML = "";
+    if (habitsContainer) habitsContainer.innerHTML = "";
+    if (habitListCount) habitListCount.textContent = formatHabitCount(0);
+    ActiveBlankHabitUI();
     return;
   }
 
@@ -303,14 +631,19 @@ async function loadHabits() {
       throw new Error(data.message || "Nie udało się pobrać nawyków");
     }
 
+    dashboardHabits = data.habits;
+    renderWeekCalendar(data.habits);
+    if (habitListCount) {
+      habitListCount.textContent = formatHabitCount(data.habits.length);
+    }
+    if (data.habits.length === 0) ActiveBlankHabitUI();
+    else DisactiveBlankHabitUI();
+
     console.log("Pobrane nawyki:", data.habits);
 
     // Czyścimy aktualne karty
     if (!habitsContainer) return;
     habitsContainer.innerHTML = "";
-
-    // UPDATE UI
-    DisactiveBlankHabitUI();
 
     // Renderujemy każdy habit
     data.habits.forEach((habit) => {
@@ -568,7 +901,14 @@ wrapperInputColor?.addEventListener("input", () => {
 ////////////////////////////////////
 addHabitBtn?.addEventListener("click", async function () {
   // VALIDATION
-  if (!inputName.value) return alert("Nieprawidłowa nazwa nawyku!");
+  const habitName = inputName.value.trim();
+  if (!habitName) return alert("Nieprawidłowa nazwa nawyku!");
+
+  const normalizedName = habitName.toLowerCase();
+  const duplicateName = dashboardHabits.some(
+    (habit) => habit.name.trim().toLowerCase() === normalizedName,
+  );
+  if (duplicateName) return alert("Nawyk o takiej nazwie już istnieje");
 
   // BACK AND SAVE / BACKEND VALIDATION => UPDATE UI
   try {
@@ -588,7 +928,7 @@ addHabitBtn?.addEventListener("click", async function () {
       },
 
       body: JSON.stringify({
-        name: inputName.value,
+        name: habitName,
         frequency: inputFrequency.value,
         weekdaysOnly: inputWeekdaysOnly.checked,
         icon: inputIcon.src,
@@ -604,13 +944,12 @@ addHabitBtn?.addEventListener("click", async function () {
 
     console.log("Nawyk zapisany w MongoDB:", data.habit);
 
-    // Możesz zachować ID na potrzeby późniejszych operacji
-    const habitId = data.habit._id;
-
-    console.log("ID nawyku:", habitId);
-
     //REDNER
     renderHabit(data.habit);
+    dashboardHabits.push(data.habit);
+    if (habitListCount) {
+      habitListCount.textContent = formatHabitCount(dashboardHabits.length);
+    }
 
     // UPDATE UI
     DisactiveBlankHabitUI();
@@ -623,6 +962,44 @@ addHabitBtn?.addEventListener("click", async function () {
 //// EDIT HABIT BUTTON ///
 // event listener
 habitsContainer?.addEventListener("click", async function (e) {
+  const saveDayButton = e.target.closest(".save-week-status");
+  if (saveDayButton) {
+    const habitPanel = saveDayButton.closest(".wrapper-habit-panel");
+    const date = habitPanel.querySelector(".week-edit-date").value;
+    const status = habitPanel.querySelector(".week-edit-status").value;
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Musisz być zalogowany!");
+      return;
+    }
+
+    saveDayButton.disabled = true;
+    try {
+      const response = await fetch(
+        `${API_URL}/api/habits/${habitPanel.dataset.habitId}/day-status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ date, status }),
+        },
+      );
+      const data = await response.json();
+
+      if (!response.ok)
+        throw new Error(data.message || "Nie udało się zmienić statusu dnia");
+      await loadHabits();
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      saveDayButton.disabled = false;
+    }
+    return;
+  }
+
   const actionButton = e.target.closest(".edit-button, .delete-button");
   const deleteButton = e.target.closest(".delete-button");
   const editButton = e.target.closest(".edit-button");
@@ -667,6 +1044,14 @@ habitsContainer?.addEventListener("click", async function (e) {
 
       // usuwamy habit również z UI
       habitPanel.remove();
+      dashboardHabits = dashboardHabits.filter(
+        (habit) => String(habit._id) !== String(habitId),
+      );
+      if (habitListCount) {
+        habitListCount.textContent = formatHabitCount(dashboardHabits.length);
+      }
+      renderWeekCalendar(dashboardHabits);
+      if (dashboardHabits.length === 0) ActiveBlankHabitUI();
     } catch (error) {
       console.error("Błąd podczas usuwania habit:", error);
 
@@ -679,7 +1064,18 @@ habitsContainer?.addEventListener("click", async function (e) {
   //EDITING
   if (editButton) {
     const habitPanel = e.target.closest(".wrapper-habit-panel");
-    const habitId = habitPanel.dataset.habitId;
+    const isEditing = habitPanel.classList.toggle("is-editing");
+    const editor = habitPanel.querySelector(".week-status-editor");
+    const dateSelect = habitPanel.querySelector(".week-edit-date");
+    const statusSelect = habitPanel.querySelector(".week-edit-status");
+    const editLabel = editButton.querySelector(".edit-button-label");
+
+    editor.hidden = !isEditing;
+    editLabel.textContent = isEditing ? "Zakończ edycję" : "Edytuj";
+    if (isEditing) {
+      statusSelect.value =
+        dateSelect.selectedOptions[0]?.dataset.status || "pending";
+    }
   }
 
   if (actionButton) {
@@ -697,6 +1093,17 @@ habitsContainer?.addEventListener("click", async function (e) {
   const menu = wrapper?.querySelector(".habit-dropdown-menu");
 
   menu?.classList.toggle("is-open");
+});
+
+habitsContainer?.addEventListener("change", (e) => {
+  const dateSelect = e.target.closest(".week-edit-date");
+  if (!dateSelect) return;
+
+  const statusSelect = dateSelect
+    .closest(".week-status-editor")
+    .querySelector(".week-edit-status");
+  statusSelect.value =
+    dateSelect.selectedOptions[0]?.dataset.status || "pending";
 });
 
 // Closing dropdowns
@@ -721,22 +1128,35 @@ document.addEventListener("click", function (e) {
 ////////////////////////////////////// INDEX HTML //////////////////////////////////
 const todayProgresText = document.querySelector(".stats-text");
 const habitCounter = document.querySelector(".habit-count-text");
-const sectionDayToDo = document.querySelector(".section-day-todo");
+const habitListCount = document.querySelector(".habit-list-count");
+const sectionDayToDo = document.querySelector(".container-day-to-do");
 const mainPageNameDisplay = document.querySelector("#nameDisplay");
-const dailyChartPercentText = document.querySelector('#dailyChartPercentText')
+const dailyChartPercentText = document.querySelector("#dailyChartPercentText");
+const currentStreakText = document.querySelector("#currentStreak");
+const longestStreakText = document.querySelector("#longestStreak");
 let totalHabits = 0;
 let completedHabitsToday = 0;
+let dashboardHabits = [];
 
+const updateStreakStats = (habits, date) => {
+  const streaks = calculateStreaks(habits, date);
+  if (currentStreakText)
+    currentStreakText.textContent = formatStreakDays(streaks.current);
+  if (longestStreakText)
+    longestStreakText.textContent = formatStreakDays(streaks.longest);
+};
 
 // CHANGING UI AFTER ADDING HABITS
 async function changeMainPageUI() {
   const token = localStorage.getItem("token");
   const userName = localStorage.getItem("name");
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateString();
 
   // Nie ma zalogowanego użytkownika
   if (!token) {
-    habitsContainer.innerHTML = "";
+    if (habitsContainer) habitsContainer.innerHTML = "";
+    if (habitCounter) habitCounter.textContent = formatHabitCount(0);
+    ActiveBlankHabitUI();
     return;
   }
 
@@ -759,12 +1179,17 @@ async function changeMainPageUI() {
       throw new Error(data.message || "Nie udało się pobrać nawyków");
     }
 
-    // if there is no habits return
-    if (data.habits.length < 0) return;
+    if (!Array.isArray(data.habits)) return;
+
+    dashboardHabits = data.habits;
+    renderWeekCalendar(dashboardHabits);
+    updateStreakStats(dashboardHabits, today);
 
     // changing stats text and chart %
     const isCompletedToday = (habit) =>
-      habit.completedDates.some((date) => date.startsWith(today));
+      habit.completedDates.some((date) => String(date).startsWith(today));
+    const isSkippedToday = (habit) =>
+      (habit.skippedDays || []).some((date) => String(date).startsWith(today));
     const isWeekend = [0, 6].includes(new Date().getDay());
     const habitsDueToday = data.habits.filter(
       (habit) => !(habit.weekdaysOnly && isWeekend),
@@ -782,32 +1207,38 @@ async function changeMainPageUI() {
       todayProgresText.innerHTML = `${completedHabitsToday} / ${totalHabits}`;
 
     // daily chart %
-      dailyChart.updateSeries([{ data: [completionPercentage] }]);
+    dailyChart.updateSeries([{ data: [completionPercentage] }]);
 
-      if (dailyChartPercentText) dailyChartPercentText.innerHTML = `${completionPercentage}%`;
-    
+    if (dailyChartPercentText)
+      dailyChartPercentText.innerHTML = `${completionPercentage}%`;
 
     //chaning habit counter text
-    if (habitCounter) habitCounter.innerHTML = `${data.habits.length} nawyków`;
+    const pendingHabitsToday = habitsDueToday.filter(
+      (habit) => !isCompletedToday(habit) && !isSkippedToday(habit),
+    );
+    if (habitCounter)
+      habitCounter.textContent = formatHabitCount(pendingHabitsToday.length);
 
-    // disactive blank UI
-    DisactiveBlankHabitUI();
+    sectionDayToDo
+      ?.querySelectorAll(".container-daily-habits")
+      .forEach((habit) => {
+        habit.remove();
+      });
+
+    if (data.habits.length === 0) ActiveBlankHabitUI();
+    else DisactiveBlankHabitUI();
 
     // section day to do render habits
     const renderDailyHabit = function (habit) {
       const HTML = `
           <div class="container-daily-habits" data-habit-id=${habit._id}>
             <div class="desc-daily-habits">
-              <div class="img-box img-box--habit">
-                <img
-                  class="img-box img-box--habbit-panel"
-                  src="${habit.icon}"
-                  alt=""
-                />
+              <div class="img-box img-box--habit" style="background-color: ${hexToRgba(habit.color, 0.2)};">
+                <img class="habit-card-icon" src="${habit.icon}" alt="" />
               </div>
               <div class="text-daily-habits">
                 <h3 class="heading-tertiary habit-title">${habit.name}</h3>
-                <p class="p-daily-habits">${habit.frequency === "1" ? `raz w tygodniu` : `${habit.frequency} razy w tygodniu`}</p>
+                <p class="p-daily-habits">${getHabitScheduleText(habit)}</p>
               </div>
             </div>
             <div class="container-daily-habbits-btn">
@@ -825,7 +1256,7 @@ async function changeMainPageUI() {
                   src="../icons/close-svgrepo-com (3).svg"
                   alt=""
                 />
-                Pomiń
+                Pomiń (${getAvailableSkips(habit)})
               </button>
             </div>
           </div>
@@ -835,11 +1266,7 @@ async function changeMainPageUI() {
     };
 
     // render only not copleted habits
-    habitsDueToday.forEach((habit) => {
-      if (!isCompletedToday(habit)) renderDailyHabit(habit);
-    });
-    
-
+    pendingHabitsToday.slice().reverse().forEach(renderDailyHabit);
   } catch (error) {
     console.error("Błąd podczas pobierania nawyków:", error);
 
@@ -855,6 +1282,9 @@ changeMainPageUI();
 
 // DONE STATE BUTTON LISTENERS
 sectionDayToDo?.addEventListener("click", async function (e) {
+  const actionButton = e.target.closest(".btn--done, .btn--skip");
+  if (!actionButton) return;
+
   const token = localStorage.getItem("token");
 
   // Nie ma zalogowanego użytkownika
@@ -863,15 +1293,15 @@ sectionDayToDo?.addEventListener("click", async function (e) {
     return;
   }
 
-  const doneButton = e.target.closest(".btn--done");
-  const habitContainer = doneButton.closest(".container-daily-habits");
+  const habitContainer = actionButton.closest(".container-daily-habits");
   const habitID = habitContainer.dataset.habitId;
+  const isSkip = actionButton.classList.contains("btn--skip");
 
   // passing done state to database
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateString();
 
   const response = await fetch(
-    `https://habit-hub.onrender.com/api/habits/${habitID}/complete`,
+    `https://habit-hub.onrender.com/api/habits/${habitID}/${isSkip ? "skip" : "complete"}`,
     {
       method: "PATCH",
       headers: {
@@ -890,15 +1320,29 @@ sectionDayToDo?.addEventListener("click", async function (e) {
     throw new Error(data.message);
   }
 
-  completedHabitsToday++;
-  const completionPercentage = totalHabits
-    ? Math.round((completedHabitsToday / totalHabits) * 100)
-    : 0;
-  if (todayProgresText)
-    todayProgresText.innerHTML = `${completedHabitsToday} / ${totalHabits}`;
-  dailyChart.updateSeries([{ data: [completionPercentage] }]);
-  dailyChartPercentText.innerHTML = `${completionPercentage}%`;
+  dashboardHabits = dashboardHabits.map((habit) =>
+    String(habit._id) === String(habitID) ? data.habit : habit,
+  );
+  renderWeekCalendar(dashboardHabits);
+  updateStreakStats(dashboardHabits, today);
+
+  if (!isSkip) {
+    completedHabitsToday++;
+    const completionPercentage = totalHabits
+      ? Math.round((completedHabitsToday / totalHabits) * 100)
+      : 0;
+    if (todayProgresText)
+      todayProgresText.innerHTML = `${completedHabitsToday} / ${totalHabits}`;
+    dailyChart.updateSeries([{ data: [completionPercentage] }]);
+    dailyChartPercentText.innerHTML = `${completionPercentage}%`;
+  }
   habitContainer.remove();
+  if (habitCounter) {
+    const remainingHabits = sectionDayToDo.querySelectorAll(
+      ".container-daily-habits",
+    ).length;
+    habitCounter.textContent = formatHabitCount(remainingHabits);
+  }
 
   console.log(data.habit);
 });

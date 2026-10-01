@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HabHab</title>
 
+    <script>
+      try {
+        if (localStorage.getItem("token")) {
+          document.documentElement.classList.add("has-saved-session");
+        }
+      } catch (error) {}
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,7 +27,7 @@
   <body class="modal-open">
     <header class="header">
       <img class="logo" src="../icons/logo_horizontal.png" alt="HabHab logo" />
-      <nav class="main-nav">
+      <nav class="main-nav grid">
         <ul class="main-nav-list">
           <li>
             <a class="main-nav-link active" href="#"
@@ -279,16 +287,18 @@
             <div class="panel-box">
               <div class="panel-box-desc">
                 <div class="img-box img-box--fire">
-                  <img src="../icons/Fire.svg" />
+                  <img src="../icons/Fire.svg" alt="" />
                 </div>
                 <div class="panel-text-box">
                   <h3 class="heading-tertiary">Aktualna seria</h3>
-                  <p class="stats-text stats-text--fire">x</p>
+                  <p class="stats-text stats-text--fire" id="currentStreak">
+                    0 dni
+                  </p>
                 </div>
               </div>
               <div class="panel-graph">
                 <p>Najdłuższa seria:</p>
-                <p>X</p>
+                <p id="longestStreak">0 dni</p>
               </div>
             </div>
           </div>
@@ -297,7 +307,7 @@
 
       <!-- DAY TO DO -->
       <section class="section-day-todo">
-        <div class="container">
+        <div class="container container-day-to-do">
           <div class="to-do-text-box">
             <h2 class="heading-secondary">Dzisiaj do wykonania</h2>
             <p class="habit-count-text"></p>
@@ -374,23 +384,16 @@
         <div class="container">
           <div class="container-week-calendar-section">
             <h3 class="heading-tertiary">Kalendarz tygodnia</h3>
-            <ul class="list-calendar-section">
-              <li class="list-element-calendar-section">Pon</li>
-              <li class="list-element-calendar-section">Wt</li>
-              <li class="list-element-calendar-section">Śr</li>
-              <li class="list-element-calendar-section">Czw</li>
-              <li class="list-element-calendar-section">Pt</li>
-              <li class="list-element-calendar-section">Sob</li>
-              <li class="list-element-calendar-section">Nd</li>
-            </ul>
-            <div class="container-week-calendar-info">
-              <div class="img-box img-box--week-calendar">
-                <img src="../icons/calendar-days-regular-full.svg" alt="" />
-              </div>
-              <div class="week-calendar-text-wrapper">
-                <p>
-                  Twój kalendarz pojawi się tutaj, gdy dodasz pierwszy nawyk
-                </p>
+            <div id="weekCalendar" class="week-calendar-content">
+              <div class="container-week-calendar-info">
+                <div class="img-box img-box--week-calendar">
+                  <img src="../icons/calendar-days-regular-full.svg" alt="" />
+                </div>
+                <div class="week-calendar-text-wrapper">
+                  <p>
+                    Twój kalendarz pojawi się tutaj, gdy dodasz pierwszy nawyk
+                  </p>
+                </div>
               </div>
             </div>
           </div>
