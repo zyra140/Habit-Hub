@@ -55,20 +55,24 @@ const renderHabit = function (habit) {
   const color = habit.color;
   const color02 = hexToRgba(color, 0.2);
   const gradient = `180deg, ${hexToRgba(color, 0.1)}, ${hexToRgba(color, 0.2)}`;
- 
+
   //completed days
   const completedDays = habit.completedDates.map((date) => {
     const completedDate = new Date(date);
 
     // days only from current month
-    if (completedDate.getFullYear() === currentYear && completedDate.getMonth() === currentMonth) {
+    if (
+      completedDate.getFullYear() === currentYear &&
+      completedDate.getMonth() === currentMonth
+    ) {
       return completedDate.getDate();
     }
     return null;
-  })
+  });
 
   //calendar
-  const firstDayOfMonth = (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
+  const firstDayOfMonth =
+    (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
 
   // rendering weekdays names
   const calendarHeadersHTML = weekdays
@@ -77,7 +81,7 @@ const renderHabit = function (habit) {
     })
     .join("");
 
-    // Render previous, current and next month days in chronological order.
+  // Render previous, current and next month days in chronological order.
   const calendarDaysHTML = Array.from({ length: 35 }, function (_, index) {
     // checking wchich day is first monday // current month or previous
     const date = new Date(
@@ -118,7 +122,10 @@ const renderHabit = function (habit) {
   const calendarColumnsHTML = calendarHeadersHTML + calendarDaysHTML;
 
   //frequency
-  const frequencyText = habit.frequency === '1' ? 'raz w tygodniu' : `${habit.frequency} razy w tygodniu`;
+  const frequencyText =
+    habit.frequency === "1"
+      ? "raz w tygodniu"
+      : `${habit.frequency} razy w tygodniu`;
 
   // final HTML to insert
   const HTML = `
@@ -191,11 +198,10 @@ const renderHabit = function (habit) {
   `;
 
   //inserting html to container
-  habitsContainer.insertAdjacentHTML("afterbegin", HTML); 
-}
+  habitsContainer.insertAdjacentHTML("afterbegin", HTML);
+};
 
 // DELATE HABIT
-
 
 //////////////////////////////// MAIN PAGE //////////////////////////////////
 // DAILY CHART
@@ -276,7 +282,6 @@ const registerSubmitBtn = document.querySelector(
   ".auth-view-register .btn--login",
 );
 const logoutBtn = document.querySelector(".log-out-button");
-const mainPageNameDisplay = document.querySelector("#nameDisplay");
 const profileWrapper = document.querySelector(".nav-profile-wrapper");
 const profileDropdown = document.querySelector(".profile-dropdown-menu");
 const profileImage = document.querySelector(".profile-img");
@@ -290,6 +295,10 @@ function hideAuthModal() {
   }
 
   document.body.classList.remove("modal-open");
+
+  // Generate Profile image
+  const name = localStorage.getItem("name");
+  nameLetter.textContent = name[0].toUpperCase();
 }
 
 // ZMIANA UI PRZED ZALOGOWANIEM
@@ -305,7 +314,7 @@ function completeAuthSuccess() {
   hideAuthModal();
   loginView?.removeAttribute("hidden");
   registerView?.setAttribute("hidden", "hidden");
-  loadHabits()
+  loadHabits();
 }
 
 const savedToken = localStorage.getItem("token");
@@ -414,6 +423,7 @@ async function handleAuthRequest(url, payload, successMessage) {
 
     if (data.token) {
       localStorage.setItem("token", data.token);
+      localStorage.setItem("name", data.user.name);
     }
 
     alert(successMessage || data.message);
@@ -473,13 +483,9 @@ registerSubmitBtn?.addEventListener("click", async function () {
   if (data?.token) {
     completeAuthSuccess();
   }
-
-  // Generate Profile image
-  nameLetter.textContent = name[0].toUpperCase();
 });
 
 // ZMIANA IMIENIA PO ZALOGOWANIU
-// mainPageNameDisplay.textContent = `Dzień dobry, ${}! 👋`;
 // mainPageNameDisplay?.textContent = `Dzień dobry, Hubert! 👋`;
 
 //////////////////////////////// ADDING HABITS //////////////////////////////////
@@ -495,7 +501,7 @@ const inputFrequency = document.querySelector(".input-frequency");
 const inputColor = document.querySelector(".input-color");
 const wrapperInputColor = document.querySelector(".wrapper-input-icon");
 const inputColorCircle = document.querySelector(".color-circle");
-const deleteButton = document.querySelector('.delete-button');
+const deleteButton = document.querySelector(".delete-button");
 
 // dropdown content render
 const iconArr = [
@@ -637,30 +643,27 @@ addHabitBtn?.addEventListener("click", async function () {
 
     // UPDATE UI
     DisactiveBlankHabitUI();
-
   } catch (error) {
     console.error("Błąd podczas zapisywania nawyku:", error);
     alert(error.message);
   }
-
 });
 
 //// EDIT HABIT BUTTON ///
 // event listener
-habitsContainer?.addEventListener ("click", async function (e) {
+habitsContainer?.addEventListener("click", async function (e) {
   const actionButton = e.target.closest(".edit-button, .delete-button");
-  const deleteButton = e.target.closest('.delete-button');
-  const editButton = e.target.closest('.edit-button');
-
+  const deleteButton = e.target.closest(".delete-button");
+  const editButton = e.target.closest(".edit-button");
 
   // DELETING
   if (deleteButton) {
-    const habitPanel = e.target.closest('.wrapper-habit-panel');
-    const habitId = habitPanel.dataset.habitId
+    const habitPanel = e.target.closest(".wrapper-habit-panel");
+    const habitId = habitPanel.dataset.habitId;
 
     // pobieramy token zalogowanego użytkownika
     const token = localStorage.getItem("token");
-    
+
     if (!token) {
       alert("Musisz być zalogowany!");
       return;
@@ -670,9 +673,8 @@ habitsContainer?.addEventListener ("click", async function (e) {
     const confirmed = confirm("Czy na pewno chcesz usunąć ten nawyk?");
 
     if (!confirmed) return;
-    
-    try {
 
+    try {
       const response = await fetch(
         `https://habit-hub.onrender.com/api/habits/${habitId}`,
         {
@@ -681,24 +683,20 @@ habitsContainer?.addEventListener ("click", async function (e) {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "Nie udało się usunąć nawyku"
-        );
+        throw new Error(data.message || "Nie udało się usunąć nawyku");
       }
 
       console.log("Backend usunął habit:", data);
 
       // usuwamy habit również z UI
       habitPanel.remove();
-
     } catch (error) {
-
       console.error("Błąd podczas usuwania habit:", error);
 
       alert(error.message);
@@ -709,8 +707,8 @@ habitsContainer?.addEventListener ("click", async function (e) {
 
   //EDITING
   if (editButton) {
-    const habitPanel = e.target.closest('.wrapper-habit-panel');
-    const habitId = habitPanel.dataset.habitId
+    const habitPanel = e.target.closest(".wrapper-habit-panel");
+    const habitId = habitPanel.dataset.habitId;
   }
 
   if (actionButton) {
@@ -728,11 +726,7 @@ habitsContainer?.addEventListener ("click", async function (e) {
   const menu = wrapper?.querySelector(".habit-dropdown-menu");
 
   menu?.classList.toggle("is-open");
-
-  
 });
-
-
 
 // Closing dropdowns
 document.addEventListener("click", function (e) {
@@ -753,5 +747,149 @@ document.addEventListener("click", function (e) {
   });
 });
 
-// load habits
+////////////////////////////////////// INDEX HTML //////////////////////////////////
+const todayProgresText = document.querySelector(".stats-text");
+const habitCounter = document.querySelector(".habit-count-text");
+const sectionDayToDo = document.querySelector(".section-day-todo");
+const mainPageNameDisplay = document.querySelector("#nameDisplay");
+
+// CHANGING UI AFTER ADDING HABITS
+async function changeMainPageUI() {
+  const token = localStorage.getItem("token");
+  const userName = localStorage.getItem("name");
+
+  // Nie ma zalogowanego użytkownika
+  if (!token) {
+    habitsContainer.innerHTML = "";
+    return;
+  }
+
+  // Chanign main page h1 to user name
+  if (mainPageNameDisplay)
+    mainPageNameDisplay.innerHTML = `Dzień dobry ${userName}`;
+
+  try {
+    const response = await fetch("https://habit-hub.onrender.com/api/habits", {
+      method: "GET",
+
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Nie udało się pobrać nawyków");
+    }
+
+    // if there is no habits return
+    if (data.habits.length < 0) return;
+
+    // changing stats text
+    if (todayProgresText)
+      todayProgresText.innerHTML = `0 / ${data.habits.length}`;
+
+    //chaning habit counter text
+    if (habitCounter) habitCounter.innerHTML = `${data.habits.length} nawyków`;
+
+    // disactive blank UI
+    DisactiveBlankHabitUI();
+
+    // section day to do render habits
+    const renderDailyHabit = function (habit) {
+      const HTML = `
+          <div class="container-daily-habits" data-habit-id=${habit._id}>
+            <div class="desc-daily-habits">
+              <div class="img-box img-box--habit">
+                <img
+                  class="img-box img-box--habbit-panel"
+                  src="${habit.icon}"
+                  alt=""
+                />
+              </div>
+              <div class="text-daily-habits">
+                <h3 class="heading-tertiary habit-title">${habit.name}</h3>
+                <p class="p-daily-habits">${habit.frequency === "1" ? `raz w tygodniu` : `${habit.frequency} razy w tygodniu`}</p>
+              </div>
+            </div>
+            <div class="container-daily-habbits-btn">
+              <button class="btn btn--done">
+                <img
+                  class="btn-icon-done"
+                  src="../icons/done-v-svgrepo-com.svg"
+                  alt=""
+                />
+                Wykonano
+              </button>
+              <button class="btn btn--skip">
+                <img
+                  class="btn-icon-skip"
+                  src="../icons/close-svgrepo-com (3).svg"
+                  alt=""
+                />
+                Pomiń
+              </button>
+            </div>
+          </div>
+      `;
+
+      sectionDayToDo?.insertAdjacentHTML("beforeend", HTML);
+    };
+
+    data.habits.forEach((habit) => renderDailyHabit(habit));
+  } catch (error) {
+    console.error("Błąd podczas pobierania nawyków:", error);
+
+    // Jeżeli token wygasł / jest nieprawidłowy
+    if (error.message === "Nieprawidłowy lub wygasły token") {
+      localStorage.removeItem("token");
+      habitsContainer.innerHTML = "";
+    }
+  }
+}
+
+changeMainPageUI();
+
+// DONE STATE BUTTON LISTENERS
+sectionDayToDo?.addEventListener("click", async function (e) {
+  const token = localStorage.getItem("token");
+
+  // Nie ma zalogowanego użytkownika
+  if (!token) {
+    habitsContainer.innerHTML = "";
+    return;
+  }
+
+  const doneButton = e.target.closest(".btn--done");
+  const habitContainer = doneButton.closest(".container-daily-habits");
+  const habitID = habitContainer.dataset.habitId;
+
+  // passing done state to database
+  const today = new Date().toISOString().split("T")[0];
+
+  const response = await fetch(
+    `https://habit-hub.onrender.com/api/habits/${habitID}/complete`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        date: today,
+      }),
+    },
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+
+  console.log(data.habit);
+});
+
+///////////////////////////// LOAD HABITS BACKEND //////////////////////////////
 loadHabits();
