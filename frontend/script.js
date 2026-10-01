@@ -298,7 +298,8 @@ function hideAuthModal() {
 
   // Generate Profile image
   const name = localStorage.getItem("name");
-  nameLetter.textContent = name[0].toUpperCase();
+  if (nameLetter) nameLetter.textContent = name[0].toUpperCase();
+  
 }
 
 // ZMIANA UI PRZED ZALOGOWANIEM
@@ -757,6 +758,7 @@ const mainPageNameDisplay = document.querySelector("#nameDisplay");
 async function changeMainPageUI() {
   const token = localStorage.getItem("token");
   const userName = localStorage.getItem("name");
+  const today = new Date().toISOString().split("T")[0];
 
   // Nie ma zalogowanego użytkownika
   if (!token) {
@@ -837,7 +839,12 @@ async function changeMainPageUI() {
       sectionDayToDo?.insertAdjacentHTML("beforeend", HTML);
     };
 
-    data.habits.forEach((habit) => renderDailyHabit(habit));
+    data.habits.forEach(habit => {
+      console.log(habit.completedDates, today)
+      if (!habit.completedDates.includes(today)) renderDailyHabit(habit);
+    })
+    
+
   } catch (error) {
     console.error("Błąd podczas pobierania nawyków:", error);
 
