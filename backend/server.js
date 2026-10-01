@@ -171,9 +171,9 @@ app.get("/api/auth/me", async (req, res) => {
   }
 });
 
-  // Adding habits
-  
-  app.post("/api/habits", authenticateToken, async (req, res) => {
+// Adding habits
+
+app.post("/api/habits", authenticateToken, async (req, res) => {
   const { name, frequency, icon, color } = req.body;
 
   if (!name || !frequency) {
@@ -317,54 +317,93 @@ app.delete("/api/habits/:id", authenticateToken, async (req, res) => {
 });
 
 //copletedDates
-app.post(
-  "/api/habits/:id/complete",
-  authenticateToken,
-  async (req, res) => {
-    try {
-      const habit = await Habit.findOne({
-        _id: req.params.id,
-        user: req.user._id,
-      });
+app.post("/api/habits/:id/complete", authenticateToken, async (req, res) => {
+  try {
+    const habit = await Habit.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
 
-      if (!habit) {
-        return res.status(404).json({
-          message: "Nawyk nie został znaleziony",
-        });
-      }
-
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const alreadyCompleted = habit.completedDates.some((date) => {
-        const completedDate = new Date(date);
-        completedDate.setHours(0, 0, 0, 0);
-
-        return completedDate.getTime() === today.getTime();
-      });
-
-      if (alreadyCompleted) {
-        return res.status(400).json({
-          message: "Ten nawyk jest już wykonany dzisiaj",
-        });
-      }
-
-      habit.completedDates.push(today);
-
-      await habit.save();
-
-      return res.json({
-        message: "Nawyk oznaczony jako wykonany",
-        habit,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        message: "Błąd podczas oznaczania nawyku",
-        error: error.message,
+    if (!habit) {
+      return res.status(404).json({
+        message: "Nawyk nie został znaleziony",
       });
     }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const alreadyCompleted = habit.completedDates.some((date) => {
+      const completedDate = new Date(date);
+      completedDate.setHours(0, 0, 0, 0);
+
+      return completedDate.getTime() === today.getTime();
+    });
+
+    if (alreadyCompleted) {
+      return res.status(400).json({
+        message: "Ten nawyk jest już wykonany dzisiaj",
+      });
+    }
+
+    habit.completedDates.push(today);
+
+    await habit.save();
+
+    return res.json({
+      message: "Nawyk oznaczony jako wykonany",
+      habit,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Błąd podczas oznaczania nawyku",
+      error: error.message,
+    });
   }
-);
+});
+
+app.patch("/api/habits/:id/complete", authenticateToken, async (req, res) => {
+  const { date } = req.body;
+
+  if (!date) {
+    return res.status(400).json({
+      message: "Data jest wymagana",
+    });
+  }
+
+  try {
+    const habit = await Habit.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        user: req.user._id,
+      },
+      {
+        $addToSet: {
+          completedDates: date,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    if (!habit) {
+      return res.status(404).json({
+        message: "Nie znaleziono nawyku",
+      });
+    }
+
+    res.json({
+      message: "Nawyk oznaczony jako wykonany",
+      habit,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Błąd podczas oznaczania nawyku",
+      error: error.message,
+    });
+  }
+});
 
 mongoose
   .connect(process.env.MONGO_URI)
