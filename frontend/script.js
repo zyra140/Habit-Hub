@@ -1230,6 +1230,7 @@ async function changeMainPageUI() {
 
     // section day to do render habits
     const renderDailyHabit = function (habit) {
+      const availableSkips = getAvailableSkips(habit);
       const HTML = `
           <div class="container-daily-habits" data-habit-id=${habit._id}>
             <div class="desc-daily-habits">
@@ -1250,13 +1251,13 @@ async function changeMainPageUI() {
                 />
                 Wykonano
               </button>
-              <button class="btn btn--skip">
+              <button class="btn btn--skip" ${availableSkips === 0 ? "disabled" : ""}>
                 <img
                   class="btn-icon-skip"
                   src="../icons/close-svgrepo-com (3).svg"
                   alt=""
                 />
-                Pomiń (${getAvailableSkips(habit)})
+                Pomiń (${availableSkips})
               </button>
             </div>
           </div>

@@ -542,6 +542,11 @@ html.has-saved-session .section-login-popup {
   height: 4.4rem;
 }
 
+.btn--skip:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .btn--done {
   background-color: rgb(42, 172, 42);
   color: white;

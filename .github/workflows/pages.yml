@@ -1,0 +1,69 @@
+name: Deploy frontend to GitHub Pages
+
+on:
+push:
+branches:
+- main
+workflow_dispatch:
+
+permissions:
+contents: read
+pages: write
+id-token: write
+
+concurrency:
+group: "pages"
+cancel-in-progress: false
+
+jobs:
+deploy:
+environment:
+name: github-pages
+url: ${{ steps.deployment.outputs.page_url }}
+
+runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
+
+  - name: Setup GitHub Pages
+    uses: actions/configure-pages@v5
+
+  - name: Prepare website
+    run: |
+      mkdir -p _site
+
+      # Kopiujemy cały frontend bez zmieniania jego struktury
+      cp -R frontend/. _site/
+
+      # Tworzymy główny index.html przekierowujący do frontend/html/index.html
+      cat > _site/index.html <<'EOF'
+      <!DOCTYPE html>
+      <html lang="pl">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="refresh" content="0; url=html/index.html">
+        <title>HabHab</title>
+      </head>
+      <body>
+        <script>
+          window.location.replace("html/index.html");
+        </script>
+        <p>
+          Przekierowywanie...
+          <a href="html/index.html">Przejdź do strony</a>
+        </p>
+      </body>
+      </html>
+      EOF
+
+  - name: Upload website
+    uses: actions/upload-pages-artifact@v3
+    with:
+      path: ./_site
+
+  - name: Deploy to GitHub Pages
+    id: deployment
+    uses: actions/deploy-pages@v4
