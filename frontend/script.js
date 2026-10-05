@@ -18,6 +18,15 @@ const hexToRgba = function (hex, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
+const getReadableIconRgb = (hex) => {
+  const channels = hexToRgba(hex, 1)
+    .match(/\d+/g)
+    .slice(0, 3)
+    .map((channel) => Math.round(Number(channel) * 0.45));
+
+  return `rgb(${channels.join(", ")})`;
+};
+
 const getLocalDateString = (date = new Date()) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -37,6 +46,8 @@ const getAvailableSkips = (habit, dateString = getLocalDateString()) => {
   const weekStartString = weekStart.toISOString().slice(0, 10);
   const weekEndString = weekEnd.toISOString().slice(0, 10);
   const createdDate = String(habit.createdAt).slice(0, 10);
+  const isCreationWeek =
+    createdDate >= weekStartString && createdDate <= weekEndString;
   const firstEligibleDate =
     createdDate > weekStartString ? createdDate : weekStartString;
   const completedDates = new Set(
@@ -52,6 +63,7 @@ const getAvailableSkips = (habit, dateString = getLocalDateString()) => {
   let eligibleDaysThisWeek = 0;
   let completedDaysThisWeek = 0;
   let eligibleDaysRemaining = 0;
+  let skippedDaysThisWeek = 0;
 
   for (
     let currentDate = new Date(`${firstEligibleDate}T00:00:00.000Z`);
@@ -64,9 +76,11 @@ const getAvailableSkips = (habit, dateString = getLocalDateString()) => {
 
     eligibleDaysThisWeek++;
     if (completedDates.has(currentDateString)) completedDaysThisWeek++;
+    if (skippedDates.has(currentDateString)) skippedDaysThisWeek++;
     if (
       currentDateString >= dateString &&
-      !skippedDates.has(currentDateString)
+      !skippedDates.has(currentDateString) &&
+      (!isCreationWeek || !completedDates.has(currentDateString))
     ) {
       eligibleDaysRemaining++;
     }
@@ -74,7 +88,17 @@ const getAvailableSkips = (habit, dateString = getLocalDateString()) => {
 
   const weeklyTarget = Math.min(Number(habit.frequency), eligibleDaysThisWeek);
   const requiredCompletions = Math.max(0, weeklyTarget - completedDaysThisWeek);
-  return Math.max(0, eligibleDaysRemaining - requiredCompletions);
+  const weeklySkipLimit = isCreationWeek
+    ? Number(habit.frequency) >= (habit.weekdaysOnly ? 5 : 7)
+      ? 0
+      : eligibleDaysThisWeek - completedDaysThisWeek
+    : eligibleDaysThisWeek - Math.max(weeklyTarget, completedDaysThisWeek);
+  const availableByLimit = Math.max(0, weeklySkipLimit - skippedDaysThisWeek);
+  const availableBySchedule = isCreationWeek
+    ? eligibleDaysRemaining
+    : Math.max(0, eligibleDaysRemaining - requiredCompletions);
+
+  return Math.min(availableBySchedule, availableByLimit);
 };
 
 const calculateStreaks = (habits, today = getLocalDateString()) => {
@@ -295,6 +319,7 @@ const renderWeekStatusEditor = (habit) => {
   const skippedDates = new Set(
     (habit.skippedDays || []).map((date) => String(date).slice(0, 10)),
   );
+  const initialAvailableSkips = getAvailableSkips(habit, weekStartString);
   const options = [];
 
   for (
@@ -333,15 +358,71 @@ const renderWeekStatusEditor = (habit) => {
         Status
         <select class="week-edit-status" ${options.length ? "" : "disabled"}>
           <option value="completed">Wykonano</option>
-          <option value="skipped">Pominięto</option>
+          <option value="skipped" ${initialAvailableSkips === 0 ? "disabled" : ""}>Pominięto</option>
           <option value="pending">Nie wykonano</option>
         </select>
       </label>
+      <p class="week-skips-remaining" aria-live="polite">Pozostałe pominięcia w tym tygodniu: ${initialAvailableSkips}</p>
       <button class="save-week-status" type="button" ${options.length ? "" : "disabled"}>
         Zapisz dzień
       </button>
     </div>
   `;
+};
+
+const updateWeekStatusEditor = (editor) => {
+  const habitPanel = editor.closest(".wrapper-habit-panel");
+  const habit = dashboardHabits.find(
+    (entry) => String(entry._id) === habitPanel?.dataset.habitId,
+  );
+  if (!habit) return;
+
+  const dateSelect = editor.querySelector(".week-edit-date");
+  const statusSelect = editor.querySelector(".week-edit-status");
+  const selectedOption = dateSelect.selectedOptions[0];
+  const currentStatus = selectedOption?.dataset.status || "pending";
+  const isAlreadySkipped = currentStatus === "skipped";
+  const skippedOption = statusSelect.querySelector('option[value="skipped"]');
+  const saveButton = editor.querySelector(".save-week-status");
+  const remainingText = editor.querySelector(".week-skips-remaining");
+  const weekStart = new Date(`${getLocalDateString()}T00:00:00.000Z`);
+  weekStart.setUTCDate(
+    weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7),
+  );
+  const weekStartString = weekStart.toISOString().slice(0, 10);
+  const availableBeforeChange = getAvailableSkips(habit, weekStartString);
+  const cannotAddSkip = availableBeforeChange === 0 && !isAlreadySkipped;
+
+  skippedOption.disabled = cannotAddSkip;
+  saveButton.disabled =
+    !dateSelect.value || (statusSelect.value === "skipped" && cannotAddSkip);
+
+  const updatedHabit = {
+    ...habit,
+    completedDates: (habit.completedDates || []).filter(
+      (date) => String(date).slice(0, 10) !== dateSelect.value,
+    ),
+    skippedDays: (habit.skippedDays || []).filter(
+      (date) => String(date).slice(0, 10) !== dateSelect.value,
+    ),
+    missedDays: (habit.missedDays || []).filter(
+      (date) => String(date).slice(0, 10) !== dateSelect.value,
+    ),
+  };
+  if (statusSelect.value === "completed")
+    updatedHabit.completedDates.push(dateSelect.value);
+  if (statusSelect.value === "skipped")
+    updatedHabit.skippedDays.push(dateSelect.value);
+
+  const projectedAvailableSkips = getAvailableSkips(
+    updatedHabit,
+    weekStartString,
+  );
+  remainingText.textContent = `Pozostałe pominięcia w tym tygodniu: ${projectedAvailableSkips}`;
+  remainingText.classList.toggle(
+    "is-limit-reached",
+    projectedAvailableSkips === 0,
+  );
 };
 
 // BLANK HABIT UI UPDATE
@@ -369,39 +450,21 @@ const renderHabit = function (habit) {
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth();
 
-  const habitCreatedDate = new Date(habit.createdAt);
-  const habitCreatedDay = today.getDate();
-
   const weekdays = ["PON", "WT", "ŚR", "CZW", "PT", "SOB", "ND"];
 
   const color = habit.color;
-  const color02 = hexToRgba(color, 0.2);
-  const gradient = `180deg, ${hexToRgba(color, 0.1)}, ${hexToRgba(color, 0.2)}`;
+  const iconBackgroundColor = hexToRgba(color, 0.15);
 
-  //completed days
-  const completedDays = habit.completedDates.map((date) => {
-    const completedDate = new Date(date);
-
-    // days only from current month
-    if (
-      completedDate.getFullYear() === currentYear &&
-      completedDate.getMonth() === currentMonth
-    ) {
-      return completedDate.getDate();
-    }
-    return null;
-  });
-
-  const missedDays = (habit.missedDays || []).map((date) => {
-    const [year, month, day] = String(date).slice(0, 10).split("-").map(Number);
-
-    return year === currentYear && month - 1 === currentMonth ? day : null;
-  });
-
-  const skippedDays = (habit.skippedDays || []).map((date) => {
-    const [year, month, day] = String(date).slice(0, 10).split("-").map(Number);
-    return year === currentYear && month - 1 === currentMonth ? day : null;
-  });
+  const completedDates = new Set(
+    (habit.completedDates || []).map((date) => String(date).slice(0, 10)),
+  );
+  const missedDates = new Set(
+    (habit.missedDays || []).map((date) => String(date).slice(0, 10)),
+  );
+  const skippedDates = new Set(
+    (habit.skippedDays || []).map((date) => String(date).slice(0, 10)),
+  );
+  const habitCreatedDateString = String(habit.createdAt).slice(0, 10);
 
   //calendar
   const firstDayOfMonth =
@@ -426,6 +489,7 @@ const renderHabit = function (habit) {
         currentMonth,
         index - firstDayOfMonth + 1,
       );
+      const dateString = getLocalDateString(date);
       const day = date.getDate();
       const dayClasses = ["calendar-cell", "calendar-day"];
       const isCurrentMonth = date.getMonth() === currentMonth;
@@ -438,21 +502,21 @@ const renderHabit = function (habit) {
       if (isToday) dayClasses.push("is-today");
 
       // adding day before habit class
-      if (isCurrentMonth && date < today && date.getDate() < habitCreatedDay) {
+      if (dateString < habitCreatedDateString) {
         dayClasses.push("is-before-habit");
       }
 
       // adding completed day class
-      if (isCurrentMonth && completedDays.includes(day)) {
+      if (completedDates.has(dateString)) {
         dayClasses.push("is-completed");
       }
 
       // adding missed day class
-      if (isCurrentMonth && missedDays.includes(day)) {
+      if (missedDates.has(dateString)) {
         dayClasses.push("is-missed");
       }
 
-      if (isCurrentMonth && skippedDays.includes(day)) {
+      if (skippedDates.has(dateString)) {
         dayClasses.push("is-skipped");
       }
 
@@ -492,8 +556,12 @@ const renderHabit = function (habit) {
                 </div>
 
                 <div class="wrapper-habit-content">
-                  <div class="img-box img-box--habit" style="background-color: ${color02};">
-                    <img class="habit-card-icon" src="${habit.icon}" alt="" />
+                  <div class="img-box img-box--habit" style="background-color: ${iconBackgroundColor};">
+                    <span
+                      class="habit-card-icon"
+                      style="--habit-icon: url('${resolveHabitIcon(habit.icon)}'); --habit-icon-color: ${getReadableIconRgb(color)};"
+                      aria-hidden="true"
+                    ></span>
                   </div>
                   <div class="wrapper-habit-description-text">
                     <h3 class="heading-tertiary">${habit.name}</h3>
@@ -507,30 +575,6 @@ const renderHabit = function (habit) {
                   </ul>
                 </div>
                 ${renderWeekStatusEditor(habit)}
-                <div class="wrapper-weekly-progres">
-                  <ul class="habit-list-weekly-progres grid">
-                    <li class="habit-weekly-progres is-active" style="border: 1px solid ${color02}; background: linear-gradient(${gradient});">
-                      <p>Tydz. 1</p>
-                      <p>0/${habit.frequency}</p>
-                    </li>
-                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
-                      <p>Tydz. 2</p>
-                      <p>0/${habit.frequency}</p>
-                    </li>
-                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
-                      <p>Tydz. 3</p>
-                      <p>0/${habit.frequency}</p>
-                    </li>
-                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
-                      <p>Tydz. 5</p>
-                      <p>0/${habit.frequency}</p>
-                    </li>
-                    <li class="habit-weekly-progres" style="border: 1px solid ${color02};">
-                      <p>Tydz. 4</p>
-                      <p>0/${habit.frequency}</p>
-                    </li>
-                  </ul>
-                </div>
               </div>
   `;
 
@@ -563,6 +607,13 @@ const profileWrapper = document.querySelector(".nav-profile-wrapper");
 const profileDropdown = document.querySelector(".profile-dropdown-menu");
 const profileImage = document.querySelector(".profile-img");
 const nameLetter = document.querySelector(".name-letter");
+const profileName = document.querySelector("#profileName");
+
+function updateProfileName() {
+  const name = localStorage.getItem("name")?.trim().split(/\s+/)[0] || "";
+  if (profileName) profileName.textContent = name;
+  if (nameLetter) nameLetter.textContent = name.charAt(0).toUpperCase();
+}
 
 // ZMIANA UI PO ZALOGOWANIU
 function hideAuthModal() {
@@ -575,9 +626,7 @@ function hideAuthModal() {
 
   document.body.classList.remove("modal-open");
 
-  // Generate Profile image
-  const name = localStorage.getItem("name");
-  if (nameLetter) nameLetter.textContent = name[0].toUpperCase();
+  updateProfileName();
 }
 
 // ZMIANA UI PRZED ZALOGOWANIEM
@@ -669,6 +718,8 @@ profileWrapper?.addEventListener("click", function () {
 // log out button
 logoutBtn?.addEventListener("click", function () {
   localStorage.removeItem("token");
+  localStorage.removeItem("name");
+  updateProfileName();
 
   if (habitsContainer) {
     habitsContainer.innerHTML = "";
@@ -788,7 +839,6 @@ const inputName = document.querySelector(".input-name");
 const inputFrequency = document.querySelector(".input-frequency");
 const inputWeekdaysOnly = document.querySelector(".input-weekdays-only");
 const inputColor = document.querySelector(".input-color");
-const wrapperInputColor = document.querySelector(".wrapper-input-icon");
 const inputColorCircle = document.querySelector(".color-circle");
 const deleteButton = document.querySelector(".delete-button");
 
@@ -852,6 +902,15 @@ const iconArr = [
   "../icons/habit-icons/weight-loss.svg",
 ];
 
+const resolveHabitIcon = function (icon) {
+  const storedIcon = String(icon || "");
+  const filename = storedIcon.split(/[\\/]/).pop().split(/[?#]/)[0];
+
+  return (
+    iconArr.find((iconPath) => iconPath.endsWith(`/${filename}`)) || storedIcon
+  );
+};
+
 const iconsHTML = iconArr
   .map(
     (icon) => `
@@ -887,13 +946,10 @@ iconMenu?.addEventListener("click", function (e) {
   iconPicker.classList.toggle("open");
 });
 
-//color input
-wrapperInputColor?.addEventListener("click", () => {
-  inputColor.click();
-});
-
-wrapperInputColor?.addEventListener("input", () => {
-  inputColorCircle.style.backgroundColor = inputColor.value;
+// color input
+inputColor?.addEventListener("input", () => {
+  if (inputColorCircle)
+    inputColorCircle.style.backgroundColor = inputColor.value;
 });
 
 /////////////////////////////////////
@@ -1075,6 +1131,7 @@ habitsContainer?.addEventListener("click", async function (e) {
     if (isEditing) {
       statusSelect.value =
         dateSelect.selectedOptions[0]?.dataset.status || "pending";
+      updateWeekStatusEditor(editor);
     }
   }
 
@@ -1096,14 +1153,16 @@ habitsContainer?.addEventListener("click", async function (e) {
 });
 
 habitsContainer?.addEventListener("change", (e) => {
-  const dateSelect = e.target.closest(".week-edit-date");
-  if (!dateSelect) return;
+  const editor = e.target.closest(".week-status-editor");
+  if (!editor) return;
 
-  const statusSelect = dateSelect
-    .closest(".week-status-editor")
-    .querySelector(".week-edit-status");
-  statusSelect.value =
-    dateSelect.selectedOptions[0]?.dataset.status || "pending";
+  if (e.target.matches(".week-edit-date")) {
+    const statusSelect = editor.querySelector(".week-edit-status");
+    statusSelect.value =
+      e.target.selectedOptions[0]?.dataset.status || "pending";
+  }
+
+  updateWeekStatusEditor(editor);
 });
 
 // Closing dropdowns
@@ -1131,6 +1190,7 @@ const habitCounter = document.querySelector(".habit-count-text");
 const habitListCount = document.querySelector(".habit-list-count");
 const sectionDayToDo = document.querySelector(".container-day-to-do");
 const mainPageNameDisplay = document.querySelector("#nameDisplay");
+const mainPageDate = document.querySelector(".day-summary-date");
 const dailyChartPercentText = document.querySelector("#dailyChartPercentText");
 const currentStreakText = document.querySelector("#currentStreak");
 const longestStreakText = document.querySelector("#longestStreak");
@@ -1163,6 +1223,14 @@ async function changeMainPageUI() {
   // Chanign main page h1 to user name
   if (mainPageNameDisplay)
     mainPageNameDisplay.innerHTML = `Dzień dobry ${userName}`;
+
+  if (mainPageDate) {
+    mainPageDate.textContent = new Intl.DateTimeFormat("pl-PL", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date());
+  }
 
   try {
     const response = await fetch("https://habit-hub.onrender.com/api/habits", {
@@ -1234,8 +1302,12 @@ async function changeMainPageUI() {
       const HTML = `
           <div class="container-daily-habits" data-habit-id=${habit._id}>
             <div class="desc-daily-habits">
-              <div class="img-box img-box--habit" style="background-color: ${hexToRgba(habit.color, 0.2)};">
-                <img class="habit-card-icon" src="${habit.icon}" alt="" />
+              <div class="img-box img-box--habit" style="background-color: ${hexToRgba(habit.color, 0.15)};">
+                <span
+                  class="habit-card-icon"
+                  style="--habit-icon: url('${resolveHabitIcon(habit.icon)}'); --habit-icon-color: ${getReadableIconRgb(habit.color)};"
+                  aria-hidden="true"
+                ></span>
               </div>
               <div class="text-daily-habits">
                 <h3 class="heading-tertiary habit-title">${habit.name}</h3>
