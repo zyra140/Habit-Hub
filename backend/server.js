@@ -10,6 +10,7 @@ const User = require("./src/models/User");
 const Habit = require("./src/models/Habit");
 const {
   getAvailableSkips,
+  getAutomaticPastDayStatus,
   getWeeklySkipLimit,
   getWeeklySkippedCount,
   isEligibleHabitDate,
@@ -233,8 +234,21 @@ app.post("/api/habits", authenticateToken, async (req, res) => {
   }
 });
 
-const recordMissedDays = async (habits) => {
-  const today = new Date().toISOString().slice(0, 10);
+const getValidDateString = (value) => {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value))
+    return null;
+
+  const parsedDate = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(parsedDate.getTime()) ||
+    parsedDate.toISOString().slice(0, 10) !== value
+    ? null
+    : value;
+};
+
+const recordMissedDays = async (
+  habits,
+  today = new Date().toISOString().slice(0, 10),
+) => {
   const todayUtc = new Date(`${today}T00:00:00.000Z`);
 
   await Promise.all(
@@ -244,7 +258,15 @@ const recordMissedDays = async (habits) => {
         habit.completedDates.map((date) => String(date).slice(0, 10)),
       );
       const skippedDates = new Set(
-        (habit.skippedDays || []).map((date) => String(date).slice(0, 10)),
+        (habit.skippedDays || [])
+          .map((date) => String(date).slice(0, 10))
+          .filter(
+            (date) =>
+              date >= createdDate &&
+              date <= today &&
+              !completedDates.has(date) &&
+              isEligibleHabitDate(habit, date),
+          ),
       );
       const missedDates = new Set(
         (habit.missedDays || [])
@@ -252,7 +274,7 @@ const recordMissedDays = async (habits) => {
           .filter(
             (date) =>
               date >= createdDate &&
-              date < today &&
+              date <= today &&
               !completedDates.has(date) &&
               !skippedDates.has(date) &&
               isEligibleHabitDate(habit, date),
@@ -265,23 +287,40 @@ const recordMissedDays = async (habits) => {
         date.setUTCDate(date.getUTCDate() + 1)
       ) {
         const dateString = date.toISOString().slice(0, 10);
-        const isWeekend = [0, 6].includes(date.getUTCDay());
-        if (
-          !completedDates.has(dateString) &&
-          !skippedDates.has(dateString) &&
-          !(habit.weekdaysOnly && isWeekend)
-        ) {
-          missedDates.add(dateString);
-        }
+        const status = getAutomaticPastDayStatus(
+          {
+            createdAt: habit.createdAt,
+            frequency: habit.frequency,
+            weekdaysOnly: habit.weekdaysOnly,
+            completedDates: [...completedDates],
+            skippedDays: [...skippedDates],
+            missedDays: [...missedDates],
+          },
+          dateString,
+        );
+        if (status === "skipped") skippedDates.add(dateString);
+        if (status === "missed") missedDates.add(dateString);
       }
 
+      const updatedSkippedDays = [...skippedDates].sort();
       const updatedMissedDays = [...missedDates].sort();
-      if (
-        updatedMissedDays.length !== habit.missedDays.length ||
+      const previousSkippedDays = habit.skippedDays || [];
+      const previousMissedDays = habit.missedDays || [];
+      const skippedDaysChanged =
+        updatedSkippedDays.length !== previousSkippedDays.length ||
+        updatedSkippedDays.some(
+          (date, index) => date !== previousSkippedDays[index],
+        );
+      const missedDaysChanged =
+        updatedMissedDays.length !== previousMissedDays.length ||
         updatedMissedDays.some(
-          (date, index) => date !== habit.missedDays[index],
-        )
+          (date, index) => date !== previousMissedDays[index],
+        );
+      if (
+        skippedDaysChanged ||
+        missedDaysChanged
       ) {
+        habit.skippedDays = updatedSkippedDays;
         habit.missedDays = updatedMissedDays;
         await habit.save();
       }
@@ -295,7 +334,11 @@ app.get("/api/habits", authenticateToken, async (req, res) => {
       user: req.user._id,
     }).sort({ createdAt: -1 });
 
-    await recordMissedDays(habits);
+    const today = getValidDateString(req.query.today);
+    await recordMissedDays(
+      habits,
+      today || new Date().toISOString().slice(0, 10),
+    );
 
     return res.json({
       habits,
@@ -550,7 +593,7 @@ app.patch("/api/habits/:id/skip", authenticateToken, async (req, res) => {
 
 app.patch("/api/habits/:id/day-status", authenticateToken, async (req, res) => {
   const { date, status } = req.body;
-  const validStatuses = ["completed", "skipped", "pending"];
+  const validStatuses = ["completed", "skipped", "missed", "pending"];
   const parsedDate =
     typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date)
       ? new Date(`${date}T00:00:00.000Z`)
@@ -631,6 +674,7 @@ app.patch("/api/habits/:id/day-status", authenticateToken, async (req, res) => {
 
     if (status === "completed") habit.completedDates.push(date);
     if (status === "skipped") habit.skippedDays.push(date);
+    if (status === "missed") habit.missedDays.push(date);
 
     await habit.save();
     await recordMissedDays([habit]);

@@ -24,14 +24,12 @@ const isEligibleHabitDate = (habit, date) =>
     [0, 6].includes(new Date(`${date}T00:00:00.000Z`).getUTCDay())
   );
 
-const getEligibleWeekDates = (habit, date) => {
-  const createdDate = toDateString(habit.createdAt);
+const getWeekDates = (habit, date) => {
   const { start, end } = getWeekRange(date);
-  const firstDate = createdDate > start ? createdDate : start;
   const dates = [];
 
   for (
-    let currentDate = new Date(`${firstDate}T00:00:00.000Z`);
+    let currentDate = new Date(`${start}T00:00:00.000Z`);
     currentDate.toISOString().slice(0, 10) <= end;
     currentDate.setUTCDate(currentDate.getUTCDate() + 1)
   ) {
@@ -42,32 +40,32 @@ const getEligibleWeekDates = (habit, date) => {
   return dates;
 };
 
+const getEligibleWeekDates = (habit, date) => {
+  const createdDate = toDateString(habit.createdAt);
+  return getWeekDates(habit, date).filter((entry) => entry >= createdDate);
+};
+
 const getWeeklySkipLimit = (
   habit,
   date,
   completedDates = habit.completedDates || [],
 ) => {
-  const dates = getEligibleWeekDates(habit, date);
-  const createdDate = toDateString(habit.createdAt);
-  const { start, end } = getWeekRange(date);
-  const isCreationWeek = createdDate >= start && createdDate <= end;
+  const weekDates = getWeekDates(habit, date);
+  const eligibleDates = getEligibleWeekDates(habit, date);
   const completedSet = new Set(
     completedDates.map((entry) => toDateString(entry)),
   );
-  const completedCount = dates.filter((entry) =>
+  const completedCount = eligibleDates.filter((entry) =>
     completedSet.has(entry),
   ).length;
-
-  if (isCreationWeek) {
-    if (Number(habit.frequency) >= (habit.weekdaysOnly ? 5 : 7)) return 0;
-    return Math.max(0, dates.length - completedCount);
-  }
-
   const weeklyTarget = Math.min(
     Math.max(0, Number(habit.frequency) || 0),
-    dates.length,
+    weekDates.length,
   );
-  return Math.max(0, dates.length - Math.max(weeklyTarget, completedCount));
+  return Math.max(
+    0,
+    weekDates.length - Math.max(weeklyTarget, completedCount),
+  );
 };
 
 const getWeeklySkippedCount = (
@@ -80,46 +78,56 @@ const getWeeklySkippedCount = (
   return [...eligibleDates].filter((entry) => skippedSet.has(entry)).length;
 };
 
+const getAutomaticPastDayStatus = (habit, date) => {
+  const dateString = toDateString(date);
+  if (!isEligibleHabitDate(habit, dateString)) return null;
+
+  const completedSet = new Set(
+    (habit.completedDates || []).map((entry) => toDateString(entry)),
+  );
+  const skippedDays = habit.skippedDays || [];
+  const skippedSet = new Set(skippedDays.map((entry) => toDateString(entry)));
+  const missedSet = new Set(
+    (habit.missedDays || []).map((entry) => toDateString(entry)),
+  );
+
+  if (
+    completedSet.has(dateString) ||
+    skippedSet.has(dateString) ||
+    missedSet.has(dateString)
+  ) {
+    return null;
+  }
+
+  return getWeeklySkippedCount(habit, dateString, skippedDays) <
+    getWeeklySkipLimit(habit, dateString)
+    ? "skipped"
+    : "missed";
+};
+
 const getAvailableSkips = (habit, date) => {
   const dates = getEligibleWeekDates(habit, date);
-  const createdDate = toDateString(habit.createdAt);
-  const { start, end } = getWeekRange(date);
-  const isCreationWeek = createdDate >= start && createdDate <= end;
   const completedSet = new Set(
     (habit.completedDates || []).map((entry) => toDateString(entry)),
   );
   const skippedSet = new Set(
     (habit.skippedDays || []).map((entry) => toDateString(entry)),
   );
-  const completedCount = dates.filter((entry) =>
-    completedSet.has(entry),
-  ).length;
   const remainingDays = dates.filter(
     (entry) =>
       entry >= date && !completedSet.has(entry) && !skippedSet.has(entry),
   ).length;
-  const requiredCompletions = Math.max(
-    0,
-    Math.min(Math.max(0, Number(habit.frequency) || 0), dates.length) -
-      completedCount,
-  );
-  const normalRuleAvailability = Math.max(
-    0,
-    remainingDays - requiredCompletions,
-  );
   const availableByLimit = Math.max(
     0,
     getWeeklySkipLimit(habit, date) - getWeeklySkippedCount(habit, date),
   );
 
-  return Math.min(
-    isCreationWeek ? remainingDays : normalRuleAvailability,
-    availableByLimit,
-  );
+  return Math.min(remainingDays, availableByLimit);
 };
 
 module.exports = {
   getAvailableSkips,
+  getAutomaticPastDayStatus,
   getWeeklySkipLimit,
   getWeeklySkippedCount,
   isEligibleHabitDate,
